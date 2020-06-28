@@ -18,11 +18,30 @@
   <link href="images/webclip.png" rel="apple-touch-icon">
 </head>
 <body class="body">
-  
+  <script type="module">
+    import { SatteliteVisualizer } from './js/SatteliteVisualizer.js';
+
+    const visualizer = new SatteliteVisualizer (window.innerWidth, window.innerWidth);
+
+    function sliderClickLeft ()
+    {
+      visualizer.focusGlobe();
+
+      return false;
+    }
+
+    function sliderClickMid ()
+    {
+      visualizer.focusSat(visualizer.sats[0]);
+
+      return false;
+    }
+
+  </script>
   <div class="section">
     <div class="left-switcher">
       <div class="icon-container">
-        <a data-w-id="45b15d5d-a24d-d428-f512-7d7b366732ff" href="#" class="w-inline-block" onclick="sliderClickLeft()">
+        <a id="leftSwitch" data-w-id="45b15d5d-a24d-d428-f512-7d7b366732ff" href="#" class="w-inline-block">
           <div class="icon-orbit w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="26.17" height="26.101" viewbox="0 0 26.17 26.101">
   <g id="Орбита" transform="translate(-417.406 -272.508)">
     <g id="Сгруппировать_111" data-name="Сгруппировать 111">
@@ -66,7 +85,7 @@
 </svg></div>
         </a>
         <div class="div-block-6"></div>
-        <a data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" class="w-inline-block" onclick="sliderClickMid()">
+        <a id="midSwitch" data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" class="w-inline-block"">
           <div class="icon-satellite w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewbox="0 0 25 25">
   <g id="Спутник" transform="translate(-279 -272)">
     <g id="satellite">
@@ -82,7 +101,7 @@
 </svg></div>
         </a>
         <div class="div-block-6"></div>
-        <a data-w-id="02ccad7a-c192-e966-f72d-625e4753cf93" href="#" class="link-block w-inline-block" onclick="sliderClickRight()">
+        <a id="rightSwitch" data-w-id="02ccad7a-c192-e966-f72d-625e4753cf93" href="#" class="link-block w-inline-block">
           <div class="earth w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewbox="0 0 20.25 20.25">
   <path id="Контур_302" data-name="Контур 302" d="M360,274.875A10.124,10.124,0,1,0,370.125,285,10.136,10.136,0,0,0,360,274.875Zm-3.537,17.165-.13-.061a.922.922,0,0,1-.547-.851v-1.01a.1.1,0,0,1,.088-.1l.4-.04a1.969,1.969,0,0,0,1.473-.9.183.183,0,0,1,.178-.09h.409a.42.42,0,0,1,.309.136l1.519,1.715a2.058,2.058,0,0,0,2.136.6,2.091,2.091,0,0,0,1.468-1.745l.02-.173a.482.482,0,0,1,.159-.306.118.118,0,0,1,.126-.019l.617.362a11.942,11.942,0,0,1,2.063,1.52l.254.189c-.115.129-.236.256-.36.38a9.391,9.391,0,0,1-6.617,2.749h-.04a9.386,9.386,0,0,1-2.311-.288l-.013-.315A2.016,2.016,0,0,0,356.463,292.04Zm7.011-3.37a1.21,1.21,0,0,0-.406.766l-.02.172a1.368,1.368,0,0,1-.956,1.137,1.336,1.336,0,0,1-1.38-.391l-1.52-1.711a1.142,1.142,0,0,0-.852-.381h-.426a.921.921,0,0,0-.777.423,1.259,1.259,0,0,1-.946.574l-.392.038a.821.821,0,0,0-.74.824v1.007a1.648,1.648,0,0,0,.98,1.513l.135.061a1.281,1.281,0,0,1,.764,1.118l0,.064a9.427,9.427,0,0,1-3.579-2.243l-.081-.081-.006,0A9.4,9.4,0,0,1,360,275.6c.193,0,.385.005.571.017a1.184,1.184,0,0,1-.57,1.23,1.921,1.921,0,0,0-.435.345l-.653.695a1.434,1.434,0,0,0-.33.592l-.02.08a1.057,1.057,0,0,1-.728.731l-1.342.372a1.667,1.667,0,0,0-.569.282l-1.479,1.127a1.042,1.042,0,0,1-.467.2l-1.837.306a.626.626,0,0,0-.526.71.641.641,0,0,0,.042.149.875.875,0,0,0,.733.538,1.508,1.508,0,0,1,.821.349l.393.327a1,1,0,0,0,.359.195l1.089.336a1.244,1.244,0,0,1,.627.437l.767,1a.713.713,0,0,0,.454.276.688.688,0,0,0,.57-.158l.781-.665c.04-.033.08-.064.122-.094l.705-.505a1.83,1.83,0,0,0,.794-1.491l.609-1.015a1.383,1.383,0,0,0,.033-1.351l-.293-.547a.717.717,0,0,1,.246-.935l.839-.532a.79.79,0,0,1,.863.014.932.932,0,0,1,.406.9l-.1.8a1.078,1.078,0,0,0,.519,1.075.889.889,0,0,1,.439.887l-.045.349a1.079,1.079,0,0,0,.409.984l.4.306a1.4,1.4,0,0,0,1.658.042l.956-.661a3.447,3.447,0,0,0,1.005-1.087,2.578,2.578,0,0,1,.17-.256l.6-.791a9.373,9.373,0,0,1-1.106,9.534l-.239-.169a12.674,12.674,0,0,0-2.173-1.6l-.62-.362A.84.84,0,0,0,363.474,288.67Zm3.932-7.152a3.269,3.269,0,0,0-.214.327,2.728,2.728,0,0,1-.792.854l-.955.662a.671.671,0,0,1-.8-.021l-.4-.306a.348.348,0,0,1-.131-.315l.045-.35a1.614,1.614,0,0,0-.791-1.607.355.355,0,0,1-.166-.354l.1-.8a1.653,1.653,0,0,0-.721-1.594,1.518,1.518,0,0,0-1.665-.027l-.84.532a1.45,1.45,0,0,0-.5,1.894l.293.547a.65.65,0,0,1-.015.635l-.623,1.037a.624.624,0,0,0-.088.332,1.1,1.1,0,0,1-.487.91l-.707.508c-.057.041-.113.086-.169.132l-.756.67-.767-1a1.955,1.955,0,0,0-.99-.688l-1.091-.338a.333.333,0,0,1-.11-.058l-.391-.327a2.206,2.206,0,0,0-1.178-.509l1.591-.265a1.808,1.808,0,0,0,.791-.342l1.482-1.13a.93.93,0,0,1,.321-.16l1.348-.372a1.78,1.78,0,0,0,1.233-1.239l.023-.081a.658.658,0,0,1,.159-.286l.65-.7a1.184,1.184,0,0,1,.271-.214,1.9,1.9,0,0,0,.946-1.787,9.376,9.376,0,0,1,5.329,2.662h0a9.464,9.464,0,0,1,1.573,2.081Z" transform="translate(-349.875 -274.875)" fill="currentColor"></path>
 </svg></div>
@@ -152,12 +171,7 @@
     
   </div>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5ef06dbc8956a9e7ba225ae5" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script type="module">
-    import { SatteliteVisualizer } from './js/SatteliteVisualizer.js';
-
-    const visualizer = new SatteliteVisualizer (3000, 3000);
-
-  </script>
+  
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
 </body>
 </html>

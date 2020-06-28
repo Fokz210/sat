@@ -9,7 +9,8 @@ import
 	PerspectiveCamera,
 	Scene,
     WebGLRenderer,
-    TextureLoader
+    TextureLoader,
+    MeshLambertMaterial
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -58,7 +59,20 @@ export class SatteliteVisualizer
         this.renderer.setSize (this.canvasSizeX, this.canvasSizeY);
 
         this.controls = new OrbitControls (this.camera, this.renderer.domElement);
-        this.controls.autoRotate = true;
+        this.controls.autoRotate = false;
+        this.controls.maxPolarAngle = Math.PI / 2;
+        this.controls.minPolarAngle = Math.PI / 2;
+        this.controls.enablePan = false;
+        this.controls.enableZoom = false;
+
+        this.controls.setDistance = function (distance) 
+        {
+            this.maxDistance = distance;
+            this.minDistance = distance;
+            this.update();
+            this.maxDistance = Infinity;
+            this.minDistance = 0;
+        }
 
         var globeGeometry = new SphereGeometry (10, 100, 100);
         this.globeTexture = new TextureLoader ().load ("textures/_map2.png");
@@ -67,7 +81,13 @@ export class SatteliteVisualizer
 
         this.scene.add (this.globeMesh);
 
+        this.satsLoaded = false;
+
         this.loadSatsMeshes ();
+
+        document.getElementById ("leftSwitch").onclick = this.focusGlobeAndSats.bind(this);
+        document.getElementById ("midSwitch").onclick = this.focusSat.bind(this);
+        document.getElementById ("rightSwitch").onclick = this.focusGlobe.bind(this);
 
         this.node.appendChild (this.renderer.domElement);
         this.animate();
@@ -132,6 +152,9 @@ export class SatteliteVisualizer
 
         for (let i = 0; i < this.sats.length; i++)
             this.scene.add (this.sats[i]);
+
+        this.satsLoaded = true;
+
     }
 
     loadSatsMeshes ()
@@ -157,5 +180,29 @@ export class SatteliteVisualizer
     degToRad (angle)
     {
         return angle * 0.01745;
+    }
+
+    focusSat (satMesh)
+    {
+        if (!this.satsLoaded)
+            return;
+
+        if (satMesh == undefined)
+            satMesh = this.sats[4];
+
+        this.controls.target = this.sats[4].position;
+        this.controls.setDistance (10);
+    }
+
+    focusGlobeAndSats ()
+    {
+        this.controls.target = this.globeMesh.position;
+        this.controls.setDistance (100);
+    }
+
+    focusGlobe ()
+    {
+        this.controls.target = this.globeMesh.position;
+        this.controls.setDistance (40);
     }
 };
