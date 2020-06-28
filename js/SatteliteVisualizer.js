@@ -1,3 +1,5 @@
+
+
 // IMPORTS
 import 
 {
@@ -14,6 +16,10 @@ import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
 
 //not used
 //import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
+
+/**
+ * @author fokz210 / https://github.com/Fokz210
+ **/
 
 // APP
 export class SatteliteVisualizer
