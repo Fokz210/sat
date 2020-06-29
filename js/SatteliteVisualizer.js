@@ -15,7 +15,8 @@ import
     Vector3,
     Curve,
     TorusBufferGeometry,
-    TubeBufferGeometry
+    TubeBufferGeometry,
+    CylinderGeometry
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -37,6 +38,8 @@ export class SatteliteVisualizer
         this.canvasSizeX = sizeX;
         this.canvasSizeY = sizeY;
 
+        this.axis = new Mesh (new CylinderGeometry (0.05, 0.05, 1000, 128, 64), new MeshBasicMaterial ({ color: 0xc9c9c9}));
+        
         this.geostat = [];
         this.geostatnames = 
         [
@@ -47,6 +50,7 @@ export class SatteliteVisualizer
             'AM3', // AM33
             'AM3',
             'AM5',
+            'AM3', // AT2
             'AM8',
             'AM3'  // AM44 
         ];
@@ -135,6 +139,8 @@ export class SatteliteVisualizer
 
         this.initPathMeshes();
 
+        this.scene.add (this.axis);
+
         this.node.appendChild (this.renderer.domElement);
         this.animate();
     }
@@ -217,14 +223,18 @@ export class SatteliteVisualizer
         this.geostat[5].position.x = Math.cos (this.degToRad (103));
         this.geostat[5].position.z = Math.sin (this.degToRad (103));
         
-        this.geostat[6].position.x = Math.cos (this.degToRad (140));
-        this.geostat[6].position.z = Math.sin (this.degToRad (140));
+        this.geostat[6].position.x = Math.cos (this.degToRad (135));
+        this.geostat[6].position.z = Math.sin (this.degToRad (135));
         
-        this.geostat[7].position.x = Math.cos (this.degToRad (346));
-        this.geostat[7].position.z = Math.sin (this.degToRad (346));
+        this.geostat[7].position.x = Math.cos (this.degToRad (145));
+        this.geostat[7].position.z = Math.sin (this.degToRad (145));
         
-        this.geostat[8].position.x = Math.cos (this.degToRad (349));
-        this.geostat[8].position.z = Math.sin (this.degToRad (349));
+        this.geostat[8].position.x = Math.cos (this.degToRad (346));
+        this.geostat[8].position.z = Math.sin (this.degToRad (346));
+        
+        this.geostat[9].position.x = Math.cos (this.degToRad (349));
+        this.geostat[9].position.z = Math.sin (this.degToRad (349));
+        
 
         for (let i = 0; i < this.geostat.length; i++)
         {
@@ -265,7 +275,7 @@ export class SatteliteVisualizer
 
                     that.lstat.push(mesh);
 
-                    if (that.geostat.length == 9 && that.lstat.length == 8)
+                    if (that.geostat.length == 10 && that.lstat.length == 4)
                         that.initSats();
                 });
         }
@@ -282,7 +292,7 @@ export class SatteliteVisualizer
 
                     that.geostat.push(mesh);
 
-                    if (that.geostat.length == 9 && that.lstat.length == 4)
+                    if (that.geostat.length == 10 && that.lstat.length == 4)
                         that.initSats();
                 });
         }
@@ -339,7 +349,7 @@ export class SatteliteVisualizer
     {
         this.geostatmesh = new Mesh 
         (
-            new TorusBufferGeometry (46, 0.05, 16, 100),
+            new TorusBufferGeometry (46, 0.02, 16, 100),
             new MeshBasicMaterial ({ color: 0xc9c9c9 })
         );
         this.geostatmesh.rotation.x = Math.PI / 2;
@@ -349,7 +359,7 @@ export class SatteliteVisualizer
         (
             new Mesh 
             (
-                new TubeBufferGeometry (this.lPath, 128, 0.05, 64, true),
+                new TubeBufferGeometry (this.lPath, 128, 0.02, 64, true),
                 new MeshBasicMaterial ({ color: 0xc9c9c9 })
             )
         );
