@@ -10,7 +10,9 @@ import
 	Scene,
     WebGLRenderer,
     TextureLoader,
-    MeshLambertMaterial
+    MeshLambertMaterial,
+    Matrix4,
+    Vector3
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -32,7 +34,7 @@ export class SatteliteVisualizer
         this.canvasSizeX = sizeX;
         this.canvasSizeY = sizeY;
 
-        this.sats = [];
+        this.geostat = [];
         this.satnames = 
         [
             'AMY1',
@@ -46,6 +48,7 @@ export class SatteliteVisualizer
             'AM3'  // AM44 
         ];
 
+       
         this.node = document.getElementById ('container');
 
         this.scene = new Scene ();
@@ -60,10 +63,10 @@ export class SatteliteVisualizer
 
         this.controls = new OrbitControls (this.camera, this.renderer.domElement);
         this.controls.autoRotate = false;
-        this.controls.maxPolarAngle = Math.PI / 2;
-        this.controls.minPolarAngle = Math.PI / 2;
-        this.controls.enablePan = false;
-        this.controls.enableZoom = false;
+        //this.controls.maxPolarAngle = Math.PI / 2;
+        //this.controls.minPolarAngle = Math.PI / 2;
+        //this.controls.enablePan = false;
+        //this.controls.enableZoom = false;
 
         this.controls.setDistance = function (distance) 
         {
@@ -104,54 +107,47 @@ export class SatteliteVisualizer
 
     initSats ()
     {
-        this.sats[0].position.x = Math.cos (this.degToRad (36));
-        this.sats[0].position.z = Math.sin (this.degToRad (36));
-        this.sats[0].rotation.set (0, -this.degToRad (270 - 36), 0)
-        
-        this.sats[1].position.x = Math.cos (this.degToRad (39));
-        this.sats[1].position.z = Math.sin (this.degToRad (39));
-        this.sats[1].rotation.set (0, -this.degToRad (270 - 39), 0)
-        
-        this.sats[2].position.x = Math.cos (this.degToRad (54));
-        this.sats[2].position.z = Math.sin (this.degToRad (54));
-        this.sats[2].rotation.set (0, -this.degToRad (270 - 54), 0)
-        
-        this.sats[3].position.x = Math.cos (this.degToRad (57));
-        this.sats[3].position.z = Math.sin (this.degToRad (57));
-        this.sats[3].rotation.set (0, -this.degToRad (270 - 57), 0)
-        
-        this.sats[4].position.x = Math.cos (this.degToRad (97));
-        this.sats[4].position.z = Math.sin (this.degToRad (97));
-        this.sats[4].rotation.set (0, -this.degToRad (270 - 97), 0)
-        
-        this.sats[5].position.x = Math.cos (this.degToRad (103));
-        this.sats[5].position.z = Math.sin (this.degToRad (103));
-        this.sats[5].rotation.set (0, -this.degToRad (270 - 103), 0)
-        
-        this.sats[6].position.x = Math.cos (this.degToRad (140));
-        this.sats[6].position.z = Math.sin (this.degToRad (140));
-        this.sats[6].rotation.set (0, -this.degToRad (270 - 140), 0)
-        
-        this.sats[7].position.x = Math.cos (this.degToRad (346));
-        this.sats[7].position.z = Math.sin (this.degToRad (346));
-        this.sats[7].rotation.set (0, -this.degToRad (270 - 346), 0)
-        
-        this.sats[8].position.x = Math.cos (this.degToRad (349));
-        this.sats[8].position.z = Math.sin (this.degToRad (349));
-        this.sats[8].rotation.set (0, -this.degToRad (270 - 349), 0)
+        this.geostat[0].position.x = Math.cos (this.degToRad (36));
+        this.geostat[0].position.z = Math.sin (this.degToRad (36));
 
-        for (let i = 0; i < this.sats.length; i++)
+        this.geostat[1].position.x = Math.cos (this.degToRad (39));
+        this.geostat[1].position.z = Math.sin (this.degToRad (39));
+        
+        this.geostat[2].position.x = Math.cos (this.degToRad (54));
+        this.geostat[2].position.z = Math.sin (this.degToRad (54));
+        
+        this.geostat[3].position.x = Math.cos (this.degToRad (57));
+        this.geostat[3].position.z = Math.sin (this.degToRad (57));
+        
+        this.geostat[4].position.x = Math.cos (this.degToRad (97));
+        this.geostat[4].position.z = Math.sin (this.degToRad (97));
+        
+        this.geostat[5].position.x = Math.cos (this.degToRad (103));
+        this.geostat[5].position.z = Math.sin (this.degToRad (103));
+        
+        this.geostat[6].position.x = Math.cos (this.degToRad (140));
+        this.geostat[6].position.z = Math.sin (this.degToRad (140));
+        
+        this.geostat[7].position.x = Math.cos (this.degToRad (346));
+        this.geostat[7].position.z = Math.sin (this.degToRad (346));
+        
+        this.geostat[8].position.x = Math.cos (this.degToRad (349));
+        this.geostat[8].position.z = Math.sin (this.degToRad (349));
+
+        for (let i = 0; i < this.geostat.length; i++)
         {
-            this.sats[i].position.x *= 46;
-            this.sats[i].position.z *= -46;
+            this.geostat[i].position.x *= 46;
+            this.geostat[i].position.z *= -46;
 
-            this.sats[i].scale.x = 0.1;
-            this.sats[i].scale.y = 0.1;
-            this.sats[i].scale.z = 0.1;
+            this.geostat[i].scale.x = 0.1;
+            this.geostat[i].scale.y = 0.1;
+            this.geostat[i].scale.z = 0.1;
+
+            this.meshLookAt (this.geostat[i], this.globeMesh, new Vector3 (0, 0, 1));
         }
 
-        for (let i = 0; i < this.sats.length; i++)
-            this.scene.add (this.sats[i]);
+        for (let i = 0; i < this.geostat.length; i++)
+            this.scene.add (this.geostat[i]);
 
         this.satsLoaded = true;
 
@@ -169,9 +165,9 @@ export class SatteliteVisualizer
                     var material = new MeshBasicMaterial ({ color: 0x737373 });
                     var mesh = new Mesh (geometry, material);
 
-                    that.sats.push(mesh);
+                    that.geostat.push(mesh);
 
-                    if (that.sats.length == 9)
+                    if (that.geostat.length == 9)
                         that.initSats();
                 });
         }
@@ -188,9 +184,9 @@ export class SatteliteVisualizer
             return;
 
         if (satMesh == undefined)
-            satMesh = this.sats[4];
+            satMesh = this.geostat[4];
 
-        this.controls.target = this.sats[4].position;
+        this.controls.target = this.geostat[4].position;
         this.controls.setDistance (10);
     }
 
@@ -204,5 +200,21 @@ export class SatteliteVisualizer
     {
         this.controls.target = this.globeMesh.position;
         this.controls.setDistance (40);
+    }
+
+    meshLookAt (mesh, target, up)
+    {
+        var pos = new Vector3 ().copy (mesh.position);
+        var rot = new Matrix4 ().lookAt (mesh.position, target.position, up);
+
+        mesh.position.x = 0;
+        mesh.position.y = 0;
+        mesh.position.z = 0;
+
+        mesh.applyMatrix4 (rot);
+
+        mesh.position.x = pos.x;
+        mesh.position.y = pos.y;
+        mesh.position.z = pos.z;
     }
 };
