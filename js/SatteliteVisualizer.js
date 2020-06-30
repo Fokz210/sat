@@ -21,6 +21,7 @@ import
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
+import { SVGLoader } from './three.js-master/examples/jsm/loaders/SVGLoader.js'
 
 //not used
 //import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
@@ -141,30 +142,33 @@ export class SatteliteVisualizer
         this.scene.add (this.axis);
 
         this.node.appendChild (this.renderer.domElement);
+
+        this.focusGlobeAndSats ();
+
         this.animate();
     }
 
     initlMatrix ()
     {
-        this.lmatrix.push (new Matrix4());
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3));
         this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[0].applyMatrix4 (this.lmatrix[0]);
         this.lmatrix[0].setPosition (this.lshift[0]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3));
         this.lmatrix[1].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[1].applyMatrix4 (this.lmatrix[1]);
         this.lmatrix[1].setPosition (this.lshift[1]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3));
         this.lmatrix[2].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[2].applyMatrix4 (this.lmatrix[2]);
         this.lmatrix[2].setPosition (this.lshift[2]);
         
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3));
         this.lmatrix[3].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[3].applyMatrix4 (this.lmatrix[3]);
@@ -191,8 +195,8 @@ export class SatteliteVisualizer
                 pt.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI  * this.t));
                 this.lstat[i].position.set (pt.x, pt.y, pt.z);
 
-                var up = new Vector3 (1, 0, 0);
-                up.applyMatrix4 (new Matrix4().makeRotationX (0.471239));
+                var up = new Vector3 (0, 0, 1);
+                up.applyMatrix4 (this.lmatrix[i]);
 
                 this.meshLookAt (this.lstat[i], this.globeMesh, up);
             }
@@ -240,8 +244,8 @@ export class SatteliteVisualizer
 
         for (let i = 0; i < this.geostat.length; i++)
         {
-            this.geostat[i].position.x *= 46;
-            this.geostat[i].position.z *= -46;
+            this.geostat[i].position.x *= 70;
+            this.geostat[i].position.z *= -70;
 
             this.geostat[i].scale.x = 0.1;
             this.geostat[i].scale.y = 0.1;
@@ -320,7 +324,7 @@ export class SatteliteVisualizer
     focusGlobeAndSats ()
     {
         this.controls.target = this.globeMesh.position;
-        this.controls.setDistance (100);
+        this.controls.setDistance (110);
     }
 
     focusGlobe ()
@@ -351,7 +355,7 @@ export class SatteliteVisualizer
     {
         this.geostatmesh = new Mesh 
         (
-            new TorusBufferGeometry (46, 0.02, 16, 100),
+            new TorusBufferGeometry (70, 0.02, 16, 100),
             new MeshBasicMaterial ({ color: 0xc9c9c9 })
         );
         this.geostatmesh.rotation.x = Math.PI / 2;
@@ -376,4 +380,5 @@ export class SatteliteVisualizer
             this.scene.add (this.lmeshes[i]);
         }
     }
+
 };
