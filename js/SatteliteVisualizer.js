@@ -16,7 +16,8 @@ import
     Curve,
     TorusBufferGeometry,
     TubeBufferGeometry,
-    CylinderGeometry
+    CylinderGeometry,
+    LinearFilter
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -50,7 +51,7 @@ export class SatteliteVisualizer
             'AM3', // AM33
             'AM3',
             'AM5',
-            'AM3', // AT2
+            'AT2',
             'AM8',
             'AM3'  // AM44 
         ];
@@ -58,10 +59,10 @@ export class SatteliteVisualizer
         this.lstat = [];
         this.lstatnames = 
         [
-            'AM3',
-            'AM3',
-            'AM3',
-            'AM3',
+            'rv',
+            'rv',
+            'rv',
+            'rv',
         ];
 
         this.lmeshes = [];
@@ -108,10 +109,7 @@ export class SatteliteVisualizer
 
         this.controls = new OrbitControls (this.camera, this.renderer.domElement);
         this.controls.autoRotate = false;
-        //this.controls.maxPolarAngle = Math.PI / 2;
-        //this.controls.minPolarAngle = Math.PI / 2;
-        //this.controls.enablePan = false;
-        //this.controls.enableZoom = false;
+        this.controls.enablePan = false;
 
         this.controls.setDistance = function (distance) 
         {
@@ -124,6 +122,7 @@ export class SatteliteVisualizer
 
         var globeGeometry = new SphereGeometry (10, 100, 100);
         this.globeTexture = new TextureLoader ().load ("textures/_map2.png");
+        this.globeTexture.minFilter = LinearFilter;
         var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
@@ -149,25 +148,25 @@ export class SatteliteVisualizer
     {
         this.lmatrix.push (new Matrix4());
         this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
-        this.lshift.push (new Vector3 (0, 30, 0));
+        this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[0].applyMatrix4 (this.lmatrix[0]);
         this.lmatrix[0].setPosition (this.lshift[0]);
 
         this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2));
-        this.lmatrix[1].multiply (new Matrix4().makeRotationX (-0.471239));
-        this.lshift.push (new Vector3 (0, 30, 0));
+        this.lmatrix[1].multiply (new Matrix4().makeRotationX (0.471239));
+        this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[1].applyMatrix4 (this.lmatrix[1]);
         this.lmatrix[1].setPosition (this.lshift[1]);
 
-        this.lmatrix.push (new Matrix4());
-        this.lmatrix[2].multiply (new Matrix4().makeRotationX (-0.471239));
-        this.lshift.push (new Vector3 (0, 30, 0));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI));
+        this.lmatrix[2].multiply (new Matrix4().makeRotationX (0.471239));
+        this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[2].applyMatrix4 (this.lmatrix[2]);
         this.lmatrix[2].setPosition (this.lshift[2]);
         
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3));
         this.lmatrix[3].multiply (new Matrix4().makeRotationX (0.471239));
-        this.lshift.push (new Vector3 (0, 30, 0));
+        this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[3].applyMatrix4 (this.lmatrix[3]);
         this.lmatrix[3].setPosition (this.lshift[3]);
 
@@ -185,17 +184,20 @@ export class SatteliteVisualizer
 
                 if (lt > 1) lt -= 1;
 
-                var pt = this.lPath.getPoint (lt);
+                this.lmeshes[i].applyMatrix4 (new Matrix4().makeRotationY(-Math.PI / 1000));
+
+                var pt = this.lPath.getPoint (-lt);
                 pt.applyMatrix4 (this.lmatrix[i]);
+                pt.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI  * this.t));
                 this.lstat[i].position.set (pt.x, pt.y, pt.z);
 
                 var up = new Vector3 (1, 0, 0);
-                up.applyMatrix4 (new Matrix4().makeRotationX (-0.471239));
+                up.applyMatrix4 (new Matrix4().makeRotationX (0.471239));
 
                 this.meshLookAt (this.lstat[i], this.globeMesh, up);
             }
         
-            this.t = (this.t >= 1) ? 0 : this.t += 0.001;
+            this.t += 0.001;
         }
 
         this.renderer.render (this.scene, this.camera);
