@@ -17,7 +17,8 @@ import
     TorusBufferGeometry,
     TubeBufferGeometry,
     CylinderGeometry,
-    LinearFilter
+    LinearFilter,
+    Group
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -127,7 +128,17 @@ export class SatteliteVisualizer
         var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
+        var globeCoverGeometry = new SphereGeometry (10.5, 100, 100);
+        var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
+        var globeCoverAlpha = new TextureLoader ().load ("textures/globe_cover_alpha.png");
+        globeCoverTex.minFilter = LinearFilter;
+        globeCoverAlpha.minFilter = LinearFilter;
+        var globeCoverMaterial = new MeshBasicMaterial ({ map: globeCoverTex, transparent: true, opacity: 0.5,});
+        //globeCoverMaterial.alphaMap = globeCoverAlpha;
+        this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
+
         this.scene.add (this.globeMesh);
+        this.scene.add (this.globeCoverMesh);
 
         this.satsLoaded = false;
 
@@ -150,25 +161,25 @@ export class SatteliteVisualizer
 
     initlMatrix ()
     {
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3));
+        this.lmatrix.push (new Matrix4().makeRotationY(- Math.PI / 3 - Math.PI / 12));
         this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[0].applyMatrix4 (this.lmatrix[0]);
         this.lmatrix[0].setPosition (this.lshift[0]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3 - Math.PI / 12));
         this.lmatrix[1].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[1].applyMatrix4 (this.lmatrix[1]);
         this.lmatrix[1].setPosition (this.lshift[1]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3 - Math.PI / 12));
         this.lmatrix[2].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[2].applyMatrix4 (this.lmatrix[2]);
         this.lmatrix[2].setPosition (this.lshift[2]);
         
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3 - Math.PI / 12));
         this.lmatrix[3].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[3].applyMatrix4 (this.lmatrix[3]);
@@ -229,11 +240,11 @@ export class SatteliteVisualizer
         this.geostat[5].position.x = Math.cos (this.degToRad (103));
         this.geostat[5].position.z = Math.sin (this.degToRad (103));
         
-        this.geostat[6].position.x = Math.cos (this.degToRad (135));
-        this.geostat[6].position.z = Math.sin (this.degToRad (135));
+        this.geostat[6].position.x = Math.cos (this.degToRad (138));
+        this.geostat[6].position.z = Math.sin (this.degToRad (138));
         
-        this.geostat[7].position.x = Math.cos (this.degToRad (145));
-        this.geostat[7].position.z = Math.sin (this.degToRad (145));
+        this.geostat[7].position.x = Math.cos (this.degToRad (142));
+        this.geostat[7].position.z = Math.sin (this.degToRad (142));
         
         this.geostat[8].position.x = Math.cos (this.degToRad (346));
         this.geostat[8].position.z = Math.sin (this.degToRad (346));
@@ -318,7 +329,7 @@ export class SatteliteVisualizer
             satMesh = this.geostat[4];
 
         this.controls.target = this.geostat[4].position;
-        this.controls.setDistance (10);
+        this.controls.setDistance (20);
     }
 
     focusGlobeAndSats ()
@@ -355,7 +366,7 @@ export class SatteliteVisualizer
     {
         this.geostatmesh = new Mesh 
         (
-            new TorusBufferGeometry (70, 0.02, 16, 100),
+            new TorusBufferGeometry (70, 0.02, 64, 200),
             new MeshBasicMaterial ({ color: 0xc9c9c9 })
         );
         this.geostatmesh.rotation.x = Math.PI / 2;
@@ -365,7 +376,7 @@ export class SatteliteVisualizer
         (
             new Mesh 
             (
-                new TubeBufferGeometry (this.lPath, 128, 0.02, 64, true),
+                new TubeBufferGeometry (this.lPath, 256, 0.02, 128, true),
                 new MeshBasicMaterial ({ color: 0xc9c9c9 })
             )
         );
