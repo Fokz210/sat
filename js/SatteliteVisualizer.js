@@ -47,15 +47,15 @@ export class SatteliteVisualizer
         this.geostatnames = 
         [
             'AMY1',
-            'AM3', // AM1
+            'Am7', 
             'AM6',
             'AT1',
-            'AM3', // AM33
+            'AM33',
             'AM3',
             'AM5',
             'AT2',
             'AM8',
-            'AM3'  // AM44 
+            'AM44'
         ];
 
         this.lstat = [];
