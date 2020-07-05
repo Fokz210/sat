@@ -22,7 +22,7 @@ import
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
-import { SVGLoader } from './three.js-master/examples/jsm/loaders/SVGLoader.js'
+import { OBJLoader } from './three.js-master/examples/jsm/loaders/OBJLoader.js'
 
 //not used
 //import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
@@ -44,10 +44,17 @@ export class SatteliteVisualizer
         this.axis = new Mesh (new CylinderGeometry (0.05, 0.05, 1000, 128, 64), new MeshBasicMaterial ({ color: 0xc9c9c9}));
         
         this.geostat = [];
+
+        this.loaded1 = 0;
+        this.loaded2 = 0;
+
+        for (let i = 0; i < 10; i++)
+            this.geostat.push (undefined);
+
         this.geostatnames = 
         [
             'AMY1',
-            'Am7', 
+            'AM7', 
             'AM6',
             'AT1',
             'AM33',
@@ -206,65 +213,28 @@ export class SatteliteVisualizer
                 pt.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI  * this.t));
                 this.lstat[i].position.set (pt.x, pt.y, pt.z);
 
-                var up = new Vector3 (0, 0, 1);
+                var up = new Vector3 (-1, 0, 0);
                 up.applyMatrix4 (this.lmatrix[i]);
+                up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
+
+                if (i == 0)
+                    console.log (-180 * this.t)
 
                 this.meshLookAt (this.lstat[i], this.globeMesh, up);
+
             }
         
             this.t += 0.001;
         }
 
         this.renderer.render (this.scene, this.camera);
-    
+
+
         this.controls.update ();  
     }
 
     initSats ()
     {
-        this.geostat[0].position.x = Math.cos (this.degToRad (36));
-        this.geostat[0].position.z = Math.sin (this.degToRad (36));
-
-        this.geostat[1].position.x = Math.cos (this.degToRad (39));
-        this.geostat[1].position.z = Math.sin (this.degToRad (39));
-        
-        this.geostat[2].position.x = Math.cos (this.degToRad (54));
-        this.geostat[2].position.z = Math.sin (this.degToRad (54));
-        
-        this.geostat[3].position.x = Math.cos (this.degToRad (57));
-        this.geostat[3].position.z = Math.sin (this.degToRad (57));
-        
-        this.geostat[4].position.x = Math.cos (this.degToRad (97));
-        this.geostat[4].position.z = Math.sin (this.degToRad (97));
-        
-        this.geostat[5].position.x = Math.cos (this.degToRad (103));
-        this.geostat[5].position.z = Math.sin (this.degToRad (103));
-        
-        this.geostat[6].position.x = Math.cos (this.degToRad (138));
-        this.geostat[6].position.z = Math.sin (this.degToRad (138));
-        
-        this.geostat[7].position.x = Math.cos (this.degToRad (142));
-        this.geostat[7].position.z = Math.sin (this.degToRad (142));
-        
-        this.geostat[8].position.x = Math.cos (this.degToRad (346));
-        this.geostat[8].position.z = Math.sin (this.degToRad (346));
-        
-        this.geostat[9].position.x = Math.cos (this.degToRad (349));
-        this.geostat[9].position.z = Math.sin (this.degToRad (349));
-        
-
-        for (let i = 0; i < this.geostat.length; i++)
-        {
-            this.geostat[i].position.x *= 70;
-            this.geostat[i].position.z *= -70;
-
-            this.geostat[i].scale.x = 0.1;
-            this.geostat[i].scale.y = 0.1;
-            this.geostat[i].scale.z = 0.1;
-
-            this.meshLookAt (this.geostat[i], this.globeMesh, new Vector3 (0, 0, 1));
-        }
-
         for (let i = 0; i < this.lstat.length; i++)
             this.lstat[i].scale.set (0.1, 0.1, 0.1);
 
@@ -284,6 +254,7 @@ export class SatteliteVisualizer
         {
             var that = this;
 
+
             this.stlLoader.load ('3d/' + this.lstatnames[i] + '.stl', 
                 function (geometry)
                 {
@@ -292,27 +263,52 @@ export class SatteliteVisualizer
 
                     that.lstat.push(mesh);
 
-                    if (that.geostat.length == 10 && that.lstat.length == 4)
+                    that.loaded1++;
+
+                    if (that.loaded2 == 10 && that.loaded1 == 4)
                         that.initSats();
                 });
         }
+              
+        this.loadSat (0, 36);
+        this.loadSat (1, 39);
+        this.loadSat (2, 54);
+        this.loadSat (3, 57);
+        this.loadSat (4, 97);
+        this.loadSat (5, 103);
+        this.loadSat (6, 138);
+        this.loadSat (7, 142);
+        this.loadSat (8, 346);
+        this.loadSat (9, 349);
+    }
 
-        for (let i = 0; i < this.geostatnames.length; i++)
+    loadSat (index, angle)
+    {
+        var that = this;
+        
+        this.stlLoader.load ('3d/' + this.geostatnames[index] + '.stl', function (geometry)
         {
-            var that = this;
+            var material = new MeshBasicMaterial ({ color: 0x737373 });
+            var mesh = new Mesh (geometry, material);
 
-            this.stlLoader.load ('3d/' + this.geostatnames[i] + '.stl', 
-                function (geometry)
-                {
-                    var material = new MeshBasicMaterial ({ color: 0x737373 });
-                    var mesh = new Mesh (geometry, material);
+            that.geostat[index] = mesh;
+            that.loaded2++;
 
-                    that.geostat.push(mesh);
+            mesh.position.x = Math.cos (that.degToRad (angle));
+            mesh.position.z = Math.sin (that.degToRad (angle));
 
-                    if (that.geostat.length == 10 && that.lstat.length == 4)
-                        that.initSats();
-                });
-        }
+            mesh.position.x *=  70;
+            mesh.position.z *= -70;
+
+            mesh.scale.x = 0.1;
+            mesh.scale.y = 0.1;
+            mesh.scale.z = 0.1;
+
+            that.meshLookAt (mesh, that.globeMesh, new Vector3 (0, 0, 1));
+
+            if (that.loaded2 == 10 && that.loaded1 == 4)
+                     that.initSats();
+        });
     }
 
     degToRad (angle)
@@ -328,20 +324,35 @@ export class SatteliteVisualizer
         if (satMesh == undefined)
             satMesh = this.geostat[4];
 
+        this.showAllSats (false);
+
         this.controls.target = this.geostat[4].position;
         this.controls.setDistance (20);
+
+        this.geostatmesh.visible = false;
+        
+        this.geostat[4].visible = true;
     }
 
     focusGlobeAndSats ()
     {
         this.controls.target = this.globeMesh.position;
         this.controls.setDistance (110);
+
+        this.showAllSats (true);
+        
+        this.geostatmesh.visible = true;
+
     }
 
     focusGlobe ()
     {
         this.controls.target = this.globeMesh.position;
         this.controls.setDistance (40);
+        
+        this.showAllSats (true);
+        
+        this.geostatmesh.visible = true;
     }
 
     meshLookAt (mesh, target, up)
@@ -372,6 +383,15 @@ export class SatteliteVisualizer
         this.geostatmesh.rotation.x = Math.PI / 2;
         this.scene.add (this.geostatmesh);
 
+        this.geostatmesh_small = new Mesh
+        (
+            new TorusBufferGeometry (70, 0.005, 64, 200),
+            new MeshBasicMaterial ({ color: 0xc9c9c9 })
+        );
+        this.geostatmesh_small.rotation.x = Math.PI / 2;
+        this.scene.add (this.geostatmesh_small);
+
+
         this.lmeshes.push 
         (
             new Mesh 
@@ -390,6 +410,18 @@ export class SatteliteVisualizer
             this.lmeshes[i].applyMatrix4 (this.lmatrix[i]);
             this.scene.add (this.lmeshes[i]);
         }
+    }
+
+    showAllSats (state)
+    {
+        if (!this.satsLoaded)
+            return;
+
+        for (let i = 0; i < this.geostat.length; i++)
+            this.geostat[i].visible = state;
+
+        for (let i = 0; i < this.lstat.length; i++)
+            this.lstat[i].visible = state;
     }
 
 };

@@ -1,4 +1,4 @@
-newmtl default
+newmtl DefaultMaterial_1
 illum 7
 Kd 1 1 1
 adobe_interior_color 1 1 1
@@ -32,7 +32,7 @@ Ns 16
 Ks 1 1 1
 adobe_glow 0
 
-newmtl DefaultMaterial_1
+newmtl default
 illum 7
 Kd 1 1 1
 adobe_interior_color 1 1 1
