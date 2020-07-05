@@ -5,7 +5,7 @@ import
 {
 	SphereGeometry,
 	Mesh,
-	MeshBasicMaterial,
+	MeshPhongMaterial,
 	PerspectiveCamera,
 	Scene,
     WebGLRenderer,
@@ -18,7 +18,9 @@ import
     TubeBufferGeometry,
     CylinderGeometry,
     LinearFilter,
-    Group
+    Group,
+    DirectionalLight,
+    AmbientLight
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -41,7 +43,7 @@ export class SatteliteVisualizer
         this.canvasSizeX = sizeX;
         this.canvasSizeY = sizeY;
 
-        this.axis = new Mesh (new CylinderGeometry (0.05, 0.05, 1000, 128, 64), new MeshBasicMaterial ({ color: 0xc9c9c9}));
+        this.axis = new Mesh (new CylinderGeometry (0.05, 0.05, 1000, 128, 64), new MeshPhongMaterial ({ color: 0xc9c9c9}));
         
         this.geostat = [];
 
@@ -68,7 +70,7 @@ export class SatteliteVisualizer
         this.geostatnames = 
         [
             'AMY1',
-            'AM7', 
+            'Am7', 
             'AM6',
             'AT1',
             'AM33',
@@ -88,8 +90,8 @@ export class SatteliteVisualizer
             'rv',
         ];
 
-        this.lmeshes = [];
-        this.geostatmesh;
+        this.lOrbitMeshes = [];
+        this.geoStatOrbit;
 
         function Ellipse(xRadius, yRadius)
         {
@@ -115,7 +117,7 @@ export class SatteliteVisualizer
         this.lshift = [];
 
         this.initlMatrix();
-     
+
         this.lPath = new Ellipse (20, 50);
        
         this.node = document.getElementById ('container');
@@ -125,6 +127,7 @@ export class SatteliteVisualizer
         this.camera = new PerspectiveCamera (75, this.canvasSizeX / this.canvasSizeY, 0.1, 1000);
         this.camera.position.z = 100;
 
+
         this.renderer = new WebGLRenderer ({ alpha: true, antialias: true });
         this.renderer.setClearColor (0x000000, 0);
         this.renderer.setPixelRatio (window.devicePixelRatio);
@@ -133,6 +136,8 @@ export class SatteliteVisualizer
         this.controls = new OrbitControls (this.camera, this.renderer.domElement);
         this.controls.autoRotate = false;
         this.controls.enablePan = false;
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
 
         this.controls.setDistance = function (distance) 
         {
@@ -146,7 +151,7 @@ export class SatteliteVisualizer
         var globeGeometry = new SphereGeometry (10, 100, 100);
         this.globeTexture = new TextureLoader ().load ("textures/_map2.png");
         this.globeTexture.minFilter = LinearFilter;
-        var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture });
+        var globeMaterial = new MeshPhongMaterial ({ map: this.globeTexture, shininess: 15 });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
         var globeCoverGeometry = new SphereGeometry (10.5, 100, 100);
@@ -154,12 +159,25 @@ export class SatteliteVisualizer
         var globeCoverAlpha = new TextureLoader ().load ("textures/globe_cover_alpha.png");
         globeCoverTex.minFilter = LinearFilter;
         globeCoverAlpha.minFilter = LinearFilter;
-        var globeCoverMaterial = new MeshBasicMaterial ({ map: globeCoverTex, transparent: true, opacity: 0.5,});
+        var globeCoverMaterial = new MeshPhongMaterial ({ map: globeCoverTex, transparent: true, opacity: 0.5,});
         //globeCoverMaterial.alphaMap = globeCoverAlpha;
         this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
 
         this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
+
+        
+        this.light = new DirectionalLight (0xffffff, 0.7);
+        this.light.position.x = //Math.cos (Math.PI / 4) * 100;
+        this.light.position.z = -100;
+        this.light.position.y = 30;
+        this.light.target = this.globeMesh;
+
+        this.ambientLight = new AmbientLight (0xffffff, 0.3);
+
+
+        this.scene.add (this.light);
+        this.scene.add (this.ambientLight);
 
         this.satsLoaded = false;
 
@@ -184,6 +202,7 @@ export class SatteliteVisualizer
     {
         this.lmatrix.push (new Matrix4().makeRotationY(- Math.PI / 3 - Math.PI / 12));
         this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
+        this.lmatrix2 = [];
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[0].applyMatrix4 (this.lmatrix[0]);
         this.lmatrix[0].setPosition (this.lshift[0]);
@@ -206,6 +225,19 @@ export class SatteliteVisualizer
         this.lshift[3].applyMatrix4 (this.lmatrix[3]);
         this.lmatrix[3].setPosition (this.lshift[3]);
 
+
+        this.lmatrix2.push (new Matrix4().makeRotationY(- Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2[0].multiply (new Matrix4().makeRotationX (0.471239));
+        
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2[1].multiply (new Matrix4().makeRotationX (0.471239));
+        
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2[2].multiply (new Matrix4().makeRotationX (0.471239));
+        
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2[3].multiply (new Matrix4().makeRotationX (0.471239));
+
     }
 
     animate ()
@@ -220,17 +252,20 @@ export class SatteliteVisualizer
 
                 if (lt > 1) lt -= 1;
 
-                this.lmeshes[i].applyMatrix4 (new Matrix4().makeRotationY(-Math.PI / 1000));
-
+                this.lOrbitMeshes[i].applyMatrix4 (new Matrix4().makeRotationY(-Math.PI / 1000));
+               
+                this.light.position.x = 30;
+                this.light.position.z = -100;
+                this.light.applyMatrix4 (new Matrix4().makeRotationY(Math.PI - Math.PI  * this.t));
+               
                 var pt = this.lPath.getPoint (-lt);
                 pt.applyMatrix4 (this.lmatrix[i]);
                 pt.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI  * this.t));
                 this.lstat[i].position.set (pt.x, pt.y, pt.z);
 
-                var up = new Vector3 (-1, 0, 0);
-                up.applyMatrix4 (this.lmatrix[i]);
+                var up = new Vector3 (0, 0, 1);
+                up.applyMatrix4 (this.lmatrix2[i]);
                 up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
-
 
                 this.meshLookAt (this.lstat[i], this.globeMesh, up);
 
@@ -240,9 +275,6 @@ export class SatteliteVisualizer
         }
 
         this.renderer.render (this.scene, this.camera);
-
-        console.log (this.camera.position);
-
         this.controls.update ();  
     }
 
@@ -271,7 +303,7 @@ export class SatteliteVisualizer
             this.stlLoader.load ('3d/' + this.lstatnames[i] + '.stl', 
                 function (geometry)
                 {
-                    var material = new MeshBasicMaterial ({ color: 0x737373 });
+                    var material = new MeshPhongMaterial ({ color: 0x737373 });
                     var mesh = new Mesh (geometry, material);
 
                     that.lstat.push(mesh);
@@ -301,7 +333,7 @@ export class SatteliteVisualizer
         
         this.stlLoader.load ('3d/' + this.geostatnames[index] + '.stl', function (geometry)
         {
-            var material = new MeshBasicMaterial ({ color: 0x737373 });
+            var material = new MeshPhongMaterial ({ color: 0x737373 });
             var mesh = new Mesh (geometry, material);
 
             that.geostat[index] = mesh;
@@ -338,19 +370,19 @@ export class SatteliteVisualizer
             satMesh = this.geostat[4];
 
         this.showAllSats (false);
+        this.showAllOrbit (false);
 
         //this.controls.target = this.geostat[4].position;
         //this.controls.setDistance (20);
 
         this.camera.position.x = Math.cos (this.degToRad (this.gAngles[4] - 2)) * 80;
         this.camera.position.z = Math.sin (this.degToRad (this.gAngles[4] - 2)) * -80;
-        this.camera.position.y = 0;
+        this.camera.position.y = 0.5;
 
         this.controls.update();
-
-        this.geostatmesh.visible = false;
         
         this.geostat[4].visible = true;
+        this.geoStatOrbitSmall.visible = true;
     }
 
     focusGlobeAndSats ()
@@ -359,9 +391,7 @@ export class SatteliteVisualizer
         this.controls.setDistance (110);
 
         this.showAllSats (true);
-        
-        this.geostatmesh.visible = true;
-
+        this.showAllOrbit (true);
     }
 
     focusGlobe ()
@@ -369,9 +399,8 @@ export class SatteliteVisualizer
         this.controls.target = this.globeMesh.position;
         this.controls.setDistance (40);
         
-        this.showAllSats (true);
-        
-        this.geostatmesh.visible = true;
+        this.showAllSats (false);
+        this.showAllOrbit (false);
     }
 
     meshLookAt (mesh, target, up)
@@ -394,40 +423,40 @@ export class SatteliteVisualizer
 
     initPathMeshes ()
     {
-        this.geostatmesh = new Mesh 
+        this.geoStatOrbit = new Mesh 
         (
             new TorusBufferGeometry (70, 0.02, 64, 200),
-            new MeshBasicMaterial ({ color: 0xc9c9c9 })
+            new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0})
         );
-        this.geostatmesh.rotation.x = Math.PI / 2;
-        this.scene.add (this.geostatmesh);
+        this.geoStatOrbit.rotation.x = Math.PI / 2;
+        this.scene.add (this.geoStatOrbit);
 
-        this.geostatmesh_small = new Mesh
+        this.geoStatOrbitSmall = new Mesh
         (
             new TorusBufferGeometry (70, 0.005, 64, 200),
-            new MeshBasicMaterial ({ color: 0xc9c9c9 })
+            new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0 })
         );
-        this.geostatmesh_small.rotation.x = Math.PI / 2;
-        this.scene.add (this.geostatmesh_small);
+        this.geoStatOrbitSmall.rotation.x = Math.PI / 2;
+        this.scene.add (this.geoStatOrbitSmall);
 
 
-        this.lmeshes.push 
+        this.lOrbitMeshes.push 
         (
             new Mesh 
             (
                 new TubeBufferGeometry (this.lPath, 256, 0.02, 128, true),
-                new MeshBasicMaterial ({ color: 0xc9c9c9 })
+                new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0 })
             )
         );
 
-        this.lmeshes.push (this.lmeshes[0].clone());
-        this.lmeshes.push (this.lmeshes[0].clone());
-        this.lmeshes.push (this.lmeshes[0].clone());
+        this.lOrbitMeshes.push (this.lOrbitMeshes[0].clone());
+        this.lOrbitMeshes.push (this.lOrbitMeshes[0].clone());
+        this.lOrbitMeshes.push (this.lOrbitMeshes[0].clone());
 
-        for (let i = 0; i < this.lmeshes.length; i++)
+        for (let i = 0; i < this.lOrbitMeshes.length; i++)
         {
-            this.lmeshes[i].applyMatrix4 (this.lmatrix[i]);
-            this.scene.add (this.lmeshes[i]);
+            this.lOrbitMeshes[i].applyMatrix4 (this.lmatrix[i]);
+            this.scene.add (this.lOrbitMeshes[i]);
         }
     }
 
@@ -441,6 +470,16 @@ export class SatteliteVisualizer
 
         for (let i = 0; i < this.lstat.length; i++)
             this.lstat[i].visible = state;
+    }
+
+    showAllOrbit (state)
+    {
+        for (let i = 0; i < this.lOrbitMeshes.length; i++)
+            this.lOrbitMeshes[i].visible = state;
+
+        this.geoStatOrbit.visible = state;
+        this.geoStatOrbitSmall.visible = state;
+        this.axis.visible = state;
     }
 
 };
