@@ -51,6 +51,20 @@ export class SatteliteVisualizer
         for (let i = 0; i < 10; i++)
             this.geostat.push (undefined);
 
+        this.gAngles = 
+        [
+            36,
+            39,
+            54,
+            57,
+            97,
+            103,
+            138,
+            142,
+            346,
+            349
+        ];
+
         this.geostatnames = 
         [
             'AMY1',
@@ -217,8 +231,6 @@ export class SatteliteVisualizer
                 up.applyMatrix4 (this.lmatrix[i]);
                 up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
 
-                if (i == 0)
-                    console.log (-180 * this.t)
 
                 this.meshLookAt (this.lstat[i], this.globeMesh, up);
 
@@ -229,6 +241,7 @@ export class SatteliteVisualizer
 
         this.renderer.render (this.scene, this.camera);
 
+        console.log (this.camera.position);
 
         this.controls.update ();  
     }
@@ -326,8 +339,14 @@ export class SatteliteVisualizer
 
         this.showAllSats (false);
 
-        this.controls.target = this.geostat[4].position;
-        this.controls.setDistance (20);
+        //this.controls.target = this.geostat[4].position;
+        //this.controls.setDistance (20);
+
+        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[4] - 2)) * 80;
+        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[4] - 2)) * -80;
+        this.camera.position.y = 0;
+
+        this.controls.update();
 
         this.geostatmesh.visible = false;
         
