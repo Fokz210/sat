@@ -128,7 +128,7 @@ export class SatteliteVisualizer
         this.camera.position.z = 100;
 
 
-        this.renderer = new WebGLRenderer ({ alpha: true, antialias: true });
+        this.renderer = new WebGLRenderer ({ antialias: true });
         this.renderer.setClearColor (0x000000, 0);
         this.renderer.setPixelRatio (window.devicePixelRatio);
         this.renderer.setSize (this.canvasSizeX, this.canvasSizeY);
@@ -426,7 +426,7 @@ export class SatteliteVisualizer
         this.geoStatOrbit = new Mesh 
         (
             new TorusBufferGeometry (70, 0.02, 64, 200),
-            new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0})
+            new MeshPhongMaterial ({ color: 0xc9c9c9, emissive: 0xc9c9c9,  shininess: 0})
         );
         this.geoStatOrbit.rotation.x = Math.PI / 2;
         this.scene.add (this.geoStatOrbit);
@@ -434,7 +434,7 @@ export class SatteliteVisualizer
         this.geoStatOrbitSmall = new Mesh
         (
             new TorusBufferGeometry (70, 0.005, 64, 200),
-            new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0 })
+            new MeshPhongMaterial ({ color: 0xc9c9c9, emissive: 0xc9c9c9, shininess: 0 })
         );
         this.geoStatOrbitSmall.rotation.x = Math.PI / 2;
         this.scene.add (this.geoStatOrbitSmall);
@@ -445,7 +445,7 @@ export class SatteliteVisualizer
             new Mesh 
             (
                 new TubeBufferGeometry (this.lPath, 256, 0.02, 128, true),
-                new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0 })
+                new MeshPhongMaterial ({ color: 0xc9c9c9, emissive: 0xc9c9c9, shininess: 0 })
             )
         );
 
