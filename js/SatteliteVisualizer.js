@@ -1,5 +1,3 @@
-
-
 // IMPORTS
 import 
 {
@@ -20,11 +18,11 @@ import
     LinearFilter,
     Group,
     DirectionalLight,
-    AmbientLight
+    AmbientLight,
+    ShaderMaterial
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
-import { OBJLoader } from './three.js-master/examples/jsm/loaders/OBJLoader.js'
 
 //not used
 //import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
@@ -39,6 +37,9 @@ export class SatteliteVisualizer
     constructor (sizeX, sizeY)
     {
         this.stlLoader = new STLLoader ();
+
+        this.fragmentShader = document.getElementById ("2121").innerHTML;
+        this.vertexShader = document.getElementById ("1212").innerHTML;
 
         this.canvasSizeX = sizeX;
         this.canvasSizeY = sizeY;
@@ -127,7 +128,6 @@ export class SatteliteVisualizer
         this.camera = new PerspectiveCamera (75, this.canvasSizeX / this.canvasSizeY, 0.1, 1000);
         this.camera.position.z = 100;
 
-
         this.renderer = new WebGLRenderer ({ alpha: true, antialias: true });
         this.renderer.setClearColor (0x000000, 0);
         this.renderer.setPixelRatio (window.devicePixelRatio);
@@ -154,27 +154,40 @@ export class SatteliteVisualizer
         var globeMaterial = new MeshPhongMaterial ({ map: this.globeTexture, shininess: 15 });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
-        var globeCoverGeometry = new SphereGeometry (10.5, 100, 100);
+        var globeCoverGeometry = new SphereGeometry (10.2, 100, 100);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
-        var globeCoverAlpha = new TextureLoader ().load ("textures/globe_cover_alpha.png");
+        var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
         globeCoverTex.minFilter = LinearFilter;
-        globeCoverAlpha.minFilter = LinearFilter;
-        var globeCoverMaterial = new MeshPhongMaterial ({ map: globeCoverTex, transparent: true, opacity: 0.5,});
+        globeCoverPol.minFilter = LinearFilter;
         //globeCoverMaterial.alphaMap = globeCoverAlpha;
+
+        var uniforms = 
+        {
+            tOne: { type: "t", value: globeCoverTex },
+            tSec: { type: "t", value: globeCoverPol }
+        };
+
+        var globeCoverMaterial = new ShaderMaterial
+        ({
+            uniforms: uniforms,
+            vertexShader: this.vertexShader,
+            fragmentShader: this.fragmentShader
+        });
+
+        globeCoverMaterial.transparent = true;
+
         this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
 
         this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
-
         
-        this.light = new DirectionalLight (0xffffff, 0.7);
+        this.light = new DirectionalLight (0xffffff, 0);
         this.light.position.x = //Math.cos (Math.PI / 4) * 100;
         this.light.position.z = -100;
         this.light.position.y = 30;
         this.light.target = this.globeMesh;
 
-        this.ambientLight = new AmbientLight (0xffffff, 0.3);
-
+        this.ambientLight = new AmbientLight (0xffffff, 1);
 
         this.scene.add (this.light);
         this.scene.add (this.ambientLight);
@@ -200,42 +213,41 @@ export class SatteliteVisualizer
 
     initlMatrix ()
     {
-        this.lmatrix.push (new Matrix4().makeRotationY(- Math.PI / 3 - Math.PI / 12));
+        this.lmatrix.push (new Matrix4().makeRotationY(- Math.PI / 4 - Math.PI / 12));
         this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
         this.lmatrix2 = [];
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[0].applyMatrix4 (this.lmatrix[0]);
         this.lmatrix[0].setPosition (this.lshift[0]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 - Math.PI / 12));
         this.lmatrix[1].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[1].applyMatrix4 (this.lmatrix[1]);
         this.lmatrix[1].setPosition (this.lshift[1]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 4 - Math.PI / 12));
         this.lmatrix[2].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[2].applyMatrix4 (this.lmatrix[2]);
         this.lmatrix[2].setPosition (this.lshift[2]);
         
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 - Math.PI / 12));
         this.lmatrix[3].multiply (new Matrix4().makeRotationX (0.471239));
         this.lshift.push (new Vector3 (0, 35, 0));
         this.lshift[3].applyMatrix4 (this.lmatrix[3]);
         this.lmatrix[3].setPosition (this.lshift[3]);
 
-
-        this.lmatrix2.push (new Matrix4().makeRotationY(- Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2.push (new Matrix4().makeRotationY(- Math.PI / 4 - Math.PI / 12));
         this.lmatrix2[0].multiply (new Matrix4().makeRotationX (0.471239));
         
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 - Math.PI / 12));
         this.lmatrix2[1].multiply (new Matrix4().makeRotationX (0.471239));
         
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 4 - Math.PI / 12));
         this.lmatrix2[2].multiply (new Matrix4().makeRotationX (0.471239));
         
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 3 - Math.PI / 12));
+        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 - Math.PI / 12));
         this.lmatrix2[3].multiply (new Matrix4().makeRotationX (0.471239));
 
     }
