@@ -1452,7 +1452,7 @@
 }
 
 .earthview-satpoints-disc {
-  position: fixed;
+  position: absolute;
   left: 0%;
   top: auto;
   right: 0%;
@@ -1460,11 +1460,18 @@
   z-index: 1;
   display: none;
   height: 46px;
-  
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
   flex-direction: row;
-  
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
-  transform-origin: bottom;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
   align-items: flex-start;
 }
 
@@ -3724,9 +3731,9 @@
   .images {
     position: absolute;
     left: 0%;
-    top: 0%;
+    top: 20%;
     right: 0%;
-    bottom: 0%;
+    bottom: 30%;
     z-index: 1;
     display: -webkit-box;
     display: -webkit-flex;

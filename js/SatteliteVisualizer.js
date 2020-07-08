@@ -122,6 +122,7 @@ export class SatteliteVisualizer
         this.lPath = new Ellipse (20, 50);
        
         this.node = document.getElementById ('container');
+        this.node.style.top = "20%";
 
         this.scene = new Scene ();
 
@@ -161,6 +162,8 @@ export class SatteliteVisualizer
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
         globeCoverTex.minFilter = LinearFilter;
         globeCoverPol.minFilter = LinearFilter;
+
+
         //globeCoverMaterial.alphaMap = globeCoverAlpha;
 
         var uniforms = 
