@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <!--  This site was created in Webflow. http://www.webflow.com  -->
-<!--  Last Published: Tue Jul 07 2020 08:53:14 GMT+0000 (Coordinated Universal Time)  -->
-<html data-wf-page="5f0436771d955d9e9f43bb0d" data-wf-site="5f0436771d955d0fc443bb0e">
+<!--  Last Published: Wed Jul 08 2020 09:29:22 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5ef06dbc8956a985d2225ae6" data-wf-site="5ef06dbc8956a9e7ba225ae5">
 <head>
   <meta charset="utf-8">
-  <title>RSCC Interface</title>
+  <title>!WORK Touch Satellites Interface</title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
   <link href="css/webflow.css" rel="stylesheet" type="text/css">
-  <link href="css/rsccinterface.webflow.css" rel="stylesheet" type="text/css">
+  <link href="css/touch-satellites-interfac-294822a8d3b17.webflow.css" rel="stylesheet" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
   <script type="text/javascript">WebFont.load({  google: {    families: ["Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic"]  }});</script>
   <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
@@ -18,63 +18,28 @@
   <link href="images/webclip.png" rel="apple-touch-icon">
 </head>
 <body class="body">
-  <script src="js/webflow.js" type="text/javascript"></script>
-  <script type="x-shader/x-vertex" id="1212">
-    varying vec2 vUv;
-
-    void main()
-    {
-       vUv = uv;
-       vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-       gl_Position = projectionMatrix * mvPosition;
-    }
-  </script>
-  <script type="x-shader/x-fragment" id="2121">
-    #ifdef GL_ES
-    precision highp float;
-    #endif
-
-    uniform sampler2D tOne;
-    uniform sampler2D tSec;
-
-    varying vec2 vUv;
-
-    void main(void)
-    {
-        vec3 c;
-        vec4 Ca = texture2D(tOne, vUv);
-        vec4 Cb = texture2D(tSec, vUv);
-        c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);  // blending equation
-        gl_FragColor= vec4 (c, (Ca.a + Cb.a));
-    }
-  </script>
-  <script type="module">
-    import { SatteliteVisualizer } from './js/SatteliteVisualizer.js';
-
-    var visualizer = new SatteliteVisualizer (window.innerWidth, window.innerWidth);
-  </script>
   <div class="section">
     <div class="left-switcher">
-      <div class="icon-container"><a href="#" id="leftSwitch" class="link-block-2 w-inline-block"><img src="images/Group-694_1.svg" alt="" class="icons-blue orbit"><img src="images/Group-694_2.svg" alt="" class="icons-white orbit"></a>
-        <div class="divider"></div><a href="#" id="midSwitch" class="w-inline-block"><img src="images/Group-695.svg" alt="" class="icons-blue sat"><img src="images/Group-695_1.svg" alt="" class="icons-white sat"></a>
-        <div class="divider"></div><a href="#" id="rightSwitch" class="link-block w-inline-block"><img src="images/planet.svg" alt="" class="icons-blue earth"><img src="images/planet_1.svg" alt="" class="icons-white earth"></a></div>
+      <div class="icon-container"><a data-w-id="45b15d5d-a24d-d428-f512-7d7b366732ff" href="#" id="leftSwitch" class="link-block-2 w-inline-block"><img src="images/Group-694_2.svg" alt="" class="icons-blue orbit"><img src="images/Group-694_1.svg" alt="" class="icons-white orbit"></a>
+        <div class="divider"></div><a data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" id="rightSwitch" class="w-inline-block"><img src="images/Group-695.svg" alt="" class="icons-blue sat"><img src="images/Group-695_1.svg" alt="" class="icons-white sat"></a>
+        <div class="divider"></div><a data-w-id="02ccad7a-c192-e966-f72d-625e4753cf93" href="#" id="midSwitch" class="link-block w-inline-block"><img src="images/planet.svg" alt="" class="icons-blue earth"><img src="images/planet_1.svg" alt="" class="icons-white earth"></a></div>
       <div class="switcher-button-left"></div>
       <div class="view-mode-switcher"></div>
     </div>
-    <div class="orbit-switcher-right"><a href="#" class="reset-button w-inline-block"><img src="images/Path-326.svg" alt="" class="icon-reset"></a>
+    <div class="orbit-switcher-right"><a data-w-id="9860a442-af33-f94d-341a-b1487186fb97" href="#" class="reset-button w-inline-block"><img src="images/Path-326.svg" alt="" class="icon-reset"></a>
       <div class="right-switcher">
         <div class="div-block-3"></div>
-        <div class="text-container"><a href="#" class="right-switcher-button w-inline-block"><img src="images/Group-697.svg" alt="" class="icons-blue gso"><img src="images/Group-698_1.svg" alt="" class="icons-white gso"></a><a href="#" class="right-switcher-button-2 w-inline-block"><img src="images/Group-696.svg" alt="" class="icons-blue veo"><img src="images/Group-695_2.svg" alt="" class="icons-white veo"></a></div>
+        <div class="text-container"><a href="#" class="right-switcher-button w-inline-block"><img src="images/Group-697.svg" alt="" class="icons-blue gso"><img src="images/Group-698.svg" alt="" class="icons-white gso"></a><a href="#" class="right-switcher-button-2 w-inline-block"><img src="images/Group-696.svg" alt="" class="icons-blue veo"><img src="images/Group-695_2.svg" alt="" class="icons-white veo"></a></div>
         <div class="switcher-button-right"></div>
       </div>
     </div>
-    <div class="menu-button"><a href="#" class="round-button-menu w-inline-block"><img src="images/Group-698.svg" alt="" class="icons-blue menu"><img src="images/Group-694.svg" alt="" class="menu-close-icon"></a></div>
+    <div class="menu-button"><a data-w-id="69f1a708-3de9-e3ff-4569-5ec9aae11349" href="#" class="round-button-menu w-inline-block"><img src="images/Group-698_1.svg" alt="" class="icons-blue menu"><img src="images/Group-694.svg" style="display:none" alt="" class="menu-close-icon"></a></div>
     <div class="logo"><img src="images/Group-697_1.svg" alt="" class="image"></div>
     <div class="heading-container">
       <h1 class="heading">ТРЕХМЕРНАЯ ИНТЕРАКТИВНАЯ МОДЕЛЬ ГРУППИРОВКИ <br>СПУТНИКОВ СВЯЗИ И ВЕЩАНИЯ ФГУП «КОСМИЧЕСКАЯ СВЯЗЬ»</h1>
     </div>
     <div class="backround-layer"></div>
-    <div class="images" id="container"></div>
+    <div class="images" id=container></div>
     <div class="timeline-box">
       <div class="sat-year-container">
         <div class="div-block-16"></div>
@@ -84,7 +49,7 @@
             <h1 class="sat-name">Э-103</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2020</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2020</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -96,7 +61,7 @@
             <h1 class="sat-name">аму7</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2021</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2021</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -105,7 +70,7 @@
         <div class="sat-year">
           <div class="satellites-container"></div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2022</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2022</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -116,7 +81,7 @@
             <h1 class="sat-name">РВ</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2023</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2023</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -125,7 +90,7 @@
         <div class="sat-year">
           <div class="satellites-container"></div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2024</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2024</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -136,7 +101,7 @@
             <h1 class="sat-name">аму5</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2025</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2025</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -147,7 +112,7 @@
             <h1 class="sat-name">аму6</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2026</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2026</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -159,7 +124,7 @@
             <h1 class="sat-name">ат3</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2027</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2027</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -170,7 +135,7 @@
             <h1 class="sat-name">Э-40</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2028</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2028</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -181,7 +146,7 @@
             <h1 class="sat-name">Э-36</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2029</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2029</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -192,7 +157,7 @@
             <h1 class="sat-name">аму8</h1>
           </div>
           <a href="#" class="link-block-3 w-inline-block">
-            <h1 class="year">2030</h1>
+            <h1 style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)" class="year">2030</h1>
           </a>
           <div class="satpoint-timeline current">
             <div class="bluepoint"></div>
@@ -200,7 +165,7 @@
         </div>
       </div>
     </div>
-    <div class="earthview-satpoints-disc"><img src="images/Group-693.svg" alt="" class="image-4">
+    <div class="earthview-satpoints-disc"><img src="images/Group-693.svg" data-w-id="bfe43aed-385d-1023-3b84-314dd9273b43" alt="" class="image-4">
       <div class="degree-container">
         <div class="degree-indicator"></div>
         <div class="degree-point"></div>
@@ -265,7 +230,7 @@
     <div class="earthview-satellite-list">
       <div class="div-block-41">
         <div class="div-block-36-copy">
-          <a href="#" class="satellite-name-box w-inline-block">
+          <a data-w-id="3c528b4f-84b8-f22b-8b22-2ecedeb6846d" href="#" class="satellite-name-box w-inline-block">
             <h1 class="satellite-name-chosen-2">АМ8</h1>
             <h1 class="satellite-point-2">14°З.Д.</h1>
           </a>
@@ -432,13 +397,13 @@
           </div>
         </div>
       </div>
-      <a href="#" class="express-rw w-inline-block">
+      <a data-w-id="e0ae7acb-c53d-b34b-0e5b-51ad0f2ab85e" href="#" class="express-rw w-inline-block">
         <h1 class="satellite-name-chosen-2">ЭКСПРЕСС-РВ</h1>
       </a>
     </div>
     <div class="bg-blur">
       <div class="div-block-19"></div>
-      <div class="div-block-20"></div>
+      <div data-w-id="30c3bc2b-54df-9394-be38-40b827879d98" class="div-block-20"></div>
     </div>
     <div class="about-company">
       <div class="div-block-22">
@@ -457,7 +422,7 @@
         </div><a href="#" class="close-button w-inline-block"><img src="images/Group-694.svg" alt="" class="close-icon"></a></div>
     </div>
     <div class="menu-buttons">
-      <a href="#" class="left-big-button w-inline-block">
+      <a data-w-id="2d41b556-4451-9235-2174-b398d35fe0cb" href="#" class="left-big-button w-inline-block">
         <h1 class="heading-7">Информация<br>о предприятии</h1>
       </a>
       <a href="#" class="right-big-button w-inline-block">
@@ -941,7 +906,7 @@
           <div class="parameter-type big">Точность удержания на орбите <br>(в направлении С-Ю/З-В)</div>
           <div class="parameter-type right">±0,05°</div>
         </div>
-        <a href="#" class="info-button w-inline-block">
+        <a data-w-id="fb5cdbda-81e6-d685-97ff-d2999fc445ea" href="#" class="info-button w-inline-block">
           <h1 class="button-text">зоны обслуживания</h1>
         </a>
       </div>
@@ -1018,14 +983,48 @@
             </div>
           </div>
         </div>
-        <a href="#" class="info-button w-inline-block">
+        <a data-w-id="3b08dc9f-4bb1-2a4c-cbac-aac86c79f8d9" href="#" class="info-button w-inline-block">
           <h1 class="button-text">информация о спутнике</h1>
         </a>
       </div>
     </div>
   </div>
-  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5f0436771d955d0fc443bb0e" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5ef06dbc8956a9e7ba225ae5" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+  <script src="js/webflow.js" type="text/javascript"></script>
+  <script type="x-shader/x-vertex" id="1212">
+    varying vec2 vUv;
+
+    void main()
+    {
+       vUv = uv;
+       vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+       gl_Position = projectionMatrix * mvPosition;
+    }
+  </script>
+  <script type="x-shader/x-fragment" id="2121">
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    uniform sampler2D tOne;
+    uniform sampler2D tSec;
+
+    varying vec2 vUv;
+
+    void main(void)
+    {
+        vec3 c;
+        vec4 Ca = texture2D(tOne, vUv);
+        vec4 Cb = texture2D(tSec, vUv);
+        c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);  // blending equation
+        gl_FragColor= vec4 (c, (Ca.a + Cb.a));
+    }
+  </script>
+  <script type="module">
+    import { SatteliteVisualizer } from './js/SatteliteVisualizer.js';
+
+    var visualizer = new SatteliteVisualizer (window.innerWidth, window.innerWidth);
+  </script>
 </body>
 </html>
