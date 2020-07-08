@@ -114,6 +114,10 @@ export class SatteliteVisualizer
         this.lOrbitMeshes = [];
         this.geoStatOrbit;
 
+        this.lnames = [];
+        for (let i = 0; i < 10; i++)
+            this.lnames.push (undefined);
+
         function Ellipse(xRadius, yRadius)
         {
 			Curve.call( this );
@@ -420,6 +424,8 @@ export class SatteliteVisualizer
 
             label.position.x *=  70.35;
             label.position.z *= -70.35;
+
+            that.lnames[index] = label;
             
             meshLookAt (mesh, that.globeMesh, new Vector3 (0, 0, 1));
             meshLookAt (label, that.globeMesh, new Vector3 (0, 0, 1));
@@ -450,13 +456,14 @@ export class SatteliteVisualizer
         //this.controls.target = this.geostat[4].position;
         //this.controls.setDistance (20);
 
-        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[4] - 2)) * 80;
-        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[4] - 2)) * -80;
+        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[9] - 2)) * 85;
+        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[9] - 2)) * -85;
         this.camera.position.y = 0.5;
 
         this.controls.update();
         
-        this.geostat[4].visible = true;
+        this.geostat[9].visible = true;
+        this.lnames[9].visible = true;
         this.geoStatOrbitSmall.visible = true;
     }
 
@@ -524,7 +531,10 @@ export class SatteliteVisualizer
             return;
 
         for (let i = 0; i < this.geostat.length; i++)
+        {
             this.geostat[i].visible = state;
+            this.lnames[i].visible = state;
+        }
 
         for (let i = 0; i < this.lstat.length; i++)
             this.lstat[i].visible = state;
@@ -533,7 +543,9 @@ export class SatteliteVisualizer
     showAllOrbit (state)
     {
         for (let i = 0; i < this.lOrbitMeshes.length; i++)
+        {
             this.lOrbitMeshes[i].visible = state;
+        }
 
         this.geoStatOrbit.visible = state;
         this.geoStatOrbitSmall.visible = state;
