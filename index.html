@@ -21,8 +21,8 @@
   <div class="section">
     <div class="left-switcher">
       <div class="icon-container"><a data-w-id="45b15d5d-a24d-d428-f512-7d7b366732ff" href="#" id="leftSwitch" class="link-block-2 w-inline-block"><img src="images/Group-694_2.svg" alt="" class="icons-blue orbit"><img src="images/Group-694_1.svg" alt="" class="icons-white orbit"></a>
-        <div class="divider"></div><a data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" id="rightSwitch" class="w-inline-block"><img src="images/Group-695.svg" alt="" class="icons-blue sat"><img src="images/Group-695_1.svg" alt="" class="icons-white sat"></a>
-        <div class="divider"></div><a data-w-id="02ccad7a-c192-e966-f72d-625e4753cf93" href="#" id="midSwitch" class="link-block w-inline-block"><img src="images/planet.svg" alt="" class="icons-blue earth"><img src="images/planet_1.svg" alt="" class="icons-white earth"></a></div>
+        <div class="divider"></div><a data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" id="midSwitch" class="w-inline-block"><img src="images/Group-695.svg" alt="" class="icons-blue sat"><img src="images/Group-695_1.svg" alt="" class="icons-white sat"></a>
+        <div class="divider"></div><a data-w-id="02ccad7a-c192-e966-f72d-625e4753cf93" href="#" id="rightSwitch" class="link-block w-inline-block"><img src="images/planet.svg" alt="" class="icons-blue earth"><img src="images/planet_1.svg" alt="" class="icons-white earth"></a></div>
       <div class="switcher-button-left"></div>
       <div class="view-mode-switcher"></div>
     </div>
@@ -165,11 +165,11 @@
         </div>
       </div>
     </div>
-    <div class="earthview-satpoints-disc"><img src="images/Group-693.svg" data-w-id="bfe43aed-385d-1023-3b84-314dd9273b43" alt="" class="image-4">
+    <div class="earthview-satpoints-disc" ><img src="images/Group-693.svg" id="disk" data-w-id="bfe43aed-385d-1023-3b84-314dd9273b43" alt="" class="image-4">
       <div class="degree-container">
         <div class="degree-indicator"></div>
         <div class="degree-point"></div>
-        <h1 class="heading-10">0,0° в.д.</h1>
+        <h1 class="heading-10" id="disk-degrees">0,0° в.д.</h1>
       </div>
     </div>
     <div class="satelliteview-satellite-list">
@@ -1018,7 +1018,9 @@
         vec4 Ca = texture2D(tOne, vUv);
         vec4 Cb = texture2D(tSec, vUv);
         c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);  // blending equation
-        gl_FragColor= vec4 (c, (Ca.a + Cb.a));
+        float a = Ca.a + Cb.a;
+        if (a > 1.0) a = 1.0;
+        gl_FragColor= vec4 (c, a);
     }
   </script>
   <script type="module">

@@ -154,7 +154,7 @@ export class SatteliteVisualizer
         var globeMaterial = new MeshPhongMaterial ({ map: this.globeTexture, shininess: 15 });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
-        var globeCoverGeometry = new SphereGeometry (10.2, 100, 100);
+        var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
         globeCoverTex.minFilter = LinearFilter;
@@ -207,6 +207,9 @@ export class SatteliteVisualizer
         this.node.appendChild (this.renderer.domElement);
 
         this.focusGlobeAndSats ();
+
+        this.diskImage = document.getElementById("disk");
+        this.diskDegrees = document.getElementById("disk-degrees");
 
         this.animate();
     }
@@ -288,6 +291,25 @@ export class SatteliteVisualizer
 
         this.renderer.render (this.scene, this.camera);
         this.controls.update ();  
+
+        this.updateDisk();
+    }
+
+    updateDisk ()
+    {
+        var angle = Math.atan2 (this.camera.position.z, this.camera.position.x);
+        angle /= Math.PI;
+        angle *= 180;
+        this.diskImage.style.transform = "rotate(" + angle + "deg)";
+
+        var text;
+
+        if (angle < 0)
+            text = "" + (-angle.toFixed(1)) + "° в.д.";
+        else 
+            text = "" + angle.toFixed(1) + "° з.д.";
+
+        this.diskDegrees.innerText = text;
     }
 
     initSats ()
