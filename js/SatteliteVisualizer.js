@@ -138,14 +138,16 @@ export class SatteliteVisualizer
         this.controls.enablePan = false;
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
+        this.controls.maxDistance = 150;
+        this.controls.minDistance = 15;
 
         this.controls.setDistance = function (distance) 
         {
             this.maxDistance = distance;
             this.minDistance = distance;
             this.update();
-            this.maxDistance = Infinity;
-            this.minDistance = 0;
+            this.maxDistance = 150;
+            this.minDistance = 15;
         }
 
         var globeGeometry = new SphereGeometry (10, 100, 100);
