@@ -19,7 +19,9 @@ import
     Group,
     DirectionalLight,
     AmbientLight,
-    ShaderMaterial
+    ShaderMaterial,
+    MeshBasicMaterial,
+    PlaneBufferGeometry
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -32,6 +34,24 @@ import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
  **/
 
 // APP
+function meshLookAt (mesh, target, up)
+{
+    var pos = new Vector3 ().copy (mesh.position);
+    var rot = new Matrix4 ().lookAt (mesh.position, target.position, up);
+
+    mesh.position.x = 0;
+    mesh.position.y = 0;
+    mesh.position.z = 0;
+
+    mesh.rotation.set (0, 0, 0);
+
+    mesh.applyMatrix4 (rot);
+
+    mesh.position.x = pos.x;
+    mesh.position.y = pos.y;
+    mesh.position.z = pos.z;
+}
+
 export class SatteliteVisualizer
 {
     constructor (sizeX, sizeY)
@@ -287,7 +307,7 @@ export class SatteliteVisualizer
                 up.applyMatrix4 (this.lmatrix2[i]);
                 up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
 
-                this.meshLookAt (this.lstat[i], this.globeMesh, up);
+                meshLookAt (this.lstat[i], this.globeMesh, up);
 
             }
         
@@ -375,6 +395,13 @@ export class SatteliteVisualizer
             var material = new MeshPhongMaterial ({ color: 0x737373 });
             var mesh = new Mesh (geometry, material);
 
+            var labelTex = new TextureLoader().load ("textures/" + that.geostatnames[index] + ".png");
+            labelTex.minFilter = LinearFilter;
+            var labelMat = new MeshBasicMaterial ({ map: labelTex, transparent: true });
+            var label = new Mesh (new PlaneBufferGeometry (1.68, 0.26), labelMat);
+
+            that.scene.add (label);
+
             that.geostat[index] = mesh;
             that.loaded2++;
 
@@ -388,7 +415,16 @@ export class SatteliteVisualizer
             mesh.scale.y = 0.1;
             mesh.scale.z = 0.1;
 
-            that.meshLookAt (mesh, that.globeMesh, new Vector3 (0, 0, 1));
+            label.position.x = Math.cos (that.degToRad (angle - 0.01));
+            label.position.z = Math.sin (that.degToRad (angle - 0.01));
+
+            label.position.x *=  70.35;
+            label.position.z *= -70.35;
+            
+            meshLookAt (mesh, that.globeMesh, new Vector3 (0, 0, 1));
+            meshLookAt (label, that.globeMesh, new Vector3 (0, 0, 1));
+
+            label.position.y = 3;
 
             if (that.loaded2 == 10 && that.loaded1 == 4)
                      that.initSats();
@@ -442,23 +478,6 @@ export class SatteliteVisualizer
         this.showAllOrbit (false);
     }
 
-    meshLookAt (mesh, target, up)
-    {
-        var pos = new Vector3 ().copy (mesh.position);
-        var rot = new Matrix4 ().lookAt (mesh.position, target.position, up);
-
-        mesh.position.x = 0;
-        mesh.position.y = 0;
-        mesh.position.z = 0;
-
-        mesh.rotation.set (0, 0, 0);
-
-        mesh.applyMatrix4 (rot);
-
-        mesh.position.x = pos.x;
-        mesh.position.y = pos.y;
-        mesh.position.z = pos.z;
-    }
 
     initPathMeshes ()
     {
