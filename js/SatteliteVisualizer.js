@@ -8,20 +8,18 @@ import
 	Scene,
     WebGLRenderer,
     TextureLoader,
-    MeshLambertMaterial,
+    TorusBufferGeometry,
     Matrix4,
     Vector3,
     Curve,
-    TorusBufferGeometry,
     TubeBufferGeometry,
     CylinderGeometry,
     LinearFilter,
-    Group,
     DirectionalLight,
     AmbientLight,
     ShaderMaterial,
     MeshBasicMaterial,
-    PlaneBufferGeometry
+    PlaneBufferGeometry,
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -32,6 +30,14 @@ import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
 /**
  * @author fokz210 / https://github.com/Fokz210
  **/
+
+class Range
+{
+    constructor (Cfixed1, Cfixed2, Creaim1, Creaim2, KUfixed1, KUfixed2, KUreaim)
+    {
+        var tLoader = new TextureLoader ();
+    }
+}
 
 // APP
 function meshLookAt (mesh, target, up)
@@ -56,6 +62,10 @@ export class SatteliteVisualizer
 {
     constructor (sizeX, sizeY)
     {
+        this.satData = JSON.parse(document.getElementById('sat-data').innerText);
+        this.satViewChosen = 9;
+        this.earthViewChosen = undefined;
+
         this.stlLoader = new STLLoader ();
 
         this.fragmentShader = document.getElementById ("2121").innerHTML;
@@ -100,6 +110,20 @@ export class SatteliteVisualizer
             'AT2',
             'AM8',
             'AM44'
+        ];
+
+        this.satDataRows = 
+        [
+            8,
+            7,
+            5,
+            9,
+            2,
+            3,
+            4,
+            10,
+            6,
+            1
         ];
 
         this.lstat = [];
@@ -354,6 +378,8 @@ export class SatteliteVisualizer
 
         this.satsLoaded = true;
 
+        this.bindSatsChooser();
+
     }
 
     loadSatsMeshes ()
@@ -448,7 +474,7 @@ export class SatteliteVisualizer
             return;
 
         if (satMesh == undefined)
-            satMesh = this.geostat[4];
+            satMesh = this.geostat[this.satViewChosen];
 
         this.showAllSats (false);
         this.showAllOrbit (false);
@@ -456,14 +482,14 @@ export class SatteliteVisualizer
         //this.controls.target = this.geostat[4].position;
         //this.controls.setDistance (20);
 
-        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[9] - 2)) * 85;
-        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[9] - 2)) * -85;
+        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[this.satViewChosen] - 2)) * 85;
+        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[this.satViewChosen] - 2)) * -85;
         this.camera.position.y = 0.5;
 
         this.controls.update();
         
-        this.geostat[9].visible = true;
-        this.lnames[9].visible = true;
+        this.geostat[this.satViewChosen].visible = true;
+        this.lnames[this.satViewChosen].visible = true;
         this.geoStatOrbitSmall.visible = true;
     }
 
@@ -550,6 +576,63 @@ export class SatteliteVisualizer
         this.geoStatOrbit.visible = state;
         this.geoStatOrbitSmall.visible = state;
         this.axis.visible = state;
+    }
+
+    bindSvSat (index)
+    {
+        document.getElementById ("sv" + index).onclick = function ()
+        {
+            this.satViewChosen = index;
+
+            var a = this.satData[this.satDataRows[index]].a;
+            var b = this.satData[this.satDataRows[index]].b;
+            var c = this.satData[this.satDataRows[index]].c;
+            var e = this.satData[this.satDataRows[index]].e;
+            var f = this.satData[this.satDataRows[index]].f;
+            var g = this.satData[this.satDataRows[index]].g;
+            var h = this.satData[this.satDataRows[index]].h;
+            var i = this.satData[this.satDataRows[index]].i;
+            var j = this.satData[this.satDataRows[index]].j;
+            var k = this.satData[this.satDataRows[index]].k;
+
+            var def = function (a)
+            {
+                if (a == undefined)
+                    return "";
+                else
+                    return a;
+            }
+
+            document.getElementById("svda").innerHTML = def(a);
+            document.getElementById("svdb").innerHTML = def(b);
+            document.getElementById("svdc").innerHTML = def(c);
+            document.getElementById("svde").innerHTML = def(e);
+            document.getElementById("svdf").innerHTML = def(f);
+            document.getElementById("svdg").innerHTML = def(g);
+            document.getElementById("svdh").innerHTML = def(h);
+            document.getElementById("svdi").innerHTML = def(i);
+            document.getElementById("svdj").innerHTML = def(j);
+            document.getElementById("svdk").innerHTML = def(k);
+
+            this.focusSat();
+
+        }.bind(this);
+    }
+
+    bindSatsChooser ()
+    {
+        console.log (this.satData);
+
+        this.bindSvSat (0);
+        this.bindSvSat (1);
+        this.bindSvSat (2);
+        this.bindSvSat (3);
+        this.bindSvSat (4);
+        this.bindSvSat (5);
+        this.bindSvSat (6);
+        this.bindSvSat (7);
+        this.bindSvSat (8);
+        this.bindSvSat (9);
     }
 
 };
