@@ -38,73 +38,80 @@ class Beam
     {
         this.tLoader = new TextureLoader ();
 
-        var geometry = new SphereBufferGeometry (10, 64, 64);
-
         // BEAMS
 
         if (Cfixed1 != "none")
         {
             var cf1 = this.tLoader.load (Cfixed1);
+            cf1.minFilter = LinearFilter;
             var mcf1 = new MeshBasicMaterial ({ transparent: true, map: cf1 });
-            this.CFixed1 = new Mesh (geometry.copy(), mcf1);
+            this.CFixed1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcf1);
         }
 
         if (Cfixed2 != "none")
         {  
             var cf2 = this.tLoader.load (Cfixed2);
+            cf2.minFilter = LinearFilter;
             var mcf2 = new MeshBasicMaterial ({ transparent: true, map: cf2 });
-            this.CFixed2 = new Mesh (geometry.copy(), mcf2);
+            this.CFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcf2);
         }
 
         if (Creaim1 != "none")
         {  
             var cr1 = this.tLoader.load (Creaim1);
+            cr1.minFilter = LinearFilter;
             var mcr1 = new MeshBasicMaterial ({ transparent: true, map: cr1 });
-            this.CReaim1 = new Mesh (geometry.copy(), mcr1);
+            this.CReaim1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcr1);
         }
 
         if (Creaim2 != "none")
         {
             var cr2 = this.tLoader.load (Creaim2);
+            cr2.minFilter = LinearFilter;
             var mcr2 = new MeshBasicMaterial ({ transparent: true, map: cr2 });
-            this.CReaim2 = new Mesh (geometry.copy(), mcr2);
+            this.CReaim2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcr2);
         }
 
         if (KUfixed1 != "none")
         {
-            var kf1 = this.tLoader.load (KUfixed1);
-            var mkf1 = new MeshBasicMaterial ({ transparent: true, map: kf1 });
-            this.KUFixed1 = new Mesh (geometry.copy(), mkf1);
+            var kuf1 = this.tLoader.load (KUfixed1);
+            kuf1.minFilter = LinearFilter;
+            var mkuf1 = new MeshBasicMaterial ({ transparent: true, map: kuf1 });
+            this.KUFixed1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf1);
         }
 
         if (KUfixed2 != "none")
         {
-            var kf2 = this.tLoader.load (KUfixed2);
-            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
-            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
+            var kuf2 = this.tLoader.load (KUfixed2);
+            kuf2.minFilter = LinearFilter;
+            var mkuf2 = new MeshBasicMaterial ({ transparent: true, map: kuf2 });
+            this.KUFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf2);
         }
+
+        if (KUreaim1 != "none")
+        {
+            var kur1 = this.tLoader.load (KUreaim1);
+            kur1.minFilter = LinearFilter;
+            var mkur1 = new MeshBasicMaterial ({ transparent: true, map: kur1 });
+            this.KUreaim1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkur1);
+        }
+
 
         if (KUreaim2 != "none")
         {
-            var kf2 = this.tLoader.load (KUfixed2);
-            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
-            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
-        }
-
-
-        if (KUfixed2 != "none")
-        {
-            var kf2 = this.tLoader.load (KUfixed2);
-            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
-            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
+            var kur2 = this.tLoader.load (KUreaim2);
+            kur2.minFilter = LinearFilter;
+            var mkur2 = new MeshBasicMaterial ({ transparent: true, map: kur2 });
+            this.KUFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkur2);
         }
 
 
         if (KAreaim != "none")
         {
             var ka = this.tLoader.load (KAreaim);
+            ka.minFilter = LinearFilter;
             var mka = new MeshBasicMaterial ({ transparent: true, map: ka });
-            this.KAReaim = new Mesh (geometry.copy(), mka);
+            this.KAReaim = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mka);
         }
 
         // RANGES
@@ -112,22 +119,25 @@ class Beam
         if (C != "none")
         {
             var c = this.tLoader.load (C);
+            c.minFilter = LinearFilter;
             var mc = new MeshBasicMaterial ({ transparent: true, map: c });
-            this.c = new Mesh (geometry.copy(), mc);
+            this.c = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mc);
         }
 
         if (Ku != "none")
         {
             var ku = this.tLoader.load (Ku);
-            var mku = new MeshBasicMaterial ({ transparent: true, material: ku });
-            this.Ku = new Mesh (geometry.copy(), mku);
+            ku.minFilter = LinearFilter;
+            var mku = new MeshBasicMaterial ({ transparent: true, map: ku });
+            this.Ku = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mku);
         }
 
         if (Ka != "none")
         {
             var ka = this.tLoader.load (Ka);
-            var mka = new MeshBasicMaterial ({ transparent: true, material: ka }); 
-            this.Ka = new Mesh (geometry.copy(), mka);
+            ka.minFilter = LinearFilter;
+            var mka = new MeshBasicMaterial ({ transparent: true, map: ka }); 
+            this.Ka = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mka);
         }
     }
 
@@ -135,32 +145,48 @@ class Beam
     {
         this.setVisible (false);
 
-        scene.add (this.Cfixed1);
-        scene.add (this.CFixed2);
-        scene.add (this.CReaim1);
-        scene.add (this.CReaim2);
-        scene.add (this.KUfixed1);
-        scene.add (this.KUfixed2);
-        scene.add (this.KUReaim);
+        var add  = function (mesh, scene2)
+        {
+            if (mesh != undefined)
+                scene2.add (mesh);
+        }
 
-        scene.add (this.c);
-        scene.add (this.Ku);
-        scene.add (this.Ka);
+        add (this.CFixed1, scene);
+        add (this.CFixed2, scene);
+        add (this.CReaim1, scene);
+        add (this.CReaim2, scene);
+        add (this.KUFixed1, scene);
+        add (this.KUFixed2, scene);
+        add (this.KUReaim1, scene);
+        add (this.KUReaim2, scene);
+        add (this.KAReaim,  scene);
+
+        add (this.c, scene);
+        add (this.Ku, scene);
+        add (this.Ka, scene);
     }
 
     setVisible (state)
     {
-        this.CFixed1.visible = state;
-        this.CFixed2.visible = state;
-        this.CReaim1.visible = state;
-        this.CReaim2.visible = state;
-        this.KUFixed1.visible = state;
-        this.KUFixed2.visible = state;
-        this.KUReaim.visible = state;
+        var setVisibility = function (mesh, state)
+        {
+            if (mesh != undefined)
+                mesh.visible = state;
+        }
 
-        this.c.visible = state;
-        this.Ku.visible = state;
-        this.Ka.visible = state;
+        setVisibility (this.CFixed1, state);
+        setVisibility (this.CFixed2, state);
+        setVisibility (this.CReaim1, state);
+        setVisibility (this.CReaim2, state);
+        setVisibility (this.KUFixed1, state);
+        setVisibility (this.KUFixed2, state);
+        setVisibility (this.KUreaim1, state);
+        setVisibility (this.KUreaim2, state);
+        setVisibility (this.KAReaim, state);
+
+        setVisibility (this.c, state);
+        setVisibility (this.Ku, state);
+        setVisibility (this.Ka, state);
     }
 }
 
@@ -208,7 +234,7 @@ export class SatteliteVisualizer
         this.loaded1 = 0;
         this.loaded2 = 0;
 
-        this.beams = [];
+   
 
         for (let i = 0; i < 10; i++)
             this.geostat.push (undefined);
@@ -392,6 +418,14 @@ export class SatteliteVisualizer
 
         this.diskImage = document.getElementById("disk");
         this.diskDegrees = document.getElementById("disk-degrees");
+
+        this.beams = [];
+
+        this.loadBeams();
+
+        this.beams[1].c.visible = true;
+
+        console.log (this.beams);
 
         this.animate();
     }
@@ -783,16 +817,21 @@ export class SatteliteVisualizer
 
     loadBeams()
     {
-        this.beams.push (new Beam ("none", "none", "none", "none", "./beams/AMU1_afr.png", "./beams/AMU1_rus.png", "none", "none", "./beams/AMU1_ka.png", "none", "./bands/AMU-Ku.png", "./bands/AMU-Ka.png"));  
+        this.beams.push (new Beam ("none", "none", "none", "none", "./beams/AMU1_afr.png", "./beams/AMU1_rus.png", "none", "none", "./beams/AMU1_ka.png", "none", "./bands/AMU1-Ku.png", "./bands/AMU1-Ka.png"));  
         this.beams.push (new Beam ("./beams/AM7_FC.png", "./beams/AM7_SC.png", "none", "none", "./beams/AM7_FK1.png", "./beams/AM7_FK2.png", "./beams/AM7_FK3.png", "./beams/AM7_SK.png", "none", "./bands/AM7-C.png", "./bands/AM7-Ku.png", "none"));
-        this.beams.push (new Beam ("./beams/AM6_FC1.png", "./beams/AM6_SC2.png", "none", "none", "./beams/AM6_FK1.png", "./beams/AM6_FK2.png", "./beams/AM6_STK1.png", "./beams/AM6_STK2.png", "./beams/AM6_KaMB.png", "./bandsAM6-C.png", "./bandsAM6-Ku.png", "none"));
+        this.beams.push (new Beam ("./beams/AM6_FC1.png", "./beams/AM6_FC2.png", "none", "none", "./beams/AM6_FK1.png", "./beams/AM6_FK2.png", "./beams/AM6_STK1.png", "./beams/AM6_STK2.png", "./beams/AM6_KaMB.png", "./bands/AM6-C.png", "./bands/AM6-Ku.png", "none"));
         this.beams.push (new Beam ("none", "none", "none", "none", "./beams/AT1_FK-east.png", "./beams/AT1_FK-wide.png", "none", "none", "none", "none", "none", "./bands/AT1-Ku.png", "none"));
         this.beams.push (new Beam ("./beams/AM33_S1.png", "none", "none", "none", "./beams/AM33_ST1.png", "./beams/AM33_ST2.png", "none", "none", "none", "./bands/AM33-C.png", "none", "none"));
         this.beams.push (new Beam ("./beams/AM3_FC.png", "./beams/AM3_SC.png", "none", "none", "./beams/AM3_FK.png", "./beams/AM3_SK.png", "none", "none", "none", "./bands/AM3-C copy.png", "./bands/AM3-Ku.png", "none"));
         this.beams.push (new Beam ("./beams/AM5_FC.png", "./beams/AM5_SC.png", "none", "none", "./beams/AM5_FK1.png", "./beams/AM5_FK2.png", "none", "none", "none", "./bands/AM5-C.png", "./bands/AM5-Ku.png", "./bands/AM5-Ka.png"));
-        this.beams.push (new Beam ("none", "none", "none", "none", "./beams/AT2_FK-west.png", "none", "none", "none", "none", "none", "./bands/ATM2-Ku.png", "none"));
+        this.beams.push (new Beam ("none", "none", "none", "none", "./beams/AT2_FK-west.png", "none", "none", "none", "none", "none", "./bands/AT2-Ku.png", "none"));
         this.beams.push (new Beam ("./beams/AM8_FC1.png", "./beams/AM8_FC2.png", "none", "none", "./beams/AM8_FK1.png", "./beams/AM8_FK2.png", "./beams/AM8_FK3.png", "none", "none", "none", "./bands/AM8-Ku.png", "none"));
         this.beams.push (new Beam ("./beams/AM44_S1.png", "none", "none", "none", "./beams/AM44_ST1.png", "./beams/AM44_ST2.png", "none", "none", "none", "./bands/AM44-C.png", "./bands/AM44-Ku.png", "none"));
+    
+        for (let i = 0; i < 10; i++)
+        {
+            this.beams[i].addToScene (this.scene);
+        }
     }
 
 };
