@@ -20,6 +20,7 @@ import
     ShaderMaterial,
     MeshBasicMaterial,
     PlaneBufferGeometry,
+    SphereBufferGeometry,
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -31,11 +32,135 @@ import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
  * @author fokz210 / https://github.com/Fokz210
  **/
 
-class Range
+class Beam
 {
-    constructor (Cfixed1, Cfixed2, Creaim1, Creaim2, KUfixed1, KUfixed2, KUreaim)
+    constructor (Cfixed1, Cfixed2, Creaim1, Creaim2, KUfixed1, KUfixed2, KUreaim1, KUreaim2, KAreaim, C, Ku, Ka)
     {
-        var tLoader = new TextureLoader ();
+        this.tLoader = new TextureLoader ();
+
+        var geometry = new SphereBufferGeometry (10, 64, 64);
+
+        // BEAMS
+
+        if (Cfixed1 != "none")
+        {
+            var cf1 = this.tLoader.load (Cfixed1);
+            var mcf1 = new MeshBasicMaterial ({ transparent: true, map: cf1 });
+            this.CFixed1 = new Mesh (geometry.copy(), mcf1);
+        }
+
+        if (Cfixed2 != "none")
+        {  
+            var cf2 = this.tLoader.load (Cfixed2);
+            var mcf2 = new MeshBasicMaterial ({ transparent: true, map: cf2 });
+            this.CFixed2 = new Mesh (geometry.copy(), mcf2);
+        }
+
+        if (Creaim1 != "none")
+        {  
+            var cr1 = this.tLoader.load (Creaim1);
+            var mcr1 = new MeshBasicMaterial ({ transparent: true, map: cr1 });
+            this.CReaim1 = new Mesh (geometry.copy(), mcr1);
+        }
+
+        if (Creaim2 != "none")
+        {
+            var cr2 = this.tLoader.load (Creaim2);
+            var mcr2 = new MeshBasicMaterial ({ transparent: true, map: cr2 });
+            this.CReaim2 = new Mesh (geometry.copy(), mcr2);
+        }
+
+        if (KUfixed1 != "none")
+        {
+            var kf1 = this.tLoader.load (KUfixed1);
+            var mkf1 = new MeshBasicMaterial ({ transparent: true, map: kf1 });
+            this.KUFixed1 = new Mesh (geometry.copy(), mkf1);
+        }
+
+        if (KUfixed2 != "none")
+        {
+            var kf2 = this.tLoader.load (KUfixed2);
+            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
+            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
+        }
+
+        if (KUreaim2 != "none")
+        {
+            var kf2 = this.tLoader.load (KUfixed2);
+            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
+            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
+        }
+
+
+        if (KUfixed2 != "none")
+        {
+            var kf2 = this.tLoader.load (KUfixed2);
+            var mkf2 = new MeshBasicMaterial ({ transparent: true, map: kf2 });
+            this.KUFixed2 = new Mesh (geometry.copy(), mkf2);
+        }
+
+
+        if (KAreaim != "none")
+        {
+            var ka = this.tLoader.load (KAreaim);
+            var mka = new MeshBasicMaterial ({ transparent: true, map: ka });
+            this.KAReaim = new Mesh (geometry.copy(), mka);
+        }
+
+        // RANGES
+
+        if (C != "none")
+        {
+            var c = this.tLoader.load (C);
+            var mc = new MeshBasicMaterial ({ transparent: true, map: c });
+            this.c = new Mesh (geometry.copy(), mc);
+        }
+
+        if (Ku != "none")
+        {
+            var ku = this.tLoader.load (Ku);
+            var mku = new MeshBasicMaterial ({ transparent: true, material: ku });
+            this.Ku = new Mesh (geometry.copy(), mku);
+        }
+
+        if (Ka != "none")
+        {
+            var ka = this.tLoader.load (Ka);
+            var mka = new MeshBasicMaterial ({ transparent: true, material: ka }); 
+            this.Ka = new Mesh (geometry.copy(), mka);
+        }
+    }
+
+    addToScene (scene)
+    {
+        this.setVisible (false);
+
+        scene.add (this.Cfixed1);
+        scene.add (this.CFixed2);
+        scene.add (this.CReaim1);
+        scene.add (this.CReaim2);
+        scene.add (this.KUfixed1);
+        scene.add (this.KUfixed2);
+        scene.add (this.KUReaim);
+
+        scene.add (this.c);
+        scene.add (this.Ku);
+        scene.add (this.Ka);
+    }
+
+    setVisible (state)
+    {
+        this.CFixed1.visible = state;
+        this.CFixed2.visible = state;
+        this.CReaim1.visible = state;
+        this.CReaim2.visible = state;
+        this.KUFixed1.visible = state;
+        this.KUFixed2.visible = state;
+        this.KUReaim.visible = state;
+
+        this.c.visible = state;
+        this.Ku.visible = state;
+        this.Ka.visible = state;
     }
 }
 
@@ -62,6 +187,8 @@ export class SatteliteVisualizer
 {
     constructor (sizeX, sizeY)
     {
+        document.getElementById ("sv9").style.opacity = 1;
+
         this.satData = JSON.parse(document.getElementById('sat-data').innerText);
         this.satViewChosen = 9;
         this.earthViewChosen = undefined;
@@ -80,6 +207,8 @@ export class SatteliteVisualizer
 
         this.loaded1 = 0;
         this.loaded2 = 0;
+
+        this.beams = [];
 
         for (let i = 0; i < 10; i++)
             this.geostat.push (undefined);
@@ -202,7 +331,7 @@ export class SatteliteVisualizer
         var globeGeometry = new SphereGeometry (10, 100, 100);
         this.globeTexture = new TextureLoader ().load ("textures/_map2.png");
         this.globeTexture.minFilter = LinearFilter;
-        var globeMaterial = new MeshPhongMaterial ({ map: this.globeTexture, shininess: 15 });
+        var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, shininess: 15 });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
         var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
@@ -234,13 +363,13 @@ export class SatteliteVisualizer
         this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
         
-        this.light = new DirectionalLight (0xffffff, 0);
+        this.light = new DirectionalLight (0xffffff, 0.5);
         this.light.position.x = //Math.cos (Math.PI / 4) * 100;
         this.light.position.z = -100;
         this.light.position.y = 30;
         this.light.target = this.globeMesh;
 
-        this.ambientLight = new AmbientLight (0xffffff, 1);
+        this.ambientLight = new AmbientLight (0xffffff, 0.5);
 
         this.scene.add (this.light);
         this.scene.add (this.ambientLight);
@@ -322,9 +451,9 @@ export class SatteliteVisualizer
 
                 this.lOrbitMeshes[i].applyMatrix4 (new Matrix4().makeRotationY(-Math.PI / 1000));
                
-                this.light.position.x = 30;
-                this.light.position.z = -100;
-                this.light.applyMatrix4 (new Matrix4().makeRotationY(Math.PI - Math.PI  * this.t));
+                //this.light.position.x = 30;
+                //this.light.position.z = -100;
+                //this.light.applyMatrix4 (new Matrix4().makeRotationY(Math.PI - Math.PI  * this.t));
                
                 var pt = this.lPath.getPoint (-lt);
                 pt.applyMatrix4 (this.lmatrix[i]);
@@ -336,6 +465,8 @@ export class SatteliteVisualizer
                 up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
 
                 meshLookAt (this.lstat[i], this.globeMesh, up);
+
+                this.light
 
             }
         
@@ -422,7 +553,7 @@ export class SatteliteVisualizer
         
         this.stlLoader.load ('3d/' + this.geostatnames[index] + '.stl', function (geometry)
         {
-            var material = new MeshPhongMaterial ({ color: 0x737373 });
+            var material = new MeshPhongMaterial ({ color: 0x838383 });
             var mesh = new Mesh (geometry, material);
 
             var labelTex = new TextureLoader().load ("textures/" + that.geostatnames[index] + ".png");
@@ -491,6 +622,14 @@ export class SatteliteVisualizer
         this.geostat[this.satViewChosen].visible = true;
         this.lnames[this.satViewChosen].visible = true;
         this.geoStatOrbitSmall.visible = true;
+
+        this.light.position.x = this.camera.position.x;
+        this.light.position.z = this.camera.position.z;
+
+        
+        this.ambientLight.intensity = 0.5;
+        this.light.intensity = 0.5;
+
     }
 
     focusGlobeAndSats ()
@@ -500,6 +639,9 @@ export class SatteliteVisualizer
 
         this.showAllSats (true);
         this.showAllOrbit (true);
+
+        this.ambientLight.intensity = 1;
+        this.light.intensity = 0;
     }
 
     focusGlobe ()
@@ -509,6 +651,10 @@ export class SatteliteVisualizer
         
         this.showAllSats (false);
         this.showAllOrbit (false);
+
+        
+        this.ambientLight.intensity = 1;
+        this.light.intensity = 0;
     }
 
 
@@ -633,6 +779,11 @@ export class SatteliteVisualizer
         this.bindSvSat (7);
         this.bindSvSat (8);
         this.bindSvSat (9);
+    }
+
+    loadBeams()
+    {
+       
     }
 
 };
