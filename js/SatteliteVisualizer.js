@@ -25,6 +25,7 @@ import
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
 import { loadBeams } from './BeamsPaths.js'
+import { Beam } from './Beam.js';
 
 //not used
 //import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
@@ -58,8 +59,11 @@ export class SatteliteVisualizer
     {
 
         this.satData = JSON.parse(document.getElementById('sat-data').innerText);
+        this.beamsData = JSON.parse(document.getElementById('beams-data').innerText);
         this.satViewChosen = undefined;
         this.earthViewChosen = undefined;
+
+        console.log (this.beamsData);
 
         this.stlLoader = new STLLoader ();
 
@@ -85,10 +89,10 @@ export class SatteliteVisualizer
         this.gAngles = 
         [
             36,
-            39,
-            54,
-            57,
-            97,
+            40,
+            53,
+            56,
+            96.5,
             103,
             138,
             142,
@@ -200,7 +204,7 @@ export class SatteliteVisualizer
         }
 
         var globeGeometry = new SphereGeometry (10, 100, 100);
-        this.globeTexture = new TextureLoader ().load ("textures/_map2.png");
+        this.globeTexture = new TextureLoader ().load ("textures/_edges.png");
         this.globeTexture.minFilter = LinearFilter;
         var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, shininess: 15 });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
@@ -208,28 +212,18 @@ export class SatteliteVisualizer
         var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
+
         globeCoverTex.minFilter = LinearFilter;
         globeCoverPol.minFilter = LinearFilter;
-
-
-        //globeCoverMaterial.alphaMap = globeCoverAlpha;
-
-        var uniforms = 
-        {
-            tOne: { type: "t", value: globeCoverTex },
-            tSec: { type: "t", value: globeCoverPol }
-        };
-
-        var globeCoverMaterial = new ShaderMaterial
-        ({
-            uniforms: uniforms,
-            vertexShader: this.vertexShader,
-            fragmentShader: this.fragmentShader
-        });
-
-        globeCoverMaterial.transparent = true;
+        
+        var globeCoverMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverTex });
 
         this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
+
+        var polMapGeometry = new SphereGeometry (10.01, 100, 100);
+        var polMapMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverPol });
+
+        this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
 
         this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
@@ -264,7 +258,7 @@ export class SatteliteVisualizer
 
         this.beams = [];
 
-        this.loadBeams();
+        this.readBeams();
 
         this.bindBands ();
         this.bindEvSats ();
@@ -452,7 +446,7 @@ export class SatteliteVisualizer
         
         this.stlLoader.load ('3d/' + this.geostatnames[index] + '.stl', function (geometry)
         {
-            var material = new MeshPhongMaterial ({ color: 0x838383 });
+            var material = new MeshPhongMaterial ({ color: 0x00005c });
             var mesh = new Mesh (geometry, material);
 
             var labelTex = new TextureLoader().load ("textures/" + that.geostatnames[index] + ".png");
@@ -510,20 +504,23 @@ export class SatteliteVisualizer
         if (!this.satsLoaded)
             return;
 
+        this.globeCoverMesh.visible = false;
+
         if (satMesh == undefined)
             satMesh = this.geostat[this.satViewChosen];
-
-        this.showAllSats (false);
-        this.showAllOrbit (false);
 
         if (this.satViewChosen == undefined)
             return;
 
+            
+        this.showAllSats (false);
+        this.showAllOrbit (false);
+
         //this.controls.target = this.geostat[4].position;
         //this.controls.setDistance (20);
 
-        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[this.satViewChosen] - 0.5)) * 74;
-        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[this.satViewChosen] - 0.5)) * -74;
+        this.camera.position.x = Math.cos (this.degToRad (this.gAngles[this.satViewChosen] - 0.3)) * 74;
+        this.camera.position.z = Math.sin (this.degToRad (this.gAngles[this.satViewChosen] - 0.3)) * -74;
         this.camera.position.y = 0;
 
         this.controls.update();
@@ -550,6 +547,8 @@ export class SatteliteVisualizer
 
         this.VO = true;
 
+        this.beams[10].Ku.visible = true;
+
         this.controls.update();
     }
 
@@ -558,35 +557,58 @@ export class SatteliteVisualizer
         //for (let i = 0; i < 11; i++)
         //    this.beams[i].setVisible(false);
 
+        this.globeCoverMesh.visible = false;
+        
+        this.ambientLight.intensity = 0.5;
+        this.light.intensity = 0.5;
+
+        
+        this.showAllSats (true);
+        this.showAllOrbit (true);
+
         this.mode = 0;
         if (this.VO)
             return;
 
+            
+       
         this.controls.target = this.globeMesh.position;
         this.controls.setDistance (110);
 
-        this.showAllSats (true);
-        this.showAllOrbit (true);
 
-        this.ambientLight.intensity = 0.5;
-        this.light.intensity = 0.5;
     }
 
     focusGlobe ()
     {
         this.mode = 2;
-        if (this.VO)
-            return;
 
-        this.controls.target = this.globeMesh.position;
-        this.controls.setDistance (40);
         
         this.showAllSats (false);
         this.showAllOrbit (false);
 
-        
+
+        this.globeCoverMesh.visible = true;
+
         this.ambientLight.intensity = 1;
         this.light.intensity = 0;
+        if (this.VO)
+            return;
+
+
+        this.controls.target = this.globeMesh.position;
+        
+        this.controls.setDistance (40);
+        if (this.earthViewChosen == undefined || this.earthViewChosen == 10)
+            return;
+        
+        var angle = this.gAngles[this.earthViewChosen];
+
+        if (angle == 138 || angle == 142) angle = 140;
+
+        this.camera.position.x = Math.cos (this.degToRad (angle)) * 40
+        this.camera.position.z = -Math.sin (this.degToRad (angle)) * 40;
+        this.controls.update();
+        
     }
 
 
@@ -692,6 +714,23 @@ export class SatteliteVisualizer
             document.getElementById("svdj").innerHTML = def(j);
             document.getElementById("svdk").innerHTML = def(k);
 
+            var stle = function (a)
+            {
+                if (a == undefined)
+                    return "display: none";
+                else
+                    return "";
+            }
+
+            document.getElementById("svdtb").style = stle (b);
+            document.getElementById("svdtc").style = stle (c);
+            document.getElementById("svdtf").style = stle (f);
+            document.getElementById("svdtg").style = stle (g);
+            document.getElementById("svdth").style = stle (h);
+            document.getElementById("svdti").style = stle (i);
+            document.getElementById("svdtj").style = stle (j);
+            document.getElementById("svdtk").style = stle (k);
+
             this.focusSat();
 
         }.bind(this);
@@ -776,6 +815,8 @@ export class SatteliteVisualizer
 
             this.earthViewChosen = index;
 
+            this.focusGlobe();
+
             if (index == 10)
             {
                 a = "Экспресс-РВ";
@@ -825,6 +866,11 @@ export class SatteliteVisualizer
             else
                 document.getElementById ("fixedku2").style = "display: flex";
 
+            if (this.beams[index].KUFixed3 == undefined)
+                document.getElementById ("fixedku3").style = "display: none";
+            else
+                document.getElementById ("fixedku3").style = "display: flex";
+
             if (this.beams[index].KUReaim1 == undefined)
                 document.getElementById ("reaimku1").style = "display: none";
             else
@@ -839,6 +885,66 @@ export class SatteliteVisualizer
                 document.getElementById ("fixedka").style = "display: none";
             else
                 document.getElementById ("fixedka").style = "display: flex";
+
+            if (this.beams[this.earthViewChosen].CFixed1 == undefined && this.beams[this.earthViewChosen].CFixed2 == undefined && this.beams[this.earthViewChosen].CReaim1 == undefined && this.beams[this.earthViewChosen].CReaim2 == undefined)
+            {
+                 document.getElementById ("chead").style = "display: none;";
+             }
+            else if (this.beams[this.earthViewChosen].CFixed1 == undefined && this.beams[this.earthViewChosen].CFixed2 == undefined)
+             {
+                document.getElementById ("cfix").style = "display: none;";
+            }
+            else if (this.beams[this.earthViewChosen].CReaim1 == undefined && this.beams[this.earthViewChosen].CReaim2 == undefined)
+            {
+                document.getElementById ("cre").style = "display: none;";
+            }
+            else
+            {
+                document.getElementById ("chead").style = "";
+                document.getElementById ("cfix").style = "";
+                document.getElementById ("cre").style = "";
+            }
+        
+            if (this.beams[this.earthViewChosen].KUFixed1 == undefined && this.beams[this.earthViewChosen].KUFixed2 == undefined && this.beams[this.earthViewChosen].KUReaim1 == undefined && this.beams[this.earthViewChosen].KUReaim2 == undefined)
+            {
+                document.getElementById ("kuhead").style = "display: none;";
+            }
+            else if (this.beams[this.earthViewChosen].KUFixed1 == undefined && this.beams[this.earthViewChosen].KUFixed2 == undefined)
+            {
+                document.getElementById ("kufix").style = "display: none;";
+            }
+            else if (this.beams[this.earthViewChosen].KUReaim1 == undefined && this.beams[this.earthViewChosen].KUReaim2 == undefined)
+            {
+                document.getElementById ("kure").style = "display: none;";
+            }
+            else
+            {
+                document.getElementById ("kuhead").style = "";
+                document.getElementById ("kufix").style = "";
+                document.getElementById ("kure").style = "";
+            }
+        
+            if (this.beams[this.earthViewChosen].KAReaim == undefined)
+                document.getElementById ("kahead").style = "display: none;";
+            else
+                document.getElementById ("kahead").style = "";
+
+                var text = function (tex)
+                {
+                    return "<div class=\"text-block\">" + tex + "</div>";
+                }
+
+                document.getElementById ("fixedc1").innerHTML = text(this.beams[this.earthViewChosen].CFixed1n);
+                document.getElementById ("fixedc2").innerHTML = text(this.beams[this.earthViewChosen].CFixed2n);
+                document.getElementById ("reaimc1").innerHTML = text(this.beams[this.earthViewChosen].CReaim1n);
+                document.getElementById ("reaimc2").innerHTML = text(this.beams[this.earthViewChosen].CReaim2n);
+                document.getElementById ("fixedku1").innerHTML = text(this.beams[this.earthViewChosen].KUFixed1n);
+                document.getElementById ("fixedku2").innerHTML = text(this.beams[this.earthViewChosen].KUFixed2n);
+                document.getElementById ("fixedku3").innerHTML = text(this.beams[this.earthViewChosen].KUFixed3n);
+                document.getElementById ("reaimku1").innerHTML = text(this.beams[this.earthViewChosen].KUReaim1n);
+                document.getElementById ("reaimku2").innerHTML = text(this.beams[this.earthViewChosen].KUReaim2n);
+                document.getElementById ("fixedka").innerHTML = text(this.beams[this.earthViewChosen].KAReaimn);
+            
         }.bind (this);
     }
 
@@ -889,6 +995,12 @@ export class SatteliteVisualizer
             if (this.beams[this.earthViewChosen].KUFixed2 != undefined) this.beams[this.earthViewChosen].KUFixed2.visible = !this.beams[this.earthViewChosen].KUFixed2.visible; 
         }.bind (this);
 
+        document.getElementById ("fixedku3").onclick = function ()
+        {
+            if (this.beams[this.earthViewChosen].KUFixed3 != undefined) this.beams[this.earthViewChosen].KUFixed3.visible = !this.beams[this.earthViewChosen].KUFixed3.visible; 
+        }.bind (this);
+
+
         document.getElementById ("reaimku1").onclick = function ()
         {
             if (this.beams[this.earthViewChosen].KUReaim1 != undefined) this.beams[this.earthViewChosen].KUReaim1.visible = !this.beams[this.earthViewChosen].KUReaim1.visible; 
@@ -901,8 +1013,13 @@ export class SatteliteVisualizer
 
         document.getElementById ("fixedka").onclick = function ()
         {
-            if (this.beams[tWWhis.earthViewChosen].KAReaim != undefined) this.beams[this.earthViewChosen].KAReaim.visible = !this.beams[this.earthViewChosen].KAReaim.visible; 
+            if (this.beams[this.earthViewChosen].KAReaim != undefined) this.beams[this.earthViewChosen].KAReaim.visible = !this.beams[this.earthViewChosen].KAReaim.visible; 
         }.bind (this);
+
+        if (this.earthViewChosen == undefined)
+            return;
+
+       
     }
 
     reset ()
@@ -913,8 +1030,11 @@ export class SatteliteVisualizer
 
         this.earthViewChosen = undefined;
 
-        if (this.mode == 1)
+        if (this.mode == 1 || this.mode == 0)
         {
+            for (let i = 0; i < 11; i++) 
+                    this.beams[i].setVisible (false);
+
             this.satViewChosen = undefined;
             this.focusSat ();
         }
@@ -988,6 +1108,11 @@ export class SatteliteVisualizer
             else
                 document.getElementById ("fixedku2").style = "display: flex";
 
+            if (this.beams[index].KUFixed3 == undefined)
+                document.getElementById ("fixedku3").style = "display: none";
+            else
+                document.getElementById ("fixedku3").style = "display: flex";
+
             if (this.beams[index].KUReaim1 == undefined)
                 document.getElementById ("reaimku1").style = "display: none";
             else
@@ -1010,7 +1135,7 @@ export class SatteliteVisualizer
         document.getElementById ("infobtn").onclick = function ()
         {   
             var index = this.earthViewChosen;
-            this.reset();
+            this.earthViewChosen = undefined; 
             this.satViewChosen = index;
 
             var a = this.satData[this.satDataRows[index]].a;
@@ -1043,6 +1168,23 @@ export class SatteliteVisualizer
             document.getElementById("svdj").innerHTML = def(j);
             document.getElementById("svdk").innerHTML = def(k);
 
+            var stle = function (a)
+            {
+                if (a == undefined)
+                    return "display: none";
+                else
+                    return "";
+            }
+
+            document.getElementById("svdtb").style = stle (b);
+            document.getElementById("svdtc").style = stle (c);
+            document.getElementById("svdtf").style = stle (f);
+            document.getElementById("svdtg").style = stle (g);
+            document.getElementById("svdth").style = stle (h);
+            document.getElementById("svdti").style = stle (i);
+            document.getElementById("svdtj").style = stle (j);
+            document.getElementById("svdtk").style = stle (k);
+
             this.focusSat();
 
         }.bind (this);
@@ -1064,7 +1206,46 @@ export class SatteliteVisualizer
                 this.focusSat();
             if (this.mode == 2)
                 this.focusGlobe();
+
+            this.beams[10].Ku.visible = false;
         }.bind (this);
+    }
+
+    readBeams ()
+    {
+        for (let i = 0; i < 11; i++)
+        {
+            var CFixed1 = this.beamsData[i + 1].c;
+            var CFixed2 = this.beamsData[i + 1].e;
+            var CReaim1 = this.beamsData[i + 1].g;
+            var CReaim2 = this.beamsData[i + 1].i;
+            var KUFixed1 = this.beamsData[i + 1].k;
+            var KUFixed2 = this.beamsData[i + 1].m;
+            var KUFixed3 = this.beamsData[i + 1].o;
+            var KUReaim1 = this.beamsData[i + 1].q;
+            var KUReaim2 = this.beamsData[i + 1].s;
+            var KAReaim = this.beamsData[i + 1].u;
+
+            var C = this.beamsData[i + 1].v;
+            var Ku = this.beamsData[i + 1].w;
+            var Ka = this.beamsData[i + 1].x; 
+
+            this.beams.push (new Beam(CFixed1, CFixed2, CReaim1, CReaim2, KUFixed1, KUFixed2, KUFixed3, KUReaim1, KUReaim2, KAReaim, C, Ku, Ka));
+
+            this.beams[i].CFixed1n = this.beamsData[i + 1].b;
+            this.beams[i].CFixed2n = this.beamsData[i + 1].d;
+            this.beams[i].CReaim1n = this.beamsData[i + 1].f;
+            this.beams[i].CReaim2n = this.beamsData[i + 1].h;
+            this.beams[i].KUFixed1n = this.beamsData[i + 1].j;
+            this.beams[i].KUFixed2n = this.beamsData[i + 1].l;
+            this.beams[i].KUFixed3n = this.beamsData[i + 1].n;
+            this.beams[i].KUReaim1n = this.beamsData[i + 1].p;
+            this.beams[i].KUReaim2n = this.beamsData[i + 1].r;
+            this.beams[i].KAReaimn = this.beamsData[i + 1].t;
+
+            this.beams[i].addToScene(this.scene);
+        }
+
     }
 
 };

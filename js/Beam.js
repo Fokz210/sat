@@ -10,7 +10,7 @@ import
 
 export class Beam
 {
-    constructor (Cfixed1, Cfixed2, Creaim1, Creaim2, KUfixed1, KUfixed2, KUreaim1, KUreaim2, KAreaim, C, Ku, Ka)
+    constructor (Cfixed1, Cfixed2, Creaim1, Creaim2, KUfixed1, KUfixed2, KUfixed3, KUreaim1, KUreaim2, KAreaim, C, Ku, Ka)
     {
         this.tLoader = new TextureLoader ();
 
@@ -64,6 +64,14 @@ export class Beam
             this.KUFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf2);
         }
 
+        if (KUfixed3 != "none")
+        {
+            var kuf3 = this.tLoader.load (KUfixed3);
+            kuf3.minFilter = LinearFilter;
+            var mkuf3 = new MeshBasicMaterial ({ transparent: true, map: kuf3 });
+            this.KUFixed3 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf3);
+        }
+
         if (KUreaim1 != "none")
         {
             var kur1 = this.tLoader.load (KUreaim1);
@@ -115,6 +123,17 @@ export class Beam
             var mka = new MeshBasicMaterial ({ transparent: true, map: ka }); 
             this.Ka = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mka);
         }
+
+        this.CFixed1n = "";
+        this.CFixed2n = "";
+        this.CReaim1n = "";
+        this.CReaim2n = "";
+        this.KUFixed1n = "";
+        this.KUFixed2n = "";
+        this.KUFixed3n = "";
+        this.KUReaim1n = "";
+        this.KUReaim2n = "";
+        this.KAReaimn = "";
     }
 
     addToScene (scene)
