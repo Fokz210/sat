@@ -1,0 +1,15 @@
+{
+  "background_color": "white",
+  "description": "RSCC space interface",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/images/apple-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "RSCC Space Interface",
+  "short_name": "RSCC",
+  "start_url": "/index.html"
+}
