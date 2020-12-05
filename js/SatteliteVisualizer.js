@@ -24,7 +24,8 @@ import
     PlaneBufferGeometry,
     SphereBufferGeometry,
     ObjectSpaceNormalMap,
-    Clock
+    Clock,
+    Color
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -352,6 +353,8 @@ export class SatteliteVisualizer
         var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, transparent: true });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
+        this.loadGlobe ();
+
         var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
@@ -370,8 +373,8 @@ export class SatteliteVisualizer
 
         this.cones = [];
 
-        this.scene.add (this.innerGlobeMesh);
-        this.scene.add (this.globeMesh);
+        //this.scene.add (this.innerGlobeMesh);
+        //this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
         
         this.light = new DirectionalLight (0xffffff, 0.5);
@@ -2420,5 +2423,33 @@ export class SatteliteVisualizer
         this.filterBand (country, "e80",  10);
         this.filterBand (country, "e103", 11);
         this.filterBand (country, "rv",   12);
+    }
+
+    loadGlobe ()
+    {
+        var mLoader = new MTLLoader ();
+
+        mLoader.setPath ("globe/");
+        mLoader.load ("globe.mtl", function (material) 
+        {
+            material.preload();
+
+            var oLoader = new OBJLoader ();
+            oLoader.setPath ("globe/");
+            oLoader.load ("globe.obj", function (mesh) 
+            {
+                mesh.children[0].material = new MeshBasicMaterial ({color: 0xe8f1fd});
+
+                for (let i = 1; i < mesh.children.length; i++)
+                {
+                    mesh.children[i].material = new MeshBasicMaterial ({color: 0xc4ddff});
+                }
+
+                this.globeMesh = mesh;
+                this.scene.add (mesh);
+
+                console.log (mesh);
+            }.bind(this));
+        }.bind (this));
     }
 };
