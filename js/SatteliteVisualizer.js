@@ -24,7 +24,8 @@ import
     PlaneBufferGeometry,
     SphereBufferGeometry,
     ObjectSpaceNormalMap,
-    Clock
+    Clock,
+    ObjectLoader    
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -265,6 +266,8 @@ export class SatteliteVisualizer
 {
     constructor (sizeX, sizeY)
     {
+        this.loadGlobe();
+
         document.getElementById("logo-img").onclick = () =>
         {
             location.reload (true);
@@ -449,38 +452,10 @@ export class SatteliteVisualizer
             this.dollyTo (distance, true);
         }
 
-        var innerGlobeGeometry = new SphereGeometry (9.9, 100, 100);
-        var innerGlobeMaterial = new MeshBasicMaterial ({ color: 0xE8F1FD });
-        this.innerGlobeMesh = new Mesh (innerGlobeGeometry, innerGlobeMaterial);
-
-        var globeGeometry = new SphereGeometry (10, 100, 100);
-        this.globeTexture = new TextureLoader ().load ("textures/_edges.png");
-        this.globeTexture.minFilter = LinearFilter;
-        var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, transparent: true });
-        this.globeMesh = new Mesh (globeGeometry, globeMaterial);
-
-        //this.loadGlobe ();
-
-        var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
-        var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
-        var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
-
-        globeCoverTex.minFilter = LinearFilter;
-        globeCoverPol.minFilter = LinearFilter;
-        
-        var globeCoverMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverTex });
-
-        this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
-
-        var polMapGeometry = new SphereGeometry (10.01, 100, 100);
-        var polMapMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverPol });
-
-        this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
-
         this.cones = [];
 
-        this.scene.add (this.innerGlobeMesh);
-        this.scene.add (this.globeMesh);
+        //this.scene.add (this.innerGlobeMesh);
+        //this.scene.add (this.globeMesh);
         this.scene.add (this.globeCoverMesh);
         
         this.light = new DirectionalLight (0xffffff, 0.5);
@@ -537,7 +512,6 @@ export class SatteliteVisualizer
         this.readTimeline();
 
         
-        this.loadCountries();
 
         this.loaderClock.start();
 
@@ -2580,6 +2554,19 @@ export class SatteliteVisualizer
         this.setCamPosPolarRad (this.degToRad(alpha), this.degToRad(beta), radius);
     }
 
+    findCountry (name)
+    {
+        for (let i = 0; i < this.globeMesh.children.length; i++)
+        {
+            console.log ()
+
+            if (this.globeMesh.children[i].name == name)
+                return this.globeMesh.children[i];
+        }
+
+        return undefined;
+    }
+
     loadCountries ()
     {
         this.countries = [];
@@ -2592,15 +2579,14 @@ export class SatteliteVisualizer
             con.name = conData.b;
             con.continent = conData.a;
 
+            
             if (conData.c) 
-            {
-                var tex = new TextureLoader().load ('countries/' + conData.c + '.png');
-                tex.minFilter = LinearFilter;
+                con.map = this.findCountry (conData.c);
 
-                con.map = new Mesh (new SphereGeometry (10.05, 64, 64), new MeshBasicMaterial ({transparent: true, map: tex}));
-                con.map.visible = false;
-                this.scene.add (con.map);
-            }
+            if (!con.map)
+                continue;
+    
+            console.log (con.map);
 
             con.alpha = parseFloat(conData.d);
             con.beta = parseFloat(conData.e);
@@ -2649,7 +2635,7 @@ export class SatteliteVisualizer
         for (let i = 0; i < this.countries.length; i++)
         {
             if (this.countries[i].map)
-                this.countries[i].map.visible = false;
+                this.countries[i].map.material.color.setHex(0xc4ddff);
         }
     }
 
@@ -2688,7 +2674,7 @@ export class SatteliteVisualizer
 
                 this.resetCountriesVisibility();
 
-                if (this.countries[index].map) this.countries[index].map.visible = true;
+                if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x85b6f8);
 
                 this.selectedCountry = this.countries[index];
 
@@ -3001,42 +2987,6 @@ export class SatteliteVisualizer
         document.getElementById ("newsat").style.display = "none";
     
     }
-
-    loadGlobe ()
-    {
-        console.log ("Loading Globe...");
-
-        var mtll = new MTLLoader();
-        mtll.setPath ("globe/");
-        mtll.load ("world_globe_obj_groups.mtl", function (materials)
-        {
-            console.log ("Loaded Globe material");
-
-            var objl = new OBJLoader ();
-
-            materials.preload();
-
-            objl.setPath ("globe/");
-            objl.setMaterials (materials);
-
-            objl.load ("world_globe_obj_groups.obj", function (mesh)
-            { 
-                this.globeMesh = mesh;
-
-                mesh.scale.x = 0.31;
-                mesh.scale.y = 0.31;
-                mesh.scale.z = 0.31;
-
-                mesh.position.y -= 10;
-
-                mesh.rotation.y = Math.PI / 2;
-
-                this.scene.add (mesh);
-                console.log ("loaded globe mesh");
-            }.bind (this))
-        }.bind(this));
-
-    }
     
     loadNewSats ()
     {
@@ -3108,5 +3058,86 @@ export class SatteliteVisualizer
 
         for (let i = 0; i < this.newSatMeshes.length; i++)
             this.newSatMeshes.visible = false;
+    }
+
+    loadGlobe ()
+    {
+        var innerGlobeGeometry = new SphereGeometry (9.9, 100, 100);
+        var innerGlobeMaterial = new MeshBasicMaterial ({ color: 0xE8F1FD });
+        this.innerGlobeMesh = new Mesh (innerGlobeGeometry, innerGlobeMaterial);
+
+        var globeGeometry = new SphereGeometry (10, 100, 100);
+        this.globeTexture = new TextureLoader ().load ("textures/_edges.png");
+        this.globeTexture.minFilter = LinearFilter;
+        var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, transparent: true });
+        this.globeMesh = new Mesh (globeGeometry, globeMaterial);
+
+
+        var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
+        var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
+        var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
+
+        globeCoverTex.minFilter = LinearFilter;
+        globeCoverPol.minFilter = LinearFilter;
+        
+        var globeCoverMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverTex });
+
+        this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
+
+        var polMapGeometry = new SphereGeometry (10.01, 100, 100);
+        var polMapMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverPol });
+
+        this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
+
+        /*var jLoader = new ObjectLoader();
+        jLoader.load ("globe/globe.json", function (obj)
+        {
+            this.globeMesh = obj;
+
+            obj.scale.x = 0.97;
+            obj.scale.y = 0.97;
+            obj.scale.z = 0.97;
+
+            this.scene.add (obj);
+
+            console.log (obj);
+
+            
+        }.bind (this));*/
+
+        
+        var mLoader = new MTLLoader ();
+
+        mLoader.setPath ("globe/");
+        mLoader.load ("globe.mtl", function (material) 
+        {
+            material.preload();
+
+            var oLoader = new OBJLoader ();
+            oLoader.setPath ("globe/");
+            oLoader.load ("globe.obj", function (mesh) 
+            {
+
+                mesh.children[0].material = new MeshBasicMaterial ({color: 0xe8f1fd});
+
+                for (let i = 1; i < mesh.children.length; i++)
+                {
+                    mesh.children[i].material = new MeshBasicMaterial ({color: 0xc4ddff});
+                }
+
+                mesh.rotation.y = Math.PI/2;
+                
+                mesh.scale.x = 0.97;
+                mesh.scale.y = 0.97;
+                mesh.scale.z = 0.97;
+
+                this.globeMesh = mesh;
+                this.scene.add (mesh);
+
+                console.log (mesh);
+                
+                this.loadCountries();
+            }.bind(this));
+        }.bind (this));
     }
 };
