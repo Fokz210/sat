@@ -219,4 +219,6 @@ export class Beam
         setVisibility (this.KUreaim2, state);
         setVisibility (this.KAReaim, state);
     }
+
+    
 }
