@@ -1,0 +1,81 @@
+{
+  "name": "camera-controls",
+  "version": "1.22.1",
+  "author": "Yomotsu",
+  "license": "MIT",
+  "main": "dist/camera-controls.js",
+  "jsnext:main": "dist/camera-controls.module.js",
+  "module": "dist/camera-controls.module.js",
+  "types": "dist/index.d.ts",
+  "repository": "yomotsu/camera-controls",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "downlevel-dts": "^0.6.0",
+    "eslint": "^7.6.0",
+    "eslint-config-mdcs": "^5.0.0",
+    "rollup": "^2.23.1",
+    "rollup-plugin-typescript2": "^0.27.2",
+    "terser": "^5.0.0",
+    "three": "^0.119.1",
+    "typescript": "^3.9.7"
+  },
+  "peerDependencies": {
+    "three": "^0.119.1"
+  },
+  "scripts": {
+    "dev": "rollup --config --watch",
+    "build": "rollup --config && terser dist/camera-controls.js -o dist/camera-controls.min.js --comments '/^!/' && downlevel-dts . .",
+    "lint": "eslint src --ext ts"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "ie >= 11"
+  ],
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "extends": "mdcs",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "no-unused-vars": 0,
+      "@typescript-eslint/no-unused-vars": 1,
+      "indent": 0,
+      "@typescript-eslint/indent": [
+        "error",
+        "tab",
+        {
+          "SwitchCase": 1,
+          "flatTernaryExpressions": true
+        }
+      ],
+      "no-multi-spaces": [
+        0
+      ],
+      "key-spacing": [
+        0
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "/dist/",
+    "/node_modules/"
+  ],
+  "typesVersions": {
+    "<=3.4.0-0": {
+      "*": [
+        "./"
+      ]
+    }
+  },
+  "keywords": [
+    "three",
+    "three.js",
+    "orbit",
+    "controls",
+    "OrbitControls",
+    "camera"
+  ]
+}

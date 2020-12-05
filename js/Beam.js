@@ -14,14 +14,14 @@ export class Beam
     {
         this.tLoader = new TextureLoader ();
 
-        // BEAMS
+        const r = 10.1;
 
         if (Cfixed1 != "none")
         {
             var cf1 = this.tLoader.load (Cfixed1);
             cf1.minFilter = LinearFilter;
             var mcf1 = new MeshBasicMaterial ({ transparent: true, map: cf1 });
-            this.CFixed1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcf1);
+            this.CFixed1 = new Mesh (new SphereBufferGeometry (r, 64, 64), mcf1);
         }
 
         if (Cfixed2 != "none")
@@ -29,7 +29,7 @@ export class Beam
             var cf2 = this.tLoader.load (Cfixed2);
             cf2.minFilter = LinearFilter;
             var mcf2 = new MeshBasicMaterial ({ transparent: true, map: cf2 });
-            this.CFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcf2);
+            this.CFixed2 = new Mesh (new SphereBufferGeometry (r, 64, 64), mcf2);
         }
 
         if (Creaim1 != "none")
@@ -37,7 +37,7 @@ export class Beam
             var cr1 = this.tLoader.load (Creaim1);
             cr1.minFilter = LinearFilter;
             var mcr1 = new MeshBasicMaterial ({ transparent: true, map: cr1 });
-            this.CReaim1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcr1);
+            this.CReaim1 = new Mesh (new SphereBufferGeometry (r, 64, 64), mcr1);
         }
 
         if (Creaim2 != "none")
@@ -45,7 +45,7 @@ export class Beam
             var cr2 = this.tLoader.load (Creaim2);
             cr2.minFilter = LinearFilter;
             var mcr2 = new MeshBasicMaterial ({ transparent: true, map: cr2 });
-            this.CReaim2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mcr2);
+            this.CReaim2 = new Mesh (new SphereBufferGeometry (r, 64, 64), mcr2);
         }
 
         if (KUfixed1 != "none")
@@ -53,7 +53,7 @@ export class Beam
             var kuf1 = this.tLoader.load (KUfixed1);
             kuf1.minFilter = LinearFilter;
             var mkuf1 = new MeshBasicMaterial ({ transparent: true, map: kuf1 });
-            this.KUFixed1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf1);
+            this.KUFixed1 = new Mesh (new SphereBufferGeometry (r, 64, 64), mkuf1);
         }
 
         if (KUfixed2 != "none")
@@ -61,7 +61,7 @@ export class Beam
             var kuf2 = this.tLoader.load (KUfixed2);
             kuf2.minFilter = LinearFilter;
             var mkuf2 = new MeshBasicMaterial ({ transparent: true, map: kuf2 });
-            this.KUFixed2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf2);
+            this.KUFixed2 = new Mesh (new SphereBufferGeometry (r, 64, 64), mkuf2);
         }
 
         if (KUfixed3 != "none")
@@ -69,7 +69,7 @@ export class Beam
             var kuf3 = this.tLoader.load (KUfixed3);
             kuf3.minFilter = LinearFilter;
             var mkuf3 = new MeshBasicMaterial ({ transparent: true, map: kuf3 });
-            this.KUFixed3 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkuf3);
+            this.KUFixed3 = new Mesh (new SphereBufferGeometry (r, 64, 64), mkuf3);
         }
 
         if (KUreaim1 != "none")
@@ -77,7 +77,7 @@ export class Beam
             var kur1 = this.tLoader.load (KUreaim1);
             kur1.minFilter = LinearFilter;
             var mkur1 = new MeshBasicMaterial ({ transparent: true, map: kur1 });
-            this.KUReaim1 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkur1);
+            this.KUReaim1 = new Mesh (new SphereBufferGeometry (r, 64, 64), mkur1);
         }
 
 
@@ -86,7 +86,7 @@ export class Beam
             var kur2 = this.tLoader.load (KUreaim2);
             kur2.minFilter = LinearFilter;
             var mkur2 = new MeshBasicMaterial ({ transparent: true, map: kur2 });
-            this.KUReaim2 = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mkur2);
+            this.KUReaim2 = new Mesh (new SphereBufferGeometry (r, 64, 64), mkur2);
         }
 
 
@@ -95,7 +95,7 @@ export class Beam
             var ka = this.tLoader.load (KAreaim);
             ka.minFilter = LinearFilter;
             var mka = new MeshBasicMaterial ({ transparent: true, map: ka });
-            this.KAReaim = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mka);
+            this.KAReaim = new Mesh (new SphereBufferGeometry (r, 64, 64), mka);
         }
 
         // RANGES
@@ -105,7 +105,7 @@ export class Beam
             var c = this.tLoader.load (C);
             c.minFilter = LinearFilter;
             var mc = new MeshBasicMaterial ({ transparent: true, map: c });
-            this.c = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mc);
+            this.c = new Mesh (new SphereBufferGeometry (r, 64, 64), mc);
         }
 
         if (Ku != "none")
@@ -113,7 +113,7 @@ export class Beam
             var ku = this.tLoader.load (Ku);
             ku.minFilter = LinearFilter;
             var mku = new MeshBasicMaterial ({ transparent: true, map: ku });
-            this.Ku = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mku);
+            this.Ku = new Mesh (new SphereBufferGeometry (r, 64, 64), mku);
         }
 
         if (Ka != "none")
@@ -121,7 +121,7 @@ export class Beam
             var ka = this.tLoader.load (Ka);
             ka.minFilter = LinearFilter;
             var mka = new MeshBasicMaterial ({ transparent: true, map: ka }); 
-            this.Ka = new Mesh (new SphereBufferGeometry (10.1, 64, 64), mka);
+            this.Ka = new Mesh (new SphereBufferGeometry (r, 64, 64), mka);
         }
 
         this.CFixed1n = "";

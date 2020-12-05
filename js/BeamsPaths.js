@@ -17,7 +17,7 @@ export function loadBeams()
 /* АТ2  */  this.beams.push (new Beam ("none"                , "none"                , "none" , "none", "./beams/AT2_FK-west.png" , "none"                    , "none"                 , "none"                 , "none"                 , "none"                   , "./bands/AT2-Ku.png"  , "none"                ));
 /* АМ8  */  this.beams.push (new Beam ("./beams/AM8_FC1.png" , "./beams/AM8_FC2.png" , "none" , "none", "./beams/AM8_FK1.png"     , "./beams/AM8_FK2.png"     , "./beams/AM8_FK3.png"  , "none"                 , "none"                 , "none"                   , "./bands/AM8-Ku.png"  , "none"                ));
 /* АМ44 */  this.beams.push (new Beam ("./beams/AM44_S1.png" , "none"                , "none" , "none", "./beams/AM44_ST1.png"    , "./beams/AM44_ST2.png"    , "none"                 , "none"                 , "none"                 , "./bands/AM44-C.png"     , "./bands/AM44-Ku.png" , "none"                ));
-/* RV   */  this.beams.push (new Beam ("none"                , "none"                , "none" , "none", "./beams/RV-Ku_main.png"  , "./beams/RV-Ku_sec.png"   , "none"                 , "none"                 , "none"                 , "none"                   , "./bands/RV-Ku.png"   , "none"                ));
+/* RV   */  this.beams.push (new Beam ("none"                , "none"                , "none" , "none", "./beams/RV-Ku_main.png"  , "./beams/RV-Ku_sec.png"   , "./beams/RV_KuA2.png"  , "./beams/RV_KuB2.png"  , "none"                 , "none"                   , "./bands/RV-Ku.png"   , "none"                ));
 
     for (let i = 0; i < 11; i++)
     {
