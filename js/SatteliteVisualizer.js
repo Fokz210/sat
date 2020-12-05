@@ -207,7 +207,7 @@ export class SatteliteVisualizer
 
         this.satData = JSON.parse(document.getElementById('sat-data').innerText);
         this.beamsData = JSON.parse(document.getElementById('beams-data').innerText);
-        this.countriesData = JSON.parse(document.getElementById('countries-data').innerText);
+        this.countriesData = undefined;
         this.satViewChosen = undefined;
         this.earthViewChosen = undefined;
 
@@ -427,8 +427,7 @@ export class SatteliteVisualizer
 
         this.readTimeline();
 
-        
-        this.loadCountries();
+        //this.loadCountries();
 
         this.animate();
     }
@@ -2438,12 +2437,19 @@ export class SatteliteVisualizer
             oLoader.setPath ("globe/");
             oLoader.load ("globe.obj", function (mesh) 
             {
+                var countryMaterial = new MeshBasicMaterial ({color: 0xc4ddff});
+
                 mesh.children[0].material = new MeshBasicMaterial ({color: 0xe8f1fd});
 
                 for (let i = 1; i < mesh.children.length; i++)
                 {
-                    mesh.children[i].material = new MeshBasicMaterial ({color: 0xc4ddff});
+                    mesh.children[i].material = countryMaterial;
                 }
+
+                
+                mesh.scale.x = 0.97;
+                mesh.scale.y = 0.97;
+                mesh.scale.z = 0.97;
 
                 this.globeMesh = mesh;
                 this.scene.add (mesh);
