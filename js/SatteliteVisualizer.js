@@ -25,7 +25,9 @@ import
     SphereBufferGeometry,
     ObjectSpaceNormalMap,
     Clock,
-    ObjectLoader    
+    ObjectLoader,
+    Raycaster,
+    Vector2    
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -277,6 +279,8 @@ export class SatteliteVisualizer
 
         this.loaderClock = new Clock ();
 
+        this.mouse = new Vector2(0, 0);
+
         this.satData = JSON.parse(document.getElementById('sat-data').innerText);
         this.beamsData = JSON.parse(document.getElementById('beams-data').innerText);
         this.countriesData = JSON.parse(document.getElementById('countries-data').innerText);
@@ -417,6 +421,8 @@ export class SatteliteVisualizer
 
         this.newSatMeshes = [];
 
+        this.intersected = null;
+
         this.lmatrix = [];
         this.lshift = [];
 
@@ -425,7 +431,7 @@ export class SatteliteVisualizer
         this.lPath = new Ellipse (20, 50);
        
         this.node = document.getElementById ('container');
-        this.node.style.top = "20%";
+        //this.node.style.top = "20%";
 
         this.scene = new Scene ();
 
@@ -451,6 +457,8 @@ export class SatteliteVisualizer
         {
             this.dollyTo (distance, true);
         }
+
+        this.raycaster = new Raycaster();
 
         this.cones = [];
 
@@ -506,12 +514,66 @@ export class SatteliteVisualizer
         this.loadCones();
 
         document.getElementById ("country-heading").style.display = "none";
-
         document.getElementById ("midSwitch").style = "pointer-events: none;";
 
-        this.readTimeline();
+        var onMouseMove = function (event)
+        {
+            event.preventDefault();
 
-        
+            const delta = window.innerHeight / window.innerWidth;
+
+            this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta;
+
+            console.log (this.mouse);
+
+            //this.mouse.x = 0;
+            //this.mouse.y = 0;
+        }.bind(this);
+
+        var onclick = function ()
+        {
+            if (this.intersected) 
+            {
+                for (let i = 0; i < this.countries.length; i++)
+                {
+                    if (this.countries[i].map.name == this.intersected.name)
+                    {
+                        var index = i;
+
+                        this.resetCountriesVisibility();
+
+                        if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x85b6f8);
+                        if (this.intersected) this.intersected.currentHex = 0x85b6f8;
+
+                        this.selectedCountry = this.countries[index];
+
+                        this.filterSats (this.countries[index]);
+
+                        document.getElementById ("ctrname").innerText = this.countries[index].name;
+                        document.getElementById ("country-heading").style.display = "flex";
+
+                        document.getElementById ("cfilter").style = 'display: none;';
+                        document.getElementById ("mbuttons").style = 'display: none;';
+                        document.getElementById ("blur").style = 'display: none;';
+
+                        document.getElementById ("filter-reset").style.display = "flex";
+
+                        this.focusGlobe ();
+
+                        this.menuState = 0;
+
+                        this.setCamPosPolarDeg (this.countries[index].alpha, this.countries[index].beta, 20);
+                        console.log (this.countries[index].alpha, this.countries[index].beta);
+                    }
+                }
+            }
+        }.bind (this);
+
+        document.addEventListener ("mousemove", onMouseMove);
+        this.renderer.domElement.addEventListener ("click", onclick);
+
+        this.readTimeline();
 
         this.loaderClock.start();
 
@@ -633,6 +695,31 @@ export class SatteliteVisualizer
                 }
 
             }
+
+
+            this.raycaster.setFromCamera (this.mouse, this.camera);
+
+            const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
+
+            //console.log (intersects);
+
+            if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0])
+            {
+                if (this.intersected != intersects[0].object)
+                {
+                    if (this.intersected) this.intersected.material.color.setHex (this.intersected.currentHex);
+
+                    this.intersected = intersects[0].object;
+                    this.intersected.currentHex = this.intersected.material.color.getHex();
+                    this.intersected.material.color.setHex(0x0864e1);
+                }
+            }
+            else
+            {
+                if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
+                this.intersected = null;
+            }
+            
 
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
@@ -2623,6 +2710,7 @@ export class SatteliteVisualizer
             con.bandProps[8].Ku  = toBool(conData.ab);
             con.bandProps[12].Ku = toBool(conData.ac);
 
+
             this.countries.push (con);
         }
 
@@ -3089,10 +3177,12 @@ export class SatteliteVisualizer
 
         this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
 
-        /*var jLoader = new ObjectLoader();
+        var jLoader = new ObjectLoader();
         jLoader.load ("globe/globe.json", function (obj)
         {
             this.globeMesh = obj;
+            
+            obj.rotation.y = Math.PI/2;
 
             obj.scale.x = 0.97;
             obj.scale.y = 0.97;
@@ -3102,11 +3192,11 @@ export class SatteliteVisualizer
 
             console.log (obj);
 
-            
-        }.bind (this));*/
+            this.loadCountries();
+        }.bind (this));
 
         
-        var mLoader = new MTLLoader ();
+        /*var mLoader = new MTLLoader ();
 
         mLoader.setPath ("globe/");
         mLoader.load ("globe.mtl", function (material) 
@@ -3137,7 +3227,19 @@ export class SatteliteVisualizer
                 console.log (mesh);
                 
                 this.loadCountries();
+
+                var json = JSON.stringify( mesh.toJSON());
+
+                function download(content, fileName, contentType) {
+                    var a = document.createElement("a");
+                    var file = new Blob([content], {type: contentType});
+                    a.href = URL.createObjectURL(file);
+                    a.download = fileName;
+                    a.click();
+                }
+
+                download(json, 'globe.json', 'text/plain');
             }.bind(this));
-        }.bind (this));
+        }.bind (this));*/
     }
 };
