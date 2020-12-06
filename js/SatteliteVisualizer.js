@@ -525,7 +525,6 @@ export class SatteliteVisualizer
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta;
 
-            console.log (this.mouse);
 
             //this.mouse.x = 0;
             //this.mouse.y = 0;
@@ -3227,6 +3226,10 @@ export class SatteliteVisualizer
                 console.log (mesh);
                 
                 this.loadCountries();
+
+                document.getElementById ("loading-screen").classList.add("fade-out");
+                document.getElementById ("container").classList.add("fade-in");
+                document.body.style.pointerEvents = "all";
 
                 /*var json = JSON.stringify( mesh.toJSON());
 
