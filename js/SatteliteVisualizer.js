@@ -542,8 +542,8 @@ export class SatteliteVisualizer
 
                         this.resetCountriesVisibility();
 
-                        if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x85b6f8);
-                        if (this.intersected) this.intersected.currentHex = 0x85b6f8;
+                        if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x3c8fff);
+                        if (this.intersected) this.intersected.currentHex = 0x3c8fff;
 
                         this.selectedCountry = this.countries[index];
 
@@ -705,7 +705,7 @@ export class SatteliteVisualizer
 
                     this.intersected = intersects[0].object;
                     this.intersected.currentHex = this.intersected.material.color.getHex();
-                    this.intersected.material.color.setHex(0x0864e1);
+                    this.intersected.material.color.setHex(0x85b6f8);
                 }
             }
             else
@@ -2739,7 +2739,7 @@ export class SatteliteVisualizer
 
                 this.resetCountriesVisibility();
 
-                if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x85b6f8);
+                if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x3c8fff);
 
                 this.selectedCountry = this.countries[index];
 
