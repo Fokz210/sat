@@ -723,7 +723,7 @@ export class SatteliteVisualizer
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
 
-            if (this.loaderClock.getElapsedTime() > 5) 
+            if (this.loaderClock.getElapsedTime() > 5 && this.globeLoaded) 
             {
                 document.getElementById ("loading-screen").classList.add("fade-out");
                 document.getElementById ("container").classList.add("fade-in");
@@ -3227,9 +3227,7 @@ export class SatteliteVisualizer
                 
                 this.loadCountries();
 
-                document.getElementById ("loading-screen").classList.add("fade-out");
-                document.getElementById ("container").classList.add("fade-in");
-                document.body.style.pointerEvents = "all";
+                this.globeLoaded = true;
 
                 /*var json = JSON.stringify( mesh.toJSON());
 
