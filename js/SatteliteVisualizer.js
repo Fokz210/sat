@@ -563,7 +563,6 @@ export class SatteliteVisualizer
                         this.menuState = 0;
 
                         this.setCamPosPolarDeg (this.countries[index].alpha, this.countries[index].beta, 20);
-                        console.log (this.countries[index].alpha, this.countries[index].beta);
                     }
                 }
             }
@@ -575,8 +574,6 @@ export class SatteliteVisualizer
         this.readTimeline();
 
         this.loaderClock.start();
-
-        console.log (this.timeline);
 
         this.loadNewSats();
 
@@ -700,8 +697,6 @@ export class SatteliteVisualizer
 
             const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
 
-            //console.log (intersects);
-
             if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0])
             {
                 if (this.intersected != intersects[0].object)
@@ -723,7 +718,7 @@ export class SatteliteVisualizer
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
 
-            if (this.loaderClock.getElapsedTime() > 5 && this.globeLoaded) 
+            if (this.globeLoaded) 
             {
                 document.getElementById ("loading-screen").classList.add("fade-out");
                 document.getElementById ("container").classList.add("fade-in");
@@ -938,8 +933,6 @@ export class SatteliteVisualizer
 
         var angle = parseFloat (this.satData[this.satDataRows[this.satViewChosen]].n);
 
-        console.log (angle);
-
         //this.camera.position.x = Math.cos (this.degToRad (angle + 0.8)) * 74;
         //this.camera.position.z = Math.sin (this.degToRad (angle + 0.8)) * -74;
         //this.camera.position.y = 0;
@@ -955,7 +948,6 @@ export class SatteliteVisualizer
         else
         {
             this.newSatMeshes[this.satViewChosen - 13].visible = true;
-            console.log (this.satViewChosen);
         }
 
         this.geoStatOrbitSmall.visible = true;
@@ -1747,8 +1739,6 @@ export class SatteliteVisualizer
 
     bindNsSat (index2)
     {
-        console.log ("ns" + index2)
-
         document.getElementById ("ns" + index2).onclick = function ()
         {
             document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "block";
@@ -1779,8 +1769,6 @@ export class SatteliteVisualizer
             {
                 var a = this.satData[this.satDataRows[index]].a;
                 var e = this.satData[this.satDataRows[index]].e;
-
-                console.log (index, this.satDataRows, this.satDataRows[index], this.satData[this.satDataRows[index]]);
             }
 
             if (index == 12)
@@ -2441,8 +2429,6 @@ export class SatteliteVisualizer
         }
 
 
-        console.log (this.beams);
-
     }
 
     bindSysInfo ()
@@ -2618,15 +2604,11 @@ export class SatteliteVisualizer
     {
         var pos = new Vector3 (1.0, 0, 0);
 
-        console.log (pos);
 
         pos.applyMatrix4 (new Matrix4 ().makeRotationZ (beta));
 
-        console.log (pos);
-
         pos.applyMatrix4 (new Matrix4 ().makeRotationY (alpha));
 
-        console.log (pos);
 
         //this.camera.position.x = pos.x * radius;
         //this.camera.position.y = pos.y * radius;
@@ -2644,8 +2626,6 @@ export class SatteliteVisualizer
     {
         for (let i = 0; i < this.globeMesh.children.length; i++)
         {
-            console.log ()
-
             if (this.globeMesh.children[i].name == name)
                 return this.globeMesh.children[i];
         }
@@ -2671,8 +2651,6 @@ export class SatteliteVisualizer
 
             if (!con.map)
                 continue;
-    
-            console.log (con.map);
 
             con.alpha = parseFloat(conData.d);
             con.beta = parseFloat(conData.e);
@@ -2782,7 +2760,6 @@ export class SatteliteVisualizer
                 this.menuState = 0;
 
                 this.setCamPosPolarDeg (this.countries[index].alpha, this.countries[index].beta, 20);
-                console.log (this.countries[index].alpha, this.countries[index].beta);
             }.bind(this);
         }
     }
@@ -3133,8 +3110,6 @@ export class SatteliteVisualizer
             meshLookAt (mesh, this.globeMesh, new Vector3 (0, 0, 1));
 
             this.scene.add (mesh);
-
-            console.log (this.newSatMeshes);
         }
     }
 
@@ -3189,8 +3164,6 @@ export class SatteliteVisualizer
 
             this.scene.add (obj);
 
-            console.log (obj);
-
             this.loadCountries();
         }.bind (this));*/
 
@@ -3222,8 +3195,6 @@ export class SatteliteVisualizer
 
                 this.globeMesh = mesh;
                 this.scene.add (mesh);
-
-                console.log (mesh);
                 
                 this.loadCountries();
 
