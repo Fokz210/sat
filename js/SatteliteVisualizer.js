@@ -3177,7 +3177,7 @@ export class SatteliteVisualizer
 
         this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
 
-        var jLoader = new ObjectLoader();
+        /*var jLoader = new ObjectLoader();
         jLoader.load ("globe/globe.json", function (obj)
         {
             this.globeMesh = obj;
@@ -3193,10 +3193,10 @@ export class SatteliteVisualizer
             console.log (obj);
 
             this.loadCountries();
-        }.bind (this));
+        }.bind (this));*/
 
         
-        /*var mLoader = new MTLLoader ();
+        var mLoader = new MTLLoader ();
 
         mLoader.setPath ("globe/");
         mLoader.load ("globe.mtl", function (material) 
@@ -3228,7 +3228,7 @@ export class SatteliteVisualizer
                 
                 this.loadCountries();
 
-                var json = JSON.stringify( mesh.toJSON());
+                /*var json = JSON.stringify( mesh.toJSON());
 
                 function download(content, fileName, contentType) {
                     var a = document.createElement("a");
@@ -3237,9 +3237,9 @@ export class SatteliteVisualizer
                     a.download = fileName;
                     a.click();
                 }
+                download(json, 'globe.json', 'text/plain');*/
 
-                download(json, 'globe.json', 'text/plain');
             }.bind(this));
-        }.bind (this));*/
+        }.bind (this));
     }
 };
