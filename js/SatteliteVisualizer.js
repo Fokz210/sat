@@ -431,7 +431,7 @@ export class SatteliteVisualizer
         this.lPath = new Ellipse (20, 50);
        
         this.node = document.getElementById ('container');
-        //this.node.style.top = "20%";
+        this.node.style.top = "20%";
 
         this.scene = new Scene ();
 
@@ -523,7 +523,7 @@ export class SatteliteVisualizer
             const delta = window.innerHeight / window.innerWidth;
 
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta;
+            this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta * 1.2;
 
 
             //this.mouse.x = 0;
