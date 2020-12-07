@@ -317,6 +317,8 @@ export class SatteliteVisualizer
         this.loaded1 = 0;
         this.loaded2 = 0;
 
+        this.raycastUpdate = false;
+
         for (let i = 0; i < 12; i++)
             this.geostat.push (undefined);
 
@@ -525,7 +527,7 @@ export class SatteliteVisualizer
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta * 1.2;
 
-            this.raycast();
+            this.raycastUpdate = true;
             //this.mouse.x = 0;
             //this.mouse.y = 0;
         }.bind(this);
@@ -692,6 +694,12 @@ export class SatteliteVisualizer
 
             }
 
+            if (this.raycastUpdate)
+            {
+                this.raycast();
+                this.raycastUpdate = false;
+            }
+
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
 
@@ -721,8 +729,16 @@ export class SatteliteVisualizer
 
         const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
 
-        if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0])
+        if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0] )
         {
+            if (this.selectedCountry && intersects[0].object == this.selectedCountry.map)
+            {
+                if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
+                this.intersected = null;
+
+                return;
+            }
+                
             if (this.intersected != intersects[0].object)
             {
                 if (this.intersected) this.intersected.material.color.setHex (this.intersected.currentHex);
@@ -959,8 +975,8 @@ export class SatteliteVisualizer
         this.light.position.z = this.camera.position.z;
 
         
-        this.ambientLight.intensity = 0.5;
-        this.light.intensity = 0.5;
+        this.ambientLight.intensity = 0.7;
+        this.light.intensity = 0.3;
         
 
     }
@@ -1004,8 +1020,8 @@ export class SatteliteVisualizer
 
         this.globeCoverMesh.visible = false;
         
-        this.ambientLight.intensity = 0.5;
-        this.light.intensity = 0.5;
+        this.ambientLight.intensity = 0.7;
+        this.light.intensity = 0.3;
 
         this.showAllSats (true);
         this.showAllOrbit (true);
@@ -1056,8 +1072,8 @@ export class SatteliteVisualizer
 
         this.globeCoverMesh.visible = true;
 
-        this.ambientLight.intensity = 1;
-        this.light.intensity = 0;
+        this.ambientLight.intensity = 0.7;
+        this.light.intensity = 0.3;
         if (this.VO)
         {
             this.beams[12].Ku.visible = false;
@@ -3183,11 +3199,11 @@ export class SatteliteVisualizer
             oLoader.load ("globe.obj", function (mesh) 
             {
 
-                mesh.children[0].material = new MeshBasicMaterial ({color: 0xe8f1fd});
+                mesh.children[0].material = new MeshPhongMaterial ({color: 0xe8f1fd});
 
                 for (let i = 1; i < mesh.children.length; i++)
                 {
-                    mesh.children[i].material = new MeshBasicMaterial ({color: 0xc4ddff});
+                    mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
 
                 mesh.rotation.y = Math.PI/2;
