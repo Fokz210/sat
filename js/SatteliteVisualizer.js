@@ -525,7 +525,7 @@ export class SatteliteVisualizer
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta * 1.2;
 
-            //this.raycast();
+            this.raycast();
             //this.mouse.x = 0;
             //this.mouse.y = 0;
         }.bind(this);
