@@ -542,8 +542,8 @@ export class SatteliteVisualizer
 
                         this.resetCountriesVisibility();
 
-                        if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x3c8fff);
-                        if (this.intersected) this.intersected.currentHex = 0x3c8fff;
+                        if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x003472);
+                        if (this.intersected) this.intersected.currentHex = 0x003472;
 
                         this.selectedCountry = this.countries[index];
 
@@ -2739,7 +2739,7 @@ export class SatteliteVisualizer
 
                 this.resetCountriesVisibility();
 
-                if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x3c8fff);
+                if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x003472);
 
                 this.selectedCountry = this.countries[index];
 
