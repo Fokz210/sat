@@ -525,7 +525,7 @@ export class SatteliteVisualizer
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta * 1.2;
 
-
+            //this.raycast();
             //this.mouse.x = 0;
             //this.mouse.y = 0;
         }.bind(this);
@@ -692,29 +692,6 @@ export class SatteliteVisualizer
 
             }
 
-
-            this.raycaster.setFromCamera (this.mouse, this.camera);
-
-            const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
-
-            if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0])
-            {
-                if (this.intersected != intersects[0].object)
-                {
-                    if (this.intersected) this.intersected.material.color.setHex (this.intersected.currentHex);
-
-                    this.intersected = intersects[0].object;
-                    this.intersected.currentHex = this.intersected.material.color.getHex();
-                    this.intersected.material.color.setHex(0x85b6f8);
-                }
-            }
-            else
-            {
-                if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
-                this.intersected = null;
-            }
-            
-
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
 
@@ -736,6 +713,32 @@ export class SatteliteVisualizer
         this.controls.update (this.clock.getDelta() * 2);  
 
         this.updateDisk();
+    }
+
+    raycast ()
+    {
+        this.raycaster.setFromCamera (this.mouse, this.camera);
+
+        const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
+
+        if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0])
+        {
+            if (this.intersected != intersects[0].object)
+            {
+                if (this.intersected) this.intersected.material.color.setHex (this.intersected.currentHex);
+
+                this.intersected = intersects[0].object;
+                this.intersected.currentHex = this.intersected.material.color.getHex();
+                this.intersected.material.color.setHex(0x85b6f8);
+            }
+        }
+        else
+        {
+            if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
+            this.intersected = null;
+        }
+        
+
     }
 
     readTimeline ()
