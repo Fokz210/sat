@@ -540,6 +540,8 @@ export class SatteliteVisualizer
                 {
                     if (this.countries[i].map.name == this.intersected.name)
                     {
+                        
+                        this.reset();
                         var index = i;
 
                         this.resetCountriesVisibility();
@@ -2756,6 +2758,7 @@ export class SatteliteVisualizer
             {
                 var index = i;
 
+                this.reset();
                 this.resetCountriesVisibility();
 
                 if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x003472);
