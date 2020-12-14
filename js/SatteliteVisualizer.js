@@ -2940,8 +2940,11 @@ export class SatteliteVisualizer
             document.getElementById ("country-heading").style.display = "none";
             document.getElementById ("filter-reset").style.display = "none";
 
-            if (this.selectedCountry) this.selectedCountry.map.visible = false;
-
+            if (this.selectedCountry)
+            {
+                this.selectedCountry.map.material.color.setHex(0xc4ddff);
+                this.selectedCountry = null;
+            }
             if (this.earthViewChosen == undefined || this.earthViewChosen == 12)
             return;
         
