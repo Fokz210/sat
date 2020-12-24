@@ -268,6 +268,9 @@ export class SatteliteVisualizer
 {
     constructor (sizeX, sizeY)
     {
+        this.mouseClicked = false;
+        this.mouseDragged = false;
+
         this.loadGlobe();
 
         document.getElementById("logo-img").onclick = () =>
@@ -520,6 +523,9 @@ export class SatteliteVisualizer
 
         var onMouseMove = function (event)
         {
+            if (this.mouseClicked)
+                this.mouseDragged = true;
+
             event.preventDefault();
 
             const delta = window.innerHeight / window.innerWidth;
@@ -534,6 +540,13 @@ export class SatteliteVisualizer
 
         var onclick = function ()
         {
+            this.mouseClicked = false;
+            if (this.mouseDragged)
+            {
+                this.mouseDragged = false;
+                return;
+            }
+
             if (this.intersected) 
             {
                 for (let i = 0; i < this.countries.length; i++)
@@ -572,8 +585,14 @@ export class SatteliteVisualizer
             }
         }.bind (this);
 
+        var mdn = function ()
+        {
+            this.mouseClicked = true;
+        }.bind (this);
+
         document.addEventListener ("mousemove", onMouseMove);
-        this.renderer.domElement.addEventListener ("click", onclick);
+        this.renderer.domElement.addEventListener ("mouseup", onclick);
+        this.renderer.domElement.addEventListener ("mousedown", mdn);
 
         this.readTimeline();
 
