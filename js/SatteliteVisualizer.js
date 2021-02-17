@@ -3251,8 +3251,8 @@ export class SatteliteVisualizer
 
                 for (let i = 1; i < mesh.children.length; i++)
                 {
-                    if (mesh.children[i].name = "RUS") mesh.children[i].material = new MeshPhongMaterial ({color: 0x0055ba});
-                    else mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
+                    if (mesh.children[i].name == "RUS") mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
+                    else mesh.children[i].material = new MeshPhongMaterial ({color: 0x0055ba});
                 }
 
                 mesh.rotation.y = Math.PI/2 + Math.PI/40;
