@@ -468,7 +468,7 @@
   right: 0%;
   bottom: 7%;
   z-index: 3;
-  display: none;
+  display: block;
   width: 40%;
   height: 70px;
   margin-right: auto;
@@ -476,6 +476,16 @@
   border-radius: 0px;
   background-color: transparent;
 }
+
+.timeline-box {
+  display: none;
+  transition: 0.5s bottom;
+}
+
+.timeline-box.hidden {
+  bottom: -10%;
+}
+
 
 .switcher-button-right {
   position: absolute;
@@ -1472,10 +1482,7 @@
   right: 0%;
   bottom: 9%;
   z-index: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   height: 46px;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
@@ -1494,7 +1501,7 @@
 }
 
 .earthview-satpoints-disc.hidden {
-  bottom : -3%;
+  bottom : -5%;
 }
 
 .image-3 {
@@ -2400,7 +2407,10 @@
   top: auto;
   right: 0%;
   bottom: auto;
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
   height: 68%;
   min-height: 420px;
@@ -2410,17 +2420,16 @@
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: end;
-  -webkit-align-items: flex-end;
-  -ms-flex-align: end;
-  align-items: flex-end;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
   -webkit-align-self: auto;
   -ms-flex-item-align: auto;
-  -ms-grid-row-align: auto;
   align-self: auto;
   -webkit-box-flex: 0;
   -webkit-flex: 0 0 auto;
@@ -2441,7 +2450,7 @@
   width: 100%;
   height: 46px;
   max-width: none;
-  margin-top: 20px;
+  margin-top: 0px;
   margin-left: 0px;
   padding-top: 0px;
   -webkit-box-pack: center;
@@ -2508,11 +2517,11 @@
 
 .heading-8 {
   margin-top: 0px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
   font-family: Gothampro, sans-serif;
   color: #003472;
   font-size: 22px;
-  line-height: 27px;
+  line-height: 24px;
   text-align: right;
 }
 
@@ -3071,7 +3080,8 @@
   display: flex;
   width: 190px;
   height: 30px;
-  margin-bottom: 15px;
+  margin-top: 0px;
+  margin-bottom: 7px;
   padding-bottom: 5px;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
@@ -3094,9 +3104,10 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: auto;
+  width: 100%;
   height: 68%;
   min-height: 420px;
+  padding-top: 15px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -3111,9 +3122,9 @@
   -ms-flex-align: start;
   align-items: flex-start;
   -webkit-box-flex: 0;
-  -webkit-flex: 0 0 auto;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
+  -webkit-flex: 0 auto;
+  -ms-flex: 0 auto;
+  flex: 0 auto;
 }
 
 .div-block-37 {
@@ -3644,7 +3655,7 @@
   height: 1px;
   min-height: 1px;
   margin-top: 10px;
-  margin-bottom: auto;
+  margin-bottom: 10px;
   padding-bottom: 10px;
   border-top: 1px solid rgba(0, 52, 114, 0.5);
   background-color: transparent;
@@ -3778,7 +3789,7 @@
 .xrw-ranges-info {
   position: absolute;
   left: auto;
-  top: 20%;
+  top: 0%;
   right: 7%;
   bottom: 0%;
   z-index: 3;
@@ -3789,10 +3800,10 @@
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-box-pack: end;
-  -webkit-justify-content: flex-end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -ms-flex-align: center;
@@ -3963,7 +3974,7 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 240px;
+  width: 220px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -3985,10 +3996,7 @@
   top: auto;
   right: 0%;
   bottom: auto;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  display: block;
   width: 100%;
   height: 68%;
   min-height: 420px;
@@ -4041,8 +4049,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  width: 90%;
-  margin-bottom: auto;
+  width: 100%;
+  margin-bottom: 20px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -4062,7 +4070,8 @@
 }
 
 .satellite-container._1 {
-  margin-bottom: auto;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .year-up {
@@ -4253,10 +4262,7 @@
   right: auto;
   bottom: 0%;
   z-index: 3;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   width: 240px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
@@ -4312,11 +4318,11 @@
 
 .country-heading-2 {
   margin-top: 0px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
   font-family: Gothampro, sans-serif;
   color: #003472;
   font-size: 22px;
-  line-height: 27px;
+  line-height: 24px;
   text-align: left;
 }
 
@@ -4360,6 +4366,10 @@
   height: 25px;
 }
 
+.body-2 {
+  background-color: #fff;
+}
+
 @media screen and (min-width: 1280px) {
   .div-block-23 {
     -webkit-box-flex: 0;
@@ -4376,10 +4386,6 @@
   .paragraph-2 {
     -webkit-column-gap: 40px;
     column-gap: 40px;
-  }
-
-  .countries-filter {
-    display: none;
   }
 
   .about-company-container {
@@ -4409,11 +4415,6 @@
 
 @media screen and (min-width: 1440px) {
   .menu-buttons {
-    position: absolute;
-    left: 0%;
-    top: 0%;
-    right: 0%;
-    bottom: 0%;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
     -ms-flex-pack: center;
@@ -4461,26 +4462,6 @@
 
   .paragraph-3 {
     margin-bottom: 0px;
-  }
-
-  .satellite-info-container {
-    display: none;
-  }
-
-  .satellite-ranges-info {
-    display: none;
-  }
-
-  .xrw-info-container {
-    display: none;
-  }
-
-  .xrw-text-list {
-    display: none;
-  }
-
-  .xrw-ranges-info {
-    display: none;
   }
 
   .new-satellite-ranges-container {
@@ -4538,23 +4519,6 @@
     flex: 1;
   }
 
-  .heading-container {
-    display: block;
-  }
-
-  .timeline-box {
-    display: none;
-    transition: 0.5s bottom;
-  }
-
-  .timeline-box.hidden {
-    bottom: -7%;
-  }
-
-  .earthview-satellite-list {
-    display: none;
-  }
-
   .satelliteview-satellite-list {
     display: none;
   }
@@ -4590,10 +4554,6 @@
     display: flex;
   }
 
-  .about-company {
-    display: none;
-  }
-
   .left-side-container {
     padding-top: 40px;
   }
@@ -4622,10 +4582,6 @@
     align-items: center;
   }
 
-  .countries-filter {
-    display: none;
-  }
-
   .countries {
     margin-bottom: 10px;
     -webkit-box-pack: center;
@@ -4639,7 +4595,6 @@
   }
 
   .satellite-info-container {
-    display: none;
     -webkit-box-align: center;
     -webkit-align-items: center;
     -ms-flex-align: center;
@@ -4682,18 +4637,10 @@
 
   .satellite-ranges-info {
     display: none;
-    -webkit-box-pack: start;
-    -webkit-justify-content: flex-start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
   }
 
   .div-block-36 {
     height: 60%;
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 auto;
-    -ms-flex: 0 auto;
-    flex: 0 auto;
   }
 
   .divider-2 {
@@ -4800,13 +4747,6 @@
     justify-content: center;
   }
 
-  .earthview-satellite-list-country {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-  }
-
   .country-subheading {
     text-transform: uppercase;
   }
@@ -4814,7 +4754,7 @@
 
 @media screen and (max-width: 991px) {
   .section {
-    display: none;
+    display: block;
     height: 100vh;
   }
 

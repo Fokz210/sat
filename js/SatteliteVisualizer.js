@@ -593,6 +593,11 @@ export class SatteliteVisualizer
         document.addEventListener ("mousemove", onMouseMove);
         this.renderer.domElement.addEventListener ("mouseup", onclick);
         this.renderer.domElement.addEventListener ("mousedown", mdn);
+        
+        document.addEventListener ("touchmove", onMouseMove);
+        this.renderer.domElement.addEventListener ("touchstart", onclick);
+        this.renderer.domElement.addEventListener ("touchend", mdn);
+        this.renderer.domElement.addEventListener ("touchcancel", mdn);
 
         this.readTimeline();
 
@@ -1035,8 +1040,8 @@ export class SatteliteVisualizer
 
         document.getElementById ("resetbtn").style.display = "none";
         document.getElementById ("infoRV").style.display = "flex";
-    
-        this.dfuncm.add (() => { document.getElementById("timelinebox").classList.remove ("hidden"); }, 0.01);
+
+        this.dfuncm.add (() => { document.getElementById("timelinebox").classList.remove ("hidden"); }, 0.3);
         this.dfuncm.add (() => { document.getElementById("diskanim").classList.add ("hidden"); }, 0.01);
 
         this.globeCoverMesh.visible = false;
@@ -1071,7 +1076,7 @@ export class SatteliteVisualizer
         document.getElementById ("resetbtn").style.display = "flex";
 
         this.dfuncm.add (() => { document.getElementById("timelinebox").classList.add ("hidden"); }, 0.01);
-        this.dfuncm.add (() => { document.getElementById("diskanim").classList.remove ("hidden"); }, 0.01);
+        this.dfuncm.add (() => { document.getElementById("diskanim").classList.remove ("hidden"); }, 0.3);
 
         if (this.mode != 2) 
         {
@@ -1474,7 +1479,7 @@ export class SatteliteVisualizer
         document.getElementById ("ev" + index).onclick = function ()
         {
             document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "none";
-            document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "block";
+            document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "flex";
             document.getElementById("ranges").style.display = "flex";
             document.getElementById("xrw-fucken-shit").style.display = "flex";
 
@@ -1614,7 +1619,7 @@ export class SatteliteVisualizer
     {
         document.getElementById ("ev" + index).onclick = function ()
         {
-            document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "block";
+            document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "flex";
             document.getElementById("ranges").style.display = "flex";
             document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "none";
 
@@ -1781,7 +1786,7 @@ export class SatteliteVisualizer
     {
         document.getElementById ("ns" + index2).onclick = function ()
         {
-            document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "block";
+            document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "flex";
             document.getElementById ("ranges").style.display = "flex";
             document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "none";
 
@@ -2047,7 +2052,7 @@ export class SatteliteVisualizer
         document.getElementById ("reaimku2").onclick = function ()
         {
             if (this.beams[this.earthViewChosen].KUReaim2 != undefined) this.beams[this.earthViewChosen].KUReaim2.visible = !this.beams[this.earthViewChosen].KUReaim2.visible;
-            this.bindButtonState (this.beams[this.earthViewChosen].KUReaim1, "reaimku2", "o");
+            this.bindButtonState (this.beams[this.earthViewChosen].KUReaim2, "reaimku2", "o");
         }.bind (this);
 
         document.getElementById ("fixedka").onclick = function ()
@@ -2162,7 +2167,6 @@ export class SatteliteVisualizer
             this.interfaceScreen3();
 
             var index = this.satViewChosen;
-            this.reset();
             this.earthViewChosen = index;
 
             this.focusGlobe();
@@ -2501,7 +2505,6 @@ export class SatteliteVisualizer
 
             this.VO = false;
             var index = 12;
-            this.reset();
 
             this.earthViewChosen = index;
 
@@ -2949,11 +2952,28 @@ export class SatteliteVisualizer
         this.bindResetFilter ()
     }
 
+    resetFilter ()
+    {
+        this.filterSats (this.fullcountry);
+        this.bindBands ();
+        document.getElementById ("country-heading").style.display = "none";
+        document.getElementById ("filter-reset").style.display = "none";
+
+        if (this.selectedCountry)
+        {
+            this.selectedCountry.map.material.color.setHex(0xc4ddff);
+            this.selectedCountry = null;
+        }
+        if (this.earthViewChosen == undefined || this.earthViewChosen == 12)
+        return;
+    }
+
     
     bindResetFilter ()
     {
         document.getElementById ("filter-reset").onclick = function () 
         {
+            this.reset();
             this.filterSats (this.fullcountry);
             this.bindBands ();
             document.getElementById ("country-heading").style.display = "none";
@@ -3008,6 +3028,7 @@ export class SatteliteVisualizer
 
     interfaceScreen1 ()
     {
+
         document.getElementById ("leftSwitch").children[0].style.display = "none";
         document.getElementById ("midSwitch").children[0].style.display = "none";
         document.getElementById ("rightSwitch").children[0].style.display = "none";
@@ -3022,7 +3043,7 @@ export class SatteliteVisualizer
 
         document.getElementById("button-background").style="transform: translate3d(0%, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;";
 
-        document.getElementsByClassName ("earthview-satpoints-disc")[0].style.display = "none";
+        //document.getElementsByClassName ("earthview-satpoints-disc")[0].style.display = "none";
         document.getElementsByClassName ("timeline-box")[0].style.display = "block";
         document.getElementsByClassName ("earthview-satellite-list")[0].style.display = "none";
 
@@ -3036,6 +3057,8 @@ export class SatteliteVisualizer
         document.getElementsByClassName ("satellite-info-container")[0].style.display = "none";
         document.getElementsByClassName ("xrw-info-container")[0].style.display = "none";
         document.getElementById ("syszones").display = "none";
+
+        this.resetFilter();
     }
 
     interfaceScreen2 ()
@@ -3084,7 +3107,7 @@ export class SatteliteVisualizer
 
         
         document.getElementsByClassName ("earthview-satpoints-disc")[0].style.display = "flex";
-        document.getElementsByClassName ("timeline-box")[0].style.display = "none";
+        //document.getElementsByClassName ("timeline-box")[0].style.display = "none";
         document.getElementsByClassName ("earthview-satellite-list")[0].style.display = "flex";
 
         document.getElementsByClassName ("satellite-info-container")[0].style.display = "none";
@@ -3231,7 +3254,7 @@ export class SatteliteVisualizer
                     mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
 
-                mesh.rotation.y = Math.PI/2;
+                mesh.rotation.y = Math.PI/2 + Math.PI/40;
                 
                 mesh.scale.x = 0.97;
                 mesh.scale.y = 0.97;
