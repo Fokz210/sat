@@ -560,7 +560,14 @@ export class SatteliteVisualizer
                         this.resetCountriesVisibility();
 
                         if (this.countries[index].map) this.countries[index].map.material.color.setHex(0x003472);
-                        if (this.intersected) this.intersected.currentHex = 0x003472;
+                        {
+                            this.countries[index].map.material.color.setHex(0x003472);
+                        }
+
+                        if (this.intersected)
+                        {
+                            this.intersected.currentHex = 0x003472;
+                        }
 
                         this.selectedCountry = this.countries[index];
 
@@ -581,6 +588,7 @@ export class SatteliteVisualizer
 
                         this.setCamPosPolarDeg (this.countries[index].alpha, this.countries[index].beta, 20);
                     }
+
                 }
             }
         }.bind (this);
@@ -2744,6 +2752,9 @@ export class SatteliteVisualizer
         {
             if (this.countries[i].map)
                 this.countries[i].map.material.color.setHex(0xc4ddff);
+                
+            if (this.countries[i].map.name == "RUS")
+                this.countries[i].map.material.color.setHex(0x0055ba);
         }
     }
 
