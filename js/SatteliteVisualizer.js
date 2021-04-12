@@ -27,12 +27,16 @@ import
     Clock,
     ObjectLoader,
     Raycaster,
-    Vector2    
+    Vector2,
+    AnimationClip,
+    AnimationMixer,
+
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
 import { OBJLoader } from './three.js-master/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from './three.js-master/examples/jsm/loaders/MTLLoader.js';
+import { FBXLoader } from './three.js-master/examples/jsm/loaders/FBXLoader.js';
 import { loadBeams } from './BeamsPaths.js'
 import { Beam } from './Beam.js';
 
@@ -270,6 +274,8 @@ export class SatteliteVisualizer
     {
         this.mouseClicked = false;
         this.mouseDragged = false;
+
+        this.mixer = null;
 
         this.loadGlobe();
 
@@ -541,11 +547,11 @@ export class SatteliteVisualizer
         var onclick = function ()
         {
             this.mouseClicked = false;
-            if (this.mouseDragged)
+            /*if (this.mouseDragged)
             {
                 this.mouseDragged = false;
                 return;
-            }
+            }*/
 
             if (this.intersected) 
             {
@@ -746,13 +752,21 @@ export class SatteliteVisualizer
 
             this.t += 0.001;
 
+
+
             this.dfuncm.checkAll();
         }
 
         this.checkVisibles();
 
+        const delta = this.clock.getDelta();
+
+        if (this.mixer) {
+            this.mixer.update(delta / 2);
+        }
+
         this.renderer.render (this.scene, this.camera);
-        this.controls.update (this.clock.getDelta() * 2);  
+        this.controls.update (delta * 2);
 
         this.updateDisk();
     }
@@ -1077,6 +1091,7 @@ export class SatteliteVisualizer
 
     focusGlobe ()
     {
+
         this.interfaceScreen3 ();
 
         this.hideAllNewSats();
@@ -1349,6 +1364,8 @@ export class SatteliteVisualizer
 
             if ( check(b.CFixed1) || check(b.CFixed2) || check(b.CReaim1) ||check(b.CReaim2) || check(b.KUFixed1) ||check(b.KUFixed2) ||   check(b.KUFixed3) ||  check(b.KUReaim1) ||  check(b.KUReaim2) || check(b.KAReaim) )
             {
+                console.log ("disabling bands!");
+
                 this.disableAllBands();
                 return;
             }
@@ -1457,7 +1474,9 @@ export class SatteliteVisualizer
         for (let i = 0; i < this.beams.length; i++)
             this.beams[i].setVisibleBeams (false);
 
-        if (!this.earthViewChosen) return;7
+        console.log (this.beams[2].KUReaim2);
+
+        if (!this.earthViewChosen) return;
 
         this.bindButtonState (this.beams[this.earthViewChosen].CFixed1, "fixedc1", "p");
         this.bindButtonState (this.beams[this.earthViewChosen].CFixed2, "fixedc2", "p");
@@ -2677,7 +2696,7 @@ export class SatteliteVisualizer
     {
         for (let i = 0; i < this.globeMesh.children.length; i++)
         {
-            if (this.globeMesh.children[i].name == name)
+            if (this.globeMesh.children[i].name == 'globe' + name)
                 return this.globeMesh.children[i];
         }
 
@@ -3253,18 +3272,21 @@ export class SatteliteVisualizer
         {
             material.preload();
 
-            var oLoader = new OBJLoader ();
+            var oLoader = new FBXLoader ();
             oLoader.setPath ("globe/");
-            oLoader.load ("globe.obj", function (mesh) 
+            oLoader.load ("globe.fbx", function (mesh)
             {
 
                 mesh.children[0].material = new MeshPhongMaterial ({color: 0xe8f1fd});
 
-                for (let i = 1; i < mesh.children.length; i++)
+                for (let i = 1; i < mesh.children.length - 2; i++)
                 {
                     if (mesh.children[i].name == "RUS") mesh.children[i].material = new MeshPhongMaterial ({color: 0x0055ba});
                     else mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
+
+                mesh.children[mesh.children.length - 2].material = new MeshPhongMaterial ({color: 0xff0000});
+                mesh.children[mesh.children.length - 1].material = new MeshPhongMaterial ({color: 0xff0000});
 
                 mesh.rotation.y = Math.PI/2 + Math.PI/40;
                 
@@ -3276,6 +3298,15 @@ export class SatteliteVisualizer
                 this.scene.add (mesh);
                 
                 this.loadCountries();
+
+                this.mixer = new AnimationMixer(this.globeMesh);
+                this.mixer.setTime(10);
+
+                if (this.mixer) {
+                    const action = this.mixer.clipAction(this.globeMesh.animations[0]);
+                    action.play();
+                }
+
 
                 this.globeLoaded = true;
 

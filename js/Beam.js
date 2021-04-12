@@ -215,8 +215,8 @@ export class Beam
         setVisibility (this.KUFixed1, state);
         setVisibility (this.KUFixed2, state);
         setVisibility (this.KUFixed3, state);
-        setVisibility (this.KUreaim1, state);
-        setVisibility (this.KUreaim2, state);
+        setVisibility (this.KUReaim1, state);
+        setVisibility (this.KUReaim2, state);
         setVisibility (this.KAReaim, state);
     }
 
