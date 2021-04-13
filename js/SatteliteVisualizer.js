@@ -30,7 +30,7 @@ import
     Vector2,
     AnimationClip,
     AnimationMixer,
-
+    LoopOnce
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -276,6 +276,7 @@ export class SatteliteVisualizer
         this.mouseDragged = false;
 
         this.mixer = null;
+        this.animPhase = 0;
 
         this.loadGlobe();
 
@@ -524,6 +525,8 @@ export class SatteliteVisualizer
         this.loadCones();
         this.loadCones();
 
+        this.loadArctic();
+
         document.getElementById ("country-heading").style.display = "none";
         document.getElementById ("midSwitch").style = "pointer-events: none;";
 
@@ -762,7 +765,38 @@ export class SatteliteVisualizer
         const delta = this.clock.getDelta();
 
         if (this.mixer) {
-            this.mixer.update(delta / 2);
+            this.mixer.update(delta);
+
+            if (this.action)
+            {
+                if (this.animPhase != 1 && this.action.time > 0 && this.action.time < 1.5)
+                {
+                    this.animPhase = 1;
+                    document.getElementById("am6c").click();
+                }
+                else if (this.animPhase != 2 && this.action.time >= 1.5 && this.action.time < 2.3)
+                {
+                    this.animPhase = 2;
+                    document.getElementById("am6c").click();
+                    document.getElementById("am33c").click();
+                }
+                else if (this.animPhase != 3 && this.action.time >= 2.3 && this.action.time <= 4.8)
+                {
+                    this.animPhase = 3;
+                    document.getElementById("am33c").click();
+                    document.getElementById("am5c").click();
+                }
+                else if (this.animPhase != 4 && this.action.time >= 4.8)
+                {
+                    this.animPhase = 4;
+                    document.getElementById("am5c").click();
+                    this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
+                }
+                else if (this.animPhase != 0 && this.action.time == 0)
+                {
+                    this.animPhase = 0;
+                }
+            }
         }
 
         this.renderer.render (this.scene, this.camera);
@@ -2719,7 +2753,7 @@ export class SatteliteVisualizer
             if (conData.c) 
                 con.map = this.findCountry (conData.c);
 
-            if (!con.map)
+            if (!con.map && con.name != 'ARC')
                 continue;
 
             con.alpha = parseFloat(conData.d);
@@ -2758,7 +2792,9 @@ export class SatteliteVisualizer
             con.bandProps[12].Ku = toBool(conData.ac);
 
 
-            this.countries.push (con);
+            if (con.name != 'ARC') this.countries.push (con);
+            else
+                this.arctic = con;
         }
 
         this.fillCountries ('Африка');
@@ -3088,6 +3124,9 @@ export class SatteliteVisualizer
         document.getElementsByClassName ("xrw-info-container")[0].style.display = "none";
         document.getElementById ("syszones").display = "none";
 
+        document.getElementById("arctic-header").style.display = "none";
+        document.getElementById("arctic-logo").style.display = "none";
+
         this.resetFilter();
     }
 
@@ -3115,6 +3154,10 @@ export class SatteliteVisualizer
         document.getElementsByClassName ("satellite-info-container")[0].style.display = "flex";
         document.getElementsByClassName ("xrw-info-container")[0].style.display = "none";
         document.getElementById ("syszones").display = "none";
+
+
+        document.getElementById("arctic-header").style.display = "none";
+        document.getElementById("arctic-logo").style.display = "none";
     }
 
     interfaceScreen3 ()
@@ -3146,6 +3189,10 @@ export class SatteliteVisualizer
         document.getElementById ("syszones").display = "none";
 
         document.getElementById ("newsat").style.display = "none";
+
+
+        document.getElementById("arctic-header").style.display = "none";
+        document.getElementById("arctic-logo").style.display = "none";
     
     }
     
@@ -3285,8 +3332,9 @@ export class SatteliteVisualizer
                     else mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
 
-                mesh.children[mesh.children.length - 2].material = new MeshPhongMaterial ({color: 0xff0000});
                 mesh.children[mesh.children.length - 1].material = new MeshPhongMaterial ({color: 0xff0000});
+                mesh.children[mesh.children.length - 2].visible = false;
+
 
                 mesh.rotation.y = Math.PI/2 + Math.PI/40;
                 
@@ -3296,16 +3344,16 @@ export class SatteliteVisualizer
 
                 this.globeMesh = mesh;
                 this.scene.add (mesh);
+
+
+
+                this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
                 
                 this.loadCountries();
 
                 this.mixer = new AnimationMixer(this.globeMesh);
-                this.mixer.setTime(10);
 
-                if (this.mixer) {
-                    const action = this.mixer.clipAction(this.globeMesh.animations[0]);
-                    action.play();
-                }
+
 
 
                 this.globeLoaded = true;
@@ -3324,4 +3372,41 @@ export class SatteliteVisualizer
             }.bind(this));
         }.bind (this));
     }
+
+    loadArctic ()
+    {
+
+        document.getElementById("menu-arctic").onclick = function ()
+        {
+            this.resetFilter();
+            this.focusGlobe();
+            this.controls.setPosition (Math.cos (Math.PI / 2) * 48 / 2, 86 / 2, -Math.sin (Math.PI / 2) * 48 / 2,  true);
+            this.filterSats(this.arctic);
+
+            document.getElementById("arctic-header").style.display = "flex";
+            document.getElementById("arctic-logo").style.display = "block";
+
+            document.getElementById ("cfilter").style = 'display: none;';
+            document.getElementById ("mbuttons").style = 'display: none;';
+            document.getElementById ("blur").style = 'display: none;';
+
+        }.bind (this);
+
+        document.getElementById("arctic-animation-play").onclick = function ()
+        {
+            if (this.mixer) {
+                this.action = this.mixer.clipAction(this.globeMesh.animations[0]);
+                this.action.setDuration(20);
+                this.action.clampWhenFinished = true;
+                this.action.setLoop(LoopOnce, 1);
+
+                this.action.reset();
+                this.action.play();
+
+                this.globeMesh.children[this.globeMesh.children.length - 1].visible = true;
+            }
+
+        }.bind (this);
+    }
+
 };
