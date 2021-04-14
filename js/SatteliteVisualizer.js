@@ -30,7 +30,7 @@ import
     Vector2,
     AnimationClip,
     AnimationMixer,
-    LoopOnce
+    LoopOnce,
 } from './three.js-master/build/three.module.js';
 import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import { STLLoader } from './three.js-master/examples/jsm/loaders/STLLoader.js';
@@ -268,10 +268,13 @@ class delayedFunctionManager
 
 }
 
-export class SatteliteVisualizer
-{
-    constructor (sizeX, sizeY)
-    {
+export class SatteliteVisualizer {
+    constructor(sizeX, sizeY) {
+        this.arcticMode = 0;
+
+        this.points = [];
+        this.stations = [];
+
         this.mouseClicked = false;
         this.mouseDragged = false;
 
@@ -280,36 +283,37 @@ export class SatteliteVisualizer
 
         this.loadGlobe();
 
-        document.getElementById("logo-img").onclick = () =>
-        {
-            location.reload (true);
+        document.getElementById("logo-img").onclick = () => {
+            location.reload(true);
         };
 
-        this.clock = new Clock ();
+        this.clock = new Clock();
 
-        this.loaderClock = new Clock ();
+        this.loaderClock = new Clock();
 
         this.mouse = new Vector2(0, 0);
 
         this.satData = JSON.parse(document.getElementById('sat-data').innerText);
         this.beamsData = JSON.parse(document.getElementById('beams-data').innerText);
         this.countriesData = JSON.parse(document.getElementById('countries-data').innerText);
+        this.pointsData = JSON.parse(document.getElementById('points-data').innerText);
+        console.log(this.pointsData);
         this.satViewChosen = undefined;
         this.earthViewChosen = undefined;
 
         this.newSats = [];
 
-        this.fullcountry = new country ();
-        
+        this.fullcountry = new country();
+
         for (let i = 0; i < 13; i++)
-            this.fullcountry.bandProps[i] = new bandprop (true, true, true);
+            this.fullcountry.bandProps[i] = new bandprop(true, true, true);
 
         this.savedBeams = new savedBeams();
 
-        this.stlLoader = new STLLoader ();
+        this.stlLoader = new STLLoader();
 
-        this.fragmentShader = document.getElementById ("2121").innerHTML;
-        this.vertexShader = document.getElementById ("1212").innerHTML;
+        this.fragmentShader = document.getElementById("2121").innerHTML;
+        this.vertexShader = document.getElementById("1212").innerHTML;
 
         this.VO = false;
 
@@ -320,8 +324,8 @@ export class SatteliteVisualizer
         this.canvasSizeX = sizeX;
         this.canvasSizeY = sizeY;
 
-        this.axis = new Mesh (new CylinderGeometry (0.05, 0.05, 1000, 128, 64), new MeshPhongMaterial ({ color: 0xc9c9c9}));
-        
+        this.axis = new Mesh(new CylinderGeometry(0.05, 0.05, 1000, 64, 64), new MeshPhongMaterial({color: 0xc9c9c9}));
+
         this.geostat = [];
 
         this.loaded1 = 0;
@@ -330,102 +334,100 @@ export class SatteliteVisualizer
         this.raycastUpdate = false;
 
         for (let i = 0; i < 12; i++)
-            this.geostat.push (undefined);
+            this.geostat.push(undefined);
 
-        this.geostatnames = 
-        [
-            'AMY1',  // 0
-            'Am7',   // 1
-            'AM6',   // 2
-            'AT1',   // 3
-            'AM33',  // 4
-            'AM3',   // 5
-            'AM5',   // 6
-            'AT2',   // 7
-            'AM8',   // 8
-            'AM44',  // 9
-            'E-80',  // 10
-            'E-103',  // 11
-        ];
+        this.geostatnames =
+            [
+                'AMY1',  // 0
+                'Am7',   // 1
+                'AM6',   // 2
+                'AT1',   // 3
+                'AM33',  // 4
+                'AM3',   // 5
+                'AM5',   // 6
+                'AT2',   // 7
+                'AM8',   // 8
+                'AM44',  // 9
+                'E-80',  // 10
+                'E-103',  // 11
+            ];
 
         this.newSatYears =
-        [
-            2021,
-            2023,
-            2024,
+            [
+                2021,
+                2023,
+                2024,
 
-        ]
+            ]
 
-        this.newSatNames = 
-        [
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-            'AMY3',
-        ]
-        
+        this.newSatNames =
+            [
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+                'AMY3',
+            ]
+
         this.mode = 0;
 
         this.dfuncm = new delayedFunctionManager();
 
-        this.satDataRows = 
-        [
-            8,
-            7,
-            5,
-            9,
-            2,
-            3,
-            4,
-            10,
-            6,
-            1,
-            11,
-            12,
-        ];
+        this.satDataRows =
+            [
+                8,
+                7,
+                5,
+                9,
+                2,
+                3,
+                4,
+                10,
+                6,
+                1,
+                11,
+                12,
+            ];
 
         for (let i = 14; i < 25; i++)
-            this.satDataRows.push (i);
+            this.satDataRows.push(i);
 
         this.lstat = [];
-        this.lstatnames = 
-        [
-            'rv',
-            'rv',
-            'rv',
-            'rv',
-        ];
+        this.lstatnames =
+            [
+                'rv',
+                'rv',
+                'rv',
+                'rv',
+            ];
 
         this.lOrbitMeshes = [];
         this.geoStatOrbit;
 
         this.lnames = [];
         for (let i = 0; i < 12; i++)
-            this.lnames.push (undefined);
+            this.lnames.push(undefined);
 
-        function Ellipse(xRadius, yRadius)
-        {
-			Curve.call( this );
+        function Ellipse(xRadius, yRadius) {
+            Curve.call(this);
 
-			this.xRadius = xRadius;
-			this.yRadius = yRadius;
-		}
-		
-		Ellipse.prototype = Object.create( Curve.prototype );
-		Ellipse.prototype.constructor = Ellipse;
-		
-        Ellipse.prototype.getPoint = function (t)
-        {
-		    var radians = 2 * Math.PI * t;
-		
-		    return new Vector3 (this.xRadius * Math.cos (radians), this.yRadius * Math.sin (radians), 0);
-		};
+            this.xRadius = xRadius;
+            this.yRadius = yRadius;
+        }
+
+        Ellipse.prototype = Object.create(Curve.prototype);
+        Ellipse.prototype.constructor = Ellipse;
+
+        Ellipse.prototype.getPoint = function (t) {
+            var radians = 2 * Math.PI * t;
+
+            return new Vector3(this.xRadius * Math.cos(radians), this.yRadius * Math.sin(radians), 0);
+        };
 
         this.t = 0;
 
@@ -440,23 +442,23 @@ export class SatteliteVisualizer
 
         this.initlMatrix();
 
-        this.lPath = new Ellipse (20, 50);
-       
-        this.node = document.getElementById ('container');
+        this.lPath = new Ellipse(20, 50);
+
+        this.node = document.getElementById('container');
         this.node.style.top = "20%";
 
-        this.scene = new Scene ();
+        this.scene = new Scene();
 
-        this.camera = new PerspectiveCamera (75, this.canvasSizeX / this.canvasSizeY, 0.1, 1000);
+        this.camera = new PerspectiveCamera(75, this.canvasSizeX / this.canvasSizeY, 0.1, 1000);
         this.camera.position.x = 100;
         this.camera.position.y = 2;
 
-        this.renderer = new WebGLRenderer ({ alpha: true, antialias: true });
-        this.renderer.setClearColor (0x000000, 0);
-        this.renderer.setPixelRatio (window.devicePixelRatio);
-        this.renderer.setSize (this.canvasSizeX, this.canvasSizeY);
+        this.renderer = new WebGLRenderer({alpha: true, antialias: true});
+        this.renderer.setClearColor(0x000000, 0);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(this.canvasSizeX, this.canvasSizeY);
 
-        this.controls = new CameraControls (this.camera, this.renderer.domElement);
+        this.controls = new CameraControls(this.camera, this.renderer.domElement);
         this.controls.autoRotate = false;
         this.controls.enablePan = false;
         this.controls.enableDamping = true;
@@ -465,9 +467,8 @@ export class SatteliteVisualizer
         this.controls.minDistance = 15;
         this.controls.truckSpeed = 0.0;
 
-        this.controls.setDistance = function (distance) 
-        {
-            this.dollyTo (distance, true);
+        this.controls.setDistance = function (distance) {
+            this.dollyTo(distance, true);
         }
 
         this.raycaster = new Raycaster();
@@ -476,32 +477,32 @@ export class SatteliteVisualizer
 
         //this.scene.add (this.innerGlobeMesh);
         //this.scene.add (this.globeMesh);
-        this.scene.add (this.globeCoverMesh);
-        
-        this.light = new DirectionalLight (0xffffff, 0.5);
+        this.scene.add(this.globeCoverMesh);
+
+        this.light = new DirectionalLight(0xffffff, 0.5);
         this.light.position.x = //Math.cos (Math.PI / 4) * 100;
-        this.light.position.z = -100;
+            this.light.position.z = -100;
         this.light.position.y = 30;
         this.light.target = this.globeMesh;
 
-        this.ambientLight = new AmbientLight (0xffffff, 0.5);
+        this.ambientLight = new AmbientLight(0xffffff, 0.5);
 
-        this.scene.add (this.light);
-        this.scene.add (this.ambientLight);
+        this.scene.add(this.light);
+        this.scene.add(this.ambientLight);
 
         this.satsLoaded = false;
 
-        this.loadSatsMeshes ();
+        this.loadSatsMeshes();
 
-        document.getElementById ("leftSwitch").onclick = this.focusGlobeAndSats.bind(this);
-        document.getElementById ("midSwitch").onclick = this.focusSat.bind(this);
-        document.getElementById ("rightSwitch").onclick = this.focusGlobe.bind(this);
+        document.getElementById("leftSwitch").onclick = this.focusGlobeAndSats.bind(this);
+        document.getElementById("midSwitch").onclick = this.focusSat.bind(this);
+        document.getElementById("rightSwitch").onclick = this.focusGlobe.bind(this);
 
         this.initPathMeshes();
 
-        this.scene.add (this.axis);
+        this.scene.add(this.axis);
 
-        this.node.appendChild (this.renderer.domElement);
+        this.node.appendChild(this.renderer.domElement);
 
         this.diskImage = document.getElementById("disk");
         this.diskDegrees = document.getElementById("disk-degrees");
@@ -510,16 +511,16 @@ export class SatteliteVisualizer
 
         this.readBeams();
 
-        this.bindBands ();
-        this.bindEvSats ();
-        this.bindBeams ();
-        this.bindReset ();
-        this.bindInfoBtn ();
-        this.bindRvInfo ();
+        this.bindBands();
+        this.bindEvSats();
+        this.bindBeams();
+        this.bindReset();
+        this.bindInfoBtn();
+        this.bindRvInfo();
         //this.bindVO();
         this.bindSysInfo();
-        this.bindSelectCountry ();
-        this.focusGlobeAndSats ();
+        this.bindSelectCountry();
+        this.focusGlobeAndSats();
         this.loadCones();
         this.loadCones();
         this.loadCones();
@@ -527,11 +528,17 @@ export class SatteliteVisualizer
 
         this.loadArctic();
 
-        document.getElementById ("country-heading").style.display = "none";
-        document.getElementById ("midSwitch").style = "pointer-events: none;";
+        this.raycasted = [];
 
-        var onMouseMove = function (event)
-        {
+        for (let i = 0; i < this.points.length; i++)
+            this.raycasted.push(this.points[i]);
+
+        this.lockBeams = false;
+
+        document.getElementById("country-heading").style.display = "none";
+        document.getElementById("midSwitch").style = "pointer-events: none;";
+
+        var onMouseMove = function (event) {
             if (this.mouseClicked)
                 this.mouseDragged = true;
 
@@ -540,29 +547,34 @@ export class SatteliteVisualizer
             const delta = window.innerHeight / window.innerWidth;
 
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            this.mouse.y = - (event.clientY / window.innerWidth) * 2 + delta * 1.2;
+            this.mouse.y = -(event.clientY / window.innerWidth) * 2 + delta * 1.2;
 
             this.raycastUpdate = true;
             //this.mouse.x = 0;
             //this.mouse.y = 0;
         }.bind(this);
 
-        var onclick = function ()
-        {
+        var onclick = function () {
             this.mouseClicked = false;
-            /*if (this.mouseDragged)
-            {
+            if (this.mouseDragged) {
                 this.mouseDragged = false;
                 return;
-            }*/
+            }
 
-            if (this.intersected) 
-            {
-                for (let i = 0; i < this.countries.length; i++)
-                {
-                    if (this.countries[i].map.name == this.intersected.name)
-                    {
-                        
+            if (this.intersectedPoint) {
+                if (this.intersectedPoint.html) {
+                    //todo: add point window
+
+                    console.log(this.intersectedPoint.html);
+                }
+            }
+
+            if (this.intersected) {
+
+
+                for (let i = 0; i < this.countries.length; i++) {
+                    if (this.countries[i].map.name == this.intersected.name) {
+
                         this.reset();
                         var index = i;
 
@@ -573,48 +585,46 @@ export class SatteliteVisualizer
                             this.countries[index].map.material.color.setHex(0x003472);
                         }
 
-                        if (this.intersected)
-                        {
+                        if (this.intersected) {
                             this.intersected.currentHex = 0x003472;
                         }
 
                         this.selectedCountry = this.countries[index];
 
-                        this.filterSats (this.countries[index]);
+                        this.filterSats(this.countries[index]);
 
-                        document.getElementById ("ctrname").innerText = this.countries[index].name;
-                        document.getElementById ("country-heading").style.display = "flex";
+                        document.getElementById("ctrname").innerText = this.countries[index].name;
+                        document.getElementById("country-heading").style.display = "flex";
 
-                        document.getElementById ("cfilter").style = 'display: none;';
-                        document.getElementById ("mbuttons").style = 'display: none;';
-                        document.getElementById ("blur").style = 'display: none;';
+                        document.getElementById("cfilter").style = 'display: none;';
+                        document.getElementById("mbuttons").style = 'display: none;';
+                        document.getElementById("blur").style = 'display: none;';
 
-                        document.getElementById ("filter-reset").style.display = "flex";
+                        document.getElementById("filter-reset").style.display = "flex";
 
-                        this.focusGlobe ();
+                        this.focusGlobe();
 
                         this.menuState = 0;
 
-                        this.setCamPosPolarDeg (this.countries[index].alpha, this.countries[index].beta, 20);
+                        this.setCamPosPolarDeg(this.countries[index].alpha, this.countries[index].beta, 20);
                     }
 
                 }
             }
-        }.bind (this);
+        }.bind(this);
 
-        var mdn = function ()
-        {
+        var mdn = function () {
             this.mouseClicked = true;
-        }.bind (this);
+        }.bind(this);
 
-        document.addEventListener ("mousemove", onMouseMove);
-        this.renderer.domElement.addEventListener ("mouseup", onclick);
-        this.renderer.domElement.addEventListener ("mousedown", mdn);
-        
-        document.addEventListener ("touchmove", onMouseMove);
-        this.renderer.domElement.addEventListener ("touchstart", onclick);
-        this.renderer.domElement.addEventListener ("touchend", mdn);
-        this.renderer.domElement.addEventListener ("touchcancel", mdn);
+        document.addEventListener("mousemove", onMouseMove);
+        this.renderer.domElement.addEventListener("mouseup", onclick);
+        this.renderer.domElement.addEventListener("mousedown", mdn);
+
+        document.addEventListener("touchmove", onMouseMove);
+        this.renderer.domElement.addEventListener("touchstart", onclick);
+        this.renderer.domElement.addEventListener("touchend", mdn);
+        this.renderer.domElement.addEventListener("touchcancel", mdn);
 
         this.readTimeline();
 
@@ -625,136 +635,126 @@ export class SatteliteVisualizer
         this.animate();
     }
 
-    loadCones ()
-    {
+    loadCones() {
         var mtll = new MTLLoader();
-        mtll.setPath ("3d/cone/");
-        mtll.load ("cone.mtl", function (materials)
-        {
-            var objl = new OBJLoader ();
+        mtll.setPath("3d/cone/");
+        mtll.load("cone.mtl", function (materials) {
+            var objl = new OBJLoader();
 
             materials.preload();
             materials.materials.Mat.map.minFilter = LinearFilter;
             materials.materials.Mat.alphaMap.minFilter = LinearFilter;
 
-            objl.setPath ("3d/cone/");
-            objl.setMaterials (materials);
+            objl.setPath("3d/cone/");
+            objl.setMaterials(materials);
 
-            objl.load ("cone.obj", function (mesh)
-            { 
+            objl.load("cone.obj", function (mesh) {
                 mesh.scale.x = 0.4;
                 mesh.scale.y = 0.4;
                 mesh.scale.z = 0.4;
 
-                this.cones.push (mesh);
-                this.scene.add (mesh);
-            }.bind (this))
+                this.cones.push(mesh);
+                this.scene.add(mesh);
+            }.bind(this))
         }.bind(this));
 
     }
 
-    initlMatrix ()
-    {
-        var angle = - Math.PI / 16 + Math.PI / 18 + Math.PI / 160;
+    initlMatrix() {
+        var angle = -Math.PI / 16 + Math.PI / 18 + Math.PI / 160;
 
-        this.lmatrix.push (new Matrix4().makeRotationY(- Math.PI / 4 + angle));
-        this.lmatrix[0].multiply (new Matrix4().makeRotationX (0.471239));
+        this.lmatrix.push(new Matrix4().makeRotationY(-Math.PI / 4 + angle));
+        this.lmatrix[0].multiply(new Matrix4().makeRotationX(0.471239));
         this.lmatrix2 = [];
-        this.lshift.push (new Vector3 (0, 35, 0));
-        this.lshift[0].applyMatrix4 (this.lmatrix[0]);
-        this.lmatrix[0].setPosition (this.lshift[0]);
+        this.lshift.push(new Vector3(0, 35, 0));
+        this.lshift[0].applyMatrix4(this.lmatrix[0]);
+        this.lmatrix[0].setPosition(this.lshift[0]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 + angle));
-        this.lmatrix[1].multiply (new Matrix4().makeRotationX (0.471239));
-        this.lshift.push (new Vector3 (0, 35, 0));
-        this.lshift[1].applyMatrix4 (this.lmatrix[1]);
-        this.lmatrix[1].setPosition (this.lshift[1]);
+        this.lmatrix.push(new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 + angle));
+        this.lmatrix[1].multiply(new Matrix4().makeRotationX(0.471239));
+        this.lshift.push(new Vector3(0, 35, 0));
+        this.lshift[1].applyMatrix4(this.lmatrix[1]);
+        this.lmatrix[1].setPosition(this.lshift[1]);
 
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 4 + angle));
-        this.lmatrix[2].multiply (new Matrix4().makeRotationX (0.471239));
-        this.lshift.push (new Vector3 (0, 35, 0));
-        this.lshift[2].applyMatrix4 (this.lmatrix[2]);
-        this.lmatrix[2].setPosition (this.lshift[2]);
-        
-        this.lmatrix.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 + angle));
-        this.lmatrix[3].multiply (new Matrix4().makeRotationX (0.471239));
-        this.lshift.push (new Vector3 (0, 35, 0));
-        this.lshift[3].applyMatrix4 (this.lmatrix[3]);
-        this.lmatrix[3].setPosition (this.lshift[3]);
+        this.lmatrix.push(new Matrix4().makeRotationY(Math.PI - Math.PI / 4 + angle));
+        this.lmatrix[2].multiply(new Matrix4().makeRotationX(0.471239));
+        this.lshift.push(new Vector3(0, 35, 0));
+        this.lshift[2].applyMatrix4(this.lmatrix[2]);
+        this.lmatrix[2].setPosition(this.lshift[2]);
 
-        this.lmatrix2.push (new Matrix4().makeRotationY(- Math.PI / 4 + angle));
-        this.lmatrix2[0].multiply (new Matrix4().makeRotationX (0.471239));
-        
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 + angle));
-        this.lmatrix2[1].multiply (new Matrix4().makeRotationX (0.471239));
-        
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI - Math.PI / 4 + angle));
-        this.lmatrix2[2].multiply (new Matrix4().makeRotationX (0.471239));
-        
-        this.lmatrix2.push (new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 + angle));
-        this.lmatrix2[3].multiply (new Matrix4().makeRotationX (0.471239));
+        this.lmatrix.push(new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 + angle));
+        this.lmatrix[3].multiply(new Matrix4().makeRotationX(0.471239));
+        this.lshift.push(new Vector3(0, 35, 0));
+        this.lshift[3].applyMatrix4(this.lmatrix[3]);
+        this.lmatrix[3].setPosition(this.lshift[3]);
+
+        this.lmatrix2.push(new Matrix4().makeRotationY(-Math.PI / 4 + angle));
+        this.lmatrix2[0].multiply(new Matrix4().makeRotationX(0.471239));
+
+        this.lmatrix2.push(new Matrix4().makeRotationY(Math.PI / 2 - Math.PI / 4 + angle));
+        this.lmatrix2[1].multiply(new Matrix4().makeRotationX(0.471239));
+
+        this.lmatrix2.push(new Matrix4().makeRotationY(Math.PI - Math.PI / 4 + angle));
+        this.lmatrix2[2].multiply(new Matrix4().makeRotationX(0.471239));
+
+        this.lmatrix2.push(new Matrix4().makeRotationY(Math.PI / 2 * 3 - Math.PI / 4 + angle));
+        this.lmatrix2[3].multiply(new Matrix4().makeRotationX(0.471239));
 
     }
 
-    animate ()
-    {
-        requestAnimationFrame (this.animate.bind(this));
-        
-        if (this.satsLoaded)
-        {
-            for (let i = 0; i < this.lstat.length; i++)
-            {
+    animate() {
+        requestAnimationFrame(this.animate.bind(this));
+
+        if (this.satsLoaded) {
+            for (let i = 0; i < this.lstat.length; i++) {
                 var lt = (i % 2 == 0) ? this.t : this.t + 0.5;
 
                 if (lt > 1) lt -= 1;
 
-                this.lOrbitMeshes[i].applyMatrix4 (new Matrix4().makeRotationY(-Math.PI / 1000));
-               
+                this.lOrbitMeshes[i].applyMatrix4(new Matrix4().makeRotationY(-Math.PI / 1000));
+
                 //this.light.position.x = 30;
                 //this.light.position.z = -100;
                 //this.light.applyMatrix4 (new Matrix4().makeRotationY(Math.PI - Math.PI  * this.t));
-               
-                var pt = this.lPath.getPoint (-lt);
-                pt.applyMatrix4 (this.lmatrix[i]);
-                pt.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI  * this.t));
-                this.lstat[i].position.set (pt.x, pt.y, pt.z);
 
-                var up = new Vector3 (0, 0, 1);
-                up.applyMatrix4 (this.lmatrix2[i]);
-                up.applyMatrix4 (new Matrix4 ().makeRotationY (-Math.PI * this.t));
+                var pt = this.lPath.getPoint(-lt);
+                pt.applyMatrix4(this.lmatrix[i]);
+                pt.applyMatrix4(new Matrix4().makeRotationY(-Math.PI * this.t));
+                this.lstat[i].position.set(pt.x, pt.y, pt.z);
 
-                meshLookAt (this.lstat[i], this.globeMesh, up);
-                if (this.cones.length == 4)
-                {
+                var up = new Vector3(0, 0, 1);
+                up.applyMatrix4(this.lmatrix2[i]);
+                up.applyMatrix4(new Matrix4().makeRotationY(-Math.PI * this.t));
+
+                meshLookAt(this.lstat[i], this.globeMesh, up);
+                if (this.cones.length == 4) {
                     if (pt.y >= 31.17)
                         this.cones[i].visible = this.VO && this.lstat[i].visible;
                     else
                         this.cones[i].visible = false;
 
-                    this.cones[i].position.set (pt.x, pt.y, pt.z);
-                    coneLookAt (this.cones[i], this.globeMesh, up);
+                    this.cones[i].position.set(pt.x, pt.y, pt.z);
+                    coneLookAt(this.cones[i], this.globeMesh, up);
                 }
 
             }
 
-            if (this.raycastUpdate)
-            {
+            if (this.raycastUpdate) {
                 this.raycast();
+                this.raycastPoints();
                 this.raycastUpdate = false;
             }
 
             this.light.position.x = this.camera.position.x;
             this.light.position.z = this.camera.position.z;
 
-            if (this.globeLoaded) 
-            {
-                document.getElementById ("loading-screen").classList.add("fade-out");
-                document.getElementById ("container").classList.add("fade-in");
+            if (this.globeLoaded) {
+                document.getElementById("loading-screen").classList.add("fade-out");
+                document.getElementById("container").classList.add("fade-in");
                 document.body.style.pointerEvents = "all";
             }
 
             this.t += 0.001;
-
 
 
             this.dfuncm.checkAll();
@@ -767,51 +767,63 @@ export class SatteliteVisualizer
         if (this.mixer) {
             this.mixer.update(delta);
 
-            if (this.action)
-            {
-                if (this.animPhase != 1 && this.action.time > 0 && this.action.time < 1.5)
-                {
+            if (this.action) {
+                if (this.animPhase != 1 && this.action.time > 0 && this.action.time < 1.5) {
                     this.animPhase = 1;
+                    this.lockBeams = false;
                     document.getElementById("am6c").click();
-                }
-                else if (this.animPhase != 2 && this.action.time >= 1.5 && this.action.time < 2.3)
-                {
+                    this.lockBeams = true;
+                } else if (this.animPhase != 2 && this.action.time >= 1.5 && this.action.time < 2.3) {
                     this.animPhase = 2;
+
+                    this.lockBeams = false;
                     document.getElementById("am6c").click();
                     document.getElementById("am33c").click();
-                }
-                else if (this.animPhase != 3 && this.action.time >= 2.3 && this.action.time <= 4.8)
-                {
+                    this.lockBeams = true;
+                } else if (this.animPhase != 3 && this.action.time >= 2.3 && this.action.time <= 4.8) {
                     this.animPhase = 3;
+                    this.lockBeams = false;
                     document.getElementById("am33c").click();
                     document.getElementById("am5c").click();
-                }
-                else if (this.animPhase != 4 && this.action.time >= 4.8)
-                {
+                    this.lockBeams = true;
+                } else if (this.animPhase != 4 && this.action.time >= 4.8) {
                     this.animPhase = 4;
+                    this.lockBeams = false;
                     document.getElementById("am5c").click();
                     this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
-                }
-                else if (this.animPhase != 0 && this.action.time == 0)
-                {
+                } else if (this.animPhase != 0 && this.action.time == 0) {
+                    this.lockBeams = false;
                     this.animPhase = 0;
                 }
             }
         }
 
-        this.renderer.render (this.scene, this.camera);
-        this.controls.update (delta * 2);
+        this.animateText();
+
+        this.renderer.render(this.scene, this.camera);
+        this.controls.update(delta * 2);
 
         this.updateDisk();
+    }
+
+    animateText()
+    {
+        for (let i = 0; i < this.stations.length; i++)
+        {
+            const pos = this.toXYCoords(this.stations[i]);
+
+            this.stations[i].dom.style.top = (pos.y + 10) + 'px';
+            this.stations[i].dom.style.left = (pos.x - 50) + 'px';
+        }
     }
 
     raycast ()
     {
         this.raycaster.setFromCamera (this.mouse, this.camera);
 
-        const intersects = this.raycaster.intersectObjects(this.globeMesh.children);
+        let intersects = this.raycaster.intersectObjects(this.globeMesh.children);
 
-        if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0] )
+        if (intersects.length != 0 && intersects[0].object != this.globeMesh.children[0] && intersects[0].object != this.globeMesh.children[this.globeMesh.children.length - 2] )
         {
             if (this.selectedCountry && intersects[0].object == this.selectedCountry.map)
             {
@@ -830,12 +842,36 @@ export class SatteliteVisualizer
                 this.intersected.material.color.setHex(0x85b6f8);
             }
         }
-        else
-        {
+        else {
             if (this.intersected) this.intersected.material.color.setHex(this.intersected.currentHex);
             this.intersected = null;
         }
-        
+
+
+    }
+
+    raycastPoints ()
+    {
+        this.raycaster.setFromCamera (this.mouse, this.camera);
+
+        let intersects = this.raycaster.intersectObjects(this.points);
+
+        if (intersects.length != 0)
+        {
+            if (this.intersectedPoint != intersects[0].object)
+            {
+                if (this.intersectedPoint) this.intersected.materialPoint.color.setHex (this.intersectedPoint.currentHex);
+
+                this.intersectedPoint = intersects[0].object;
+                this.intersectedPoint.currentHex = this.intersectedPoint.material.color.getHex();
+                this.intersectedPoint.material.color.setHex(0x85b6f8);
+            }
+        }
+        else {
+            if (this.intersectedPoint) this.intersectedPoint.material.color.setHex(this.intersectedPoint.currentHex);
+            this.intersectedPoint = null;
+        }
+
 
     }
 
@@ -1181,7 +1217,7 @@ export class SatteliteVisualizer
     {
         this.geoStatOrbit = new Mesh 
         (
-            new TorusBufferGeometry (70, 0.02, 64, 200),
+            new TorusBufferGeometry (70, 0.02, 64, 64),
             new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0})
         );
         this.geoStatOrbit.rotation.x = Math.PI / 2;
@@ -1189,7 +1225,7 @@ export class SatteliteVisualizer
 
         this.geoStatOrbitSmall = new Mesh
         (
-            new TorusBufferGeometry (70, 0.005, 64, 200),
+            new TorusBufferGeometry (70, 0.005, 64, 64),
             new MeshPhongMaterial ({ color: 0xc9c9c9, shininess: 0 })
         );
         this.geoStatOrbitSmall.rotation.x = Math.PI / 2;
@@ -1200,7 +1236,7 @@ export class SatteliteVisualizer
         (
             new Mesh 
             (
-                new TubeBufferGeometry (this.lPath, 256, 0.02, 128, true),
+                new TubeBufferGeometry (this.lPath, 64, 0.02, 32, true),
                 new MeshPhongMaterial ({ color: 0xf3813f, shininess: 0 })
             )
         );
@@ -1336,6 +1372,9 @@ export class SatteliteVisualizer
     {
         document.getElementById(name + "c").onclick = function ()
         {
+            if (this.lockBeams == true)
+                return;
+
             if (this.beams[i].c != undefined) this.beams[i].c.visible = !this.beams[i].c.visible;
             this.bindButtonState (this.beams[i].c, name + "c", "p");
             
@@ -1353,6 +1392,9 @@ export class SatteliteVisualizer
 
         document.getElementById(name + "ku").onclick = function ()
         {
+            if (this.lockBeams == true)
+                return;
+
             if (this.beams[i].Ku != undefined) this.beams[i].Ku.visible = !this.beams[i].Ku.visible;
             this.bindButtonState (this.beams[i].Ku, name + "ku", "o");
             
@@ -1370,6 +1412,9 @@ export class SatteliteVisualizer
         
         document.getElementById(name + "ka").onclick = function ()
         {
+            if (this.lockBeams == true)
+                return;
+
             if (this.beams[i].Ka != undefined) this.beams[i].Ka.visible = !this.beams[i].Ka.visible;
             this.bindButtonState (this.beams[i].Ka, name + "ka", "g");
             
@@ -2196,6 +2241,8 @@ export class SatteliteVisualizer
 
     reset ()
     {
+        this.resetArctic();
+
         for (let i = 0; i < 13; i++)
         {
             document.getElementById ("ev" + i).style.opacity = 0.3;
@@ -3268,18 +3315,18 @@ export class SatteliteVisualizer
 
     loadGlobe ()
     {
-        var innerGlobeGeometry = new SphereGeometry (9.9, 100, 100);
+        var innerGlobeGeometry = new SphereGeometry (9.9, 30, 30);
         var innerGlobeMaterial = new MeshBasicMaterial ({ color: 0xE8F1FD });
         this.innerGlobeMesh = new Mesh (innerGlobeGeometry, innerGlobeMaterial);
 
-        var globeGeometry = new SphereGeometry (10, 100, 100);
+        var globeGeometry = new SphereGeometry (10, 30, 30);
         this.globeTexture = new TextureLoader ().load ("textures/_edges.png");
         this.globeTexture.minFilter = LinearFilter;
         var globeMaterial = new MeshBasicMaterial ({ map: this.globeTexture, transparent: true });
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
 
-        var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
+        var globeCoverGeometry = new SphereGeometry (10.01, 30, 30);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
 
@@ -3290,7 +3337,7 @@ export class SatteliteVisualizer
 
         this.globeCoverMesh = new Mesh (globeCoverGeometry, globeCoverMaterial);
 
-        var polMapGeometry = new SphereGeometry (10.01, 100, 100);
+        var polMapGeometry = new SphereGeometry (10.01, 30, 30);
         var polMapMaterial = new MeshBasicMaterial ({ transparent: true, map: globeCoverPol });
 
         this.polMapMesh = new Mesh (polMapGeometry, polMapMaterial);
@@ -3332,7 +3379,8 @@ export class SatteliteVisualizer
                     else mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
 
-                mesh.children[mesh.children.length - 1].material = new MeshPhongMaterial ({color: 0xff0000});
+                mesh.children[mesh.children.length - 1].material = new MeshPhongMaterial ({color: 0x003472});
+                mesh.children[mesh.children.length - 2].material = new MeshPhongMaterial ({color: 0xff0000});
                 mesh.children[mesh.children.length - 2].visible = false;
 
 
@@ -3355,6 +3403,8 @@ export class SatteliteVisualizer
 
 
 
+                for (let i = 0; i < this.globeMesh.children.length; i++)
+                    this.raycasted.push (this.globeMesh.children[i]);
 
                 this.globeLoaded = true;
 
@@ -3407,6 +3457,185 @@ export class SatteliteVisualizer
             }
 
         }.bind (this);
+
+        this.loadPoints();
+
+        document.getElementById('arctic-CMP').onclick = function () {
+            this.arcticMode = 1;
+
+            document.getElementById('arctic-meteo').style.opacity = '0.3';
+            document.getElementById('arctic-CMP').style.opacity = '1';
+            document.getElementById('arctic-animation-play').style.opacity = '1';
+
+            for (let i = 0; i < this.stations.length; i++)
+            {
+                this.stations[i].dom.style.opacity = '0';
+                this.stations[i].visible = false;
+            }
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i].visible = true;
+
+            this.globeMesh.children[this.globeMesh.children.length - 2].visible = true;
+        }.bind(this);
+
+        document.getElementById('arctic-meteo').onclick = function ()
+        {
+            if (this.lockBeams)
+                return;
+            this.arcticMode = 2;
+
+            document.getElementById('arctic-meteo').style.opacity = '1';
+            document.getElementById('arctic-CMP').style.opacity = '0.3';
+            document.getElementById('arctic-animation-play').style.opacity = '0.3';
+
+            for (let i = 0; i < this.stations.length; i++)
+            {
+                this.stations[i].dom.style.opacity = '1';
+                this.stations[i].visible = true;
+            }
+
+            for (let i = 0; i < this.points.length; i++)
+                this.points[i].visible = false;
+
+            this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
+        }.bind(this);
+    }
+
+    resetArctic ()
+    {
+        if (this.arcticMode == 0)
+            return;
+
+        this.arcticMode = 0;
+
+        document.getElementById('arctic-meteo').style.opacity = '0.3';
+        document.getElementById('arctic-CMP').style.opacity = '0.3';
+        document.getElementById('arctic-animation-play').style.opacity = '0.3';
+
+        for (let i = 0; i < this.stations.length; i++)
+        {
+            this.stations[i].dom.style.opacity = '0';
+            this.stations[i].visible = false;
+        }
+
+        for (let i = 0; i < this.points.length; i++)
+            this.points[i].visible = false;
+
+        this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
+    }
+
+    loadPoints ()
+    {
+        this.points = [];
+
+        let i = 1;
+
+        for (i = 1; i < this.pointsData.length && this.pointsData[i].a != 'Метеостанции'; i++)
+        {
+
+            const pointMaterial = new MeshBasicMaterial({color: 0xff0000});
+
+            let theta = this.degToRad(parseFloat(this.pointsData[i].b)) * 1.025;
+            const phi = this.degToRad(parseFloat(this.pointsData[i].c)) ;
+
+            if (theta > Math.PI / 2) theta = Math.PI/2;
+            if (theta < -Math.PI / 2) theta = -Math.PI/2;
+
+            console.log (theta / Math.PI);
+            console.log (phi / Math.PI);
+
+            const r = 9.75;
+
+            const z = r * Math.cos(theta) * Math.sin(phi);
+            const x = r * Math.cos(theta) * Math.cos(phi);
+            const y = r * Math.sin(theta);
+
+            let point = new Mesh (new SphereGeometry(0.1, 10, 10), pointMaterial);
+            point.position.set (x, y, -z);
+
+            point.html = this.pointsData[i].d;
+
+            point.visible = false;
+
+            this.scene.add (point);
+            this.points.push(point);
+        }
+
+        i++;
+
+        for (; i < this.pointsData.length; i++)
+        {
+            const pointMaterial = new MeshBasicMaterial({color: 0xff0000});
+
+            let theta = this.degToRad(parseFloat(this.pointsData[i].b)) * 1.025;
+            const phi = this.degToRad(parseFloat(this.pointsData[i].c)) ;
+
+            if (theta > Math.PI / 2) theta = Math.PI/2;
+            if (theta < -Math.PI / 2) theta = -Math.PI/2;
+
+            console.log (theta / Math.PI);
+            console.log (phi / Math.PI);
+
+            const r = 9.8;
+
+            const z = r * Math.cos(theta) * Math.sin(phi);
+            const x = r * Math.cos(theta) * Math.cos(phi);
+            const y = r * Math.sin(theta);
+
+            let point = new Mesh (new SphereGeometry(0.05, 10, 10), pointMaterial);
+            point.position.set (x, y, -z);
+
+            point.html = this.pointsData[i].d;
+
+            point.visible = false;
+
+            this.scene.add (point);
+            this.stations.push(point);
+        }
+
+        this.createText();
+    }
+
+    createText ()
+    {
+        for (let i = 0; i < this.stations.length; i++)
+        {
+            let text = document.createElement('div');
+            text.style.position = 'absolute';
+            text.style.textAlign = 'center';
+            text.class = "service_heading";
+            //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+            text.style.width = 100;
+            text.style.height = 100;
+            text.style.backgroundColor = "transparent";
+            text.style.color = "red";
+            text.innerHTML = this.stations[i].html;
+            text.style.top = 200 + 'px';
+            text.style.left = 200 + 'px';
+            document.body.appendChild(text);
+
+            text.style.opacity = '0';
+
+            this.stations[i].dom = text;
+        }
+
+
+    }
+
+    toXYCoords (obj) {
+        var vector = new Vector3();
+
+        const delta = window.innerHeight / window.innerWidth;
+
+        obj.updateMatrixWorld();
+        vector.setFromMatrixPosition(obj.matrixWorld);
+        vector.project(this.camera);
+
+        vector.x = (vector.x + 1)/2 * window.innerWidth;
+        vector.y = -(vector.y - delta * 1.2)/2 * window.innerWidth;
+        return vector;
     }
 
 };
+

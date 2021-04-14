@@ -253,8 +253,8 @@
         </div>
         <div class="rscc-services" id="arctic-logo" style="display: none">
           <div class="service-div">
-            <h1 class="service_heading">Связь на СМП</h1>
-            <a href="#" class="play_button w-inline-block" id="arctic-animation-play">
+            <a href="#" class="service_heading" id="arctic-CMP" style="opacity: 0.3">Связь на СМП</a>
+            <a href="#" class="play_button w-inline-block" id="arctic-animation-play" style="opacity: 0.3">
               <div class="play_icon w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 71.38 72.95">
                 <defs>
                   <style>
@@ -270,7 +270,7 @@
             </a>
           </div>
           <div class="service-div">
-            <h1 class="service_heading">Метеостанции</h1>
+            <a href="#" class="service_heading" id="arctic-meteo" style="opacity: 0.3">Метеостанции</a>
           </div>
         </div>
 
@@ -1000,6 +1000,7 @@
   <script id="sat-data" type="application/"json></script>
   <script id="beams-data" type="application/json"></script>
   <script id="countries-data" type="application/json"></script>
+  <script id="points-data" type="application/json"></script>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5ef06dbc8956a9e7ba225ae5" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
@@ -1088,9 +1089,38 @@
     };
   };
 
+  var ExcelToJSON4 = function() {
+    this.parseExcel = function(file) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary'
+        });
+
+        workbook.SheetNames.forEach(function(sheetName) {
+          // Here is your object
+          var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+          var json_object = JSON.stringify(XL_row_object);
+
+          document.getElementById("points-data").innerText = json_object;
+
+        })
+      };
+
+      reader.onerror = function(ex) {
+        console.log(ex);
+      };
+
+      reader.readAsBinaryString(file);
+    };
+  };
+
   var myFetch = fetch("./satinfo.xlsx");
   var myFetch2 = fetch("./beams.xlsx");
   var myFetch3 = fetch("./countries.xlsx");
+  var myFetch4 = fetch("./points.xlsx");
  
   myFetch.then(function(response) {
     response.blob().then(function(text) {
@@ -1110,6 +1140,13 @@
     response.blob().then(function(text) {
      
       new ExcelToJSON3().parseExcel (text);
+    });
+  });
+
+  myFetch4.then(function(response) {
+    response.blob().then(function(text) {
+
+      new ExcelToJSON4().parseExcel (text);
     });
   });
 
