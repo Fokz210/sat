@@ -1292,6 +1292,9 @@ export class SatteliteVisualizer {
     {
         document.getElementById ("sv" + index).onclick = function ()
         {
+            if (this.lockBeams)
+                return;
+
             this.satViewChosen = index;
 
             var a = this.satData[this.satDataRows[index]].a;
