@@ -39,6 +39,12 @@
 <body class="body" style="pointer-events: none;">
   <section id="loading-screen"><div id="loader"></div></section>
   <div class="section">
+    <div class="container_html" id="video-container" style="opacity: 0">
+      <div class="wrapper_html"id="video-wrapper">
+        <a href="#" id="video-close" class="close_wrapper w-inline-block" onclick="document.getElementById('video-container').style.opacity = '0';">
+          <img src="images/x_icon.svg" loading="lazy" alt="" class="x_icon"></a>
+      </div>
+    </div>
     <div class="left-switcher">
       <div class="icon-container"><a data-w-id="45b15d5d-a24d-d428-f512-7d7b366732ff" href="#" id="leftSwitch" class="link-block-2 w-inline-block"><img src="images/Group-694_2.svg" alt="" class="icons-blue orbit"><img src="images/Group-694_1.svg" alt="" class="icons-white orbit"></a>
         <div class="divider"></div><a data-w-id="7649b9b8-56a7-8d90-668b-89c26fa12ce6" href="#" id="midSwitch" class="w-inline-block"><img src="images/Group-695.svg" alt="" class="icons-blue sat"><img src="images/Group-695_1.svg" alt="" class="icons-white sat"></a>
@@ -235,9 +241,10 @@
     </div>
     <div class="earthview-satellite-list">
       <div class="div-block-36" id="evsat">
+        <!-- test /!-->
         <div class="country-heading" id="arctic-header" style="display: none">
           <h1 class="country-heading-2">Услуги ГП КС<br>в Арктике</h1>
-          <a href="#" class="geo_target w-inline-block">
+          <a href="#" class="geo_target w-inline-block" id="arctic-reset">
             <div class="geo_icon w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30">
               <defs>
                 <style>
@@ -273,8 +280,7 @@
             <a href="#" class="service_heading" id="arctic-meteo" style="opacity: 0.3">Метеостанции</a>
           </div>
         </div>
-
-        <div class="country-heading" id="country-heading">
+        <div class="country-heading" id="country-heading" style="flex-direction: column;">
           <h1 class="country-heading-2" id="ctrname">Название выбранной страны</h1>
           <div class="country-subheading">Входит в зоны обслуживания космических аппаратов</div>
         </div>
@@ -669,9 +675,11 @@
           </div>
         </div>
       </div>
+      <!--
       <a data-w-id="63d9b74b-e16e-65b7-8aa9-064514c8f2e2" href="#" style="z-index: 5; top: 75%;" id="select-country" class="info-button w-inline-block">
         <h1 class="button-text">выбрать страну</h1>
       </a>
+      /!-->
     </div>
     <div class="bg-blur" id="blur">
       <div class="div-block-19"></div>

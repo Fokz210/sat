@@ -270,7 +270,12 @@ class delayedFunctionManager
 
 export class SatteliteVisualizer {
     constructor(sizeX, sizeY) {
+
+
         this.arcticMode = 0;
+        this.lockSvSat = false;
+
+        this.lineState = false;
 
         this.points = [];
         this.stations = [];
@@ -563,9 +568,11 @@ export class SatteliteVisualizer {
 
             if (this.intersectedPoint) {
                 if (this.intersectedPoint.html) {
-                    //todo: add point window
+                    document.getElementById("video-wrapper").innerHTML = document.getElementById("video-wrapper").children[0].outerHTML + this.intersectedPoint.html;
+                    document.getElementById("video-container").style.opacity = "100";
 
-                    console.log(this.intersectedPoint.html);
+                    document.getElementById("video-wrapper").children[1].width = 640 ;
+                    document.getElementById("video-wrapper").children[1].height = 360;
                 }
             }
 
@@ -769,6 +776,12 @@ export class SatteliteVisualizer {
 
             if (this.action) {
                 if (this.animPhase != 1 && this.action.time > 0 && this.action.time < 1.5) {
+                    if (!this.globeMesh.children[this.globeMesh.children.length - 2].visible)
+                    {
+                        this.lineState = true;
+                        this.globeMesh.children[this.globeMesh.children.length- 2].visible = true;
+                    }
+
                     this.animPhase = 1;
                     this.lockBeams = false;
                     document.getElementById("am6c").click();
@@ -790,7 +803,12 @@ export class SatteliteVisualizer {
                     this.animPhase = 4;
                     this.lockBeams = false;
                     document.getElementById("am5c").click();
-                    this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
+                    this.globeMesh.children[this.globeMesh.children.length - 3].visible = false;
+                    if (this.lineState)
+                    {
+                        this.lineState = false;
+                        this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
+                    }
                 } else if (this.animPhase != 0 && this.action.time == 0) {
                     this.lockBeams = false;
                     this.animPhase = 0;
@@ -1292,7 +1310,7 @@ export class SatteliteVisualizer {
     {
         document.getElementById ("sv" + index).onclick = function ()
         {
-            if (this.lockBeams)
+            if (this.lockBeams || this.lockSvSat)
                 return;
 
             this.satViewChosen = index;
@@ -1587,6 +1605,7 @@ export class SatteliteVisualizer {
     {
         document.getElementById ("ev" + index).onclick = function ()
         {
+
             document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "none";
             document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "flex";
             document.getElementById("ranges").style.display = "flex";
@@ -1606,6 +1625,12 @@ export class SatteliteVisualizer {
             document.getElementById ("ev" + index).style.opacity = 1;
 
             this.focusGlobe();
+
+            if (this.lockSvSat)
+            {
+                document.getElementById("arctic-header").style.display = "flex";
+                document.getElementById("arctic-logo").style.display = "block";
+            }
 
             if (this.beams[index].CFixed1 == undefined)
                 document.getElementById ("rvcfixed1").style = "display: none";
@@ -1728,6 +1753,8 @@ export class SatteliteVisualizer {
     {
         document.getElementById ("ev" + index).onclick = function ()
         {
+            //if (this.lockSvSat)
+            //    return;
             document.getElementsByClassName ("satellite-ranges-info")[0].style.display = "flex";
             document.getElementById("ranges").style.display = "flex";
             document.getElementsByClassName ("xrw-ranges-info")[0].style.display = "none";
@@ -1746,6 +1773,12 @@ export class SatteliteVisualizer {
             document.getElementById ("ev" + index).style.opacity = 1;
 
             this.focusGlobe();
+
+            if (this.lockSvSat)
+            {
+                document.getElementById("arctic-header").style.display = "flex";
+                document.getElementById("arctic-logo").style.display = "block";
+            }
 
             if (index == 12)
             {
@@ -2054,7 +2087,7 @@ export class SatteliteVisualizer {
 
 
                 document.getElementById ("evsat").style.display = "none";
-                document.getElementById ("select-country").style.display = "none";
+                //document.getElementById ("select-country").style.display = "none";
 
         }.bind (this);
     }
@@ -2275,6 +2308,7 @@ export class SatteliteVisualizer {
     {
         document.getElementById ("zonesbtn").onclick = function () 
         {
+
             this.interfaceScreen3();
 
             var index = this.satViewChosen;
@@ -2456,14 +2490,19 @@ export class SatteliteVisualizer {
             if (this.earthViewChosen > 12)
             {
                 document.getElementById ("evsat").style.display = "none";
-                document.getElementById ("select-country").style.display = "none";
+                //document.getElementById ("select-country").style.display = "none";
                 document.getElementById ("newsat").style.display = "flex";
                 this.hideAllNewSats();
             }
         }.bind(this);
         
         document.getElementById ("infobtn").onclick = function ()
-        {   
+        {
+            if (this.lockSvSat)
+            {
+                this.resetFilter();
+                this.lockSvSat = false;
+            }
 
             var index = this.earthViewChosen;
             this.earthViewChosen = undefined; 
@@ -2793,6 +2832,8 @@ export class SatteliteVisualizer {
 
         for (let i = 2; i < this.countriesData.length; i++)
         {
+
+
             var con = new country();
             var conData = this.countriesData[i];
 
@@ -3025,6 +3066,7 @@ export class SatteliteVisualizer {
         {
             document.getElementById (name + "ka").className = "ka-range-2 w-inline-block";
             if (document.getElementById (name + "ka").hasChildNodes()) document.getElementById (name + "ka").children[0].style = "";
+            if (document.getElementById (name + "ka").hasChildNodes()) document.getElementById (name + "ka").children[0].style = "";
         }
 
         if (!country.bandProps[index].Ku)
@@ -3058,13 +3100,13 @@ export class SatteliteVisualizer {
 
     bindSelectCountry ()
     {
-        document.getElementById ("select-country").onclick = function ()
+        /*document.getElementById ("select-country").onclick = function ()
         {
             document.getElementById ("cfilter").style.display = "flex";
             document.getElementById ("blur").style.display = "flex";
             this.menuState = 1;
         }.bind (this);
-
+*/
         this.bindResetFilter ()
     }
 
@@ -3144,7 +3186,7 @@ export class SatteliteVisualizer {
 
     interfaceScreen1 ()
     {
-
+        this.lockSvSat = false;
         document.getElementById ("leftSwitch").children[0].style.display = "none";
         document.getElementById ("midSwitch").children[0].style.display = "none";
         document.getElementById ("rightSwitch").children[0].style.display = "none";
@@ -3182,6 +3224,7 @@ export class SatteliteVisualizer {
 
     interfaceScreen2 ()
     {
+        this.lockSvSat = false;
         document.getElementById ("leftSwitch").children[0].style.display = "none";
         document.getElementById ("midSwitch").children[0].style.display = "none";
         document.getElementById ("rightSwitch").children[0].style.display = "none";
@@ -3212,6 +3255,8 @@ export class SatteliteVisualizer {
 
     interfaceScreen3 ()
     {
+        //this.lockSvSat = false;
+
         document.getElementById ("leftSwitch").children[0].style.display = "none";
         document.getElementById ("midSwitch").children[0].style.display = "none";
         document.getElementById ("rightSwitch").children[0].style.display = "none";
@@ -3243,6 +3288,9 @@ export class SatteliteVisualizer {
 
         document.getElementById("arctic-header").style.display = "none";
         document.getElementById("arctic-logo").style.display = "none";
+
+
+
     
     }
     
@@ -3255,7 +3303,7 @@ export class SatteliteVisualizer {
                 this.focusGlobe();
                 document.getElementById ("evsat").style.display = "none";
                 document.getElementById ("newsat").style.display = "flex";
-                document.getElementById ("select-country").style.display = "none";
+               // document.getElementById ("select-country").style.display = "none";
             }.bind (this);
         }
 
@@ -3329,7 +3377,7 @@ export class SatteliteVisualizer {
         this.globeMesh = new Mesh (globeGeometry, globeMaterial);
 
 
-        var globeCoverGeometry = new SphereGeometry (10.01, 30, 30);
+        var globeCoverGeometry = new SphereGeometry (10.01, 100, 100);
         var globeCoverTex = new TextureLoader ().load ("textures/globe_cover.png");
         var globeCoverPol = new TextureLoader ().load ("textures/_edges.png");
 
@@ -3382,9 +3430,10 @@ export class SatteliteVisualizer {
                     else mesh.children[i].material = new MeshPhongMaterial ({color: 0xc4ddff});
                 }
 
-                mesh.children[mesh.children.length - 1].material = new MeshPhongMaterial ({color: 0x003472});
+                mesh.children[mesh.children.length - 3].visible = false;
+                mesh.children[mesh.children.length - 3].material = new MeshPhongMaterial ({color: 0x003472});
                 mesh.children[mesh.children.length - 2].material = new MeshPhongMaterial ({color: 0xff0000});
-                mesh.children[mesh.children.length - 2].visible = false;
+                mesh.children[mesh.children.length - 1].visible = false;
 
 
                 mesh.rotation.y = Math.PI/2 + Math.PI/40;
@@ -3398,7 +3447,7 @@ export class SatteliteVisualizer {
 
 
 
-                this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
+                this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
                 
                 this.loadCountries();
 
@@ -3429,11 +3478,13 @@ export class SatteliteVisualizer {
     loadArctic ()
     {
 
+
         document.getElementById("menu-arctic").onclick = function ()
         {
+            this.reset();
             this.resetFilter();
             this.focusGlobe();
-            this.controls.setPosition (Math.cos (Math.PI / 2) * 48 / 2, 86 / 2, -Math.sin (Math.PI / 2) * 48 / 2,  true);
+            this.controls.setPosition (Math.cos (Math.PI / 2) * 30 / 3, 86 / 3, -Math.sin (Math.PI / 2) * 30 / 3,  true);
             this.filterSats(this.arctic);
 
             document.getElementById("arctic-header").style.display = "flex";
@@ -3442,7 +3493,10 @@ export class SatteliteVisualizer {
             document.getElementById ("cfilter").style = 'display: none;';
             document.getElementById ("mbuttons").style = 'display: none;';
             document.getElementById ("blur").style = 'display: none;';
+            document.getElementById("ranges").style.display = "none";
+            //document.getElementById ("select-country").style.display = "none";
 
+            this.lockSvSat = true;
         }.bind (this);
 
         document.getElementById("arctic-animation-play").onclick = function ()
@@ -3456,7 +3510,7 @@ export class SatteliteVisualizer {
                 this.action.reset();
                 this.action.play();
 
-                this.globeMesh.children[this.globeMesh.children.length - 1].visible = true;
+                this.globeMesh.children[this.globeMesh.children.length - 3].visible = true;
             }
 
         }.bind (this);
@@ -3479,7 +3533,7 @@ export class SatteliteVisualizer {
             for (let i = 0; i < this.points.length; i++)
                 this.points[i].visible = true;
 
-            this.globeMesh.children[this.globeMesh.children.length - 2].visible = true;
+            this.globeMesh.children[this.globeMesh.children.length - 1].visible = true;
         }.bind(this);
 
         document.getElementById('arctic-meteo').onclick = function ()
@@ -3501,7 +3555,13 @@ export class SatteliteVisualizer {
             for (let i = 0; i < this.points.length; i++)
                 this.points[i].visible = false;
 
-            this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
+            this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
+        }.bind(this);
+
+        document.getElementById('arctic-reset').onclick = function ()
+        {
+            this.controls.setPosition (Math.cos (Math.PI / 2) * 30 / 3, 86 / 3, -Math.sin (Math.PI / 3) * 30 / 3,  true);
+            this.resetArctic();
         }.bind(this);
     }
 
@@ -3525,7 +3585,7 @@ export class SatteliteVisualizer {
         for (let i = 0; i < this.points.length; i++)
             this.points[i].visible = false;
 
-        this.globeMesh.children[this.globeMesh.children.length - 2].visible = false;
+        this.globeMesh.children[this.globeMesh.children.length - 1].visible = false;
     }
 
     loadPoints ()
