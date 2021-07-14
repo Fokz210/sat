@@ -78,7 +78,7 @@
       <div id="t-box-animator">
       <div class="sat-year-container" id="sycnt">
         <div class="div-block-16"></div>
-        <div class="sat-year">
+        <div class="sat-year" style="display:none">
           <div class="satellites-container" id="tl0" >
             <h1 class="sat-name">Э-80</h1>
             <h1 class="sat-name">Э-103</h1>
@@ -180,7 +180,9 @@
       </div>
     </div>
 
-    <div class="earthview-satpoints-disc" style="pointer-events: none;" id="diskanim"><img src="images/Group-693.svg" id="disk" alt="" class="image-4" style="pointer-events: none;">
+    <div class="earthview-satpoints-disc" style="pointer-events: none;" id="diskanim">
+      <img src="images/Group-693.svg" id="disk" alt="" class="image-4" style="pointer-events: none;">
+      <img src="images/Group-693_2.svg" id="disk2" alt="" class="image-4" style="pointer-events: none; display: none;">
       <div class="degree-container">
         <div class="degree-indicator"></div>
         <div class="degree-point"></div>
@@ -195,6 +197,10 @@
         </a>
         <a href="#" id="sv9" class="satellite-name-box-satview w-inline-block">
           <h1 class="satellite-name-chosen-2" id="am44name">АМ44</h1>
+          <h1 class="satellite-point-2">11°З.Д.</h1>
+        </a>
+        <a href="#" id="sv4" class="satellite-name-box-satview w-inline-block">
+          <h1 class="satellite-name-chosen-2">АМ33</h1>
           <h1 class="satellite-point-2">11°З.Д.</h1>
         </a>
         <a href="#" id="sv0" class="satellite-name-box-satview w-inline-block">
@@ -212,10 +218,6 @@
         <a href="#" id="sv3" class="satellite-name-box-satview w-inline-block">
           <h1 class="satellite-name-chosen-2">АТ1</h1>
           <h1 class="satellite-point-2">56°В.Д.</h1>
-        </a>
-        <a href="#" id="sv4" class="satellite-name-box-satview w-inline-block">
-          <h1 class="satellite-name-chosen-2">АМ33</h1>
-          <h1 class="satellite-point-2">96,5°В.Д.</h1>
         </a>
         <a href="#" id="sv10" class="satellite-name-box-satview w-inline-block">
           <h1 class="satellite-name-chosen-2">Э-80</h1>
@@ -242,47 +244,51 @@
     <div class="earthview-satellite-list">
       <div class="div-block-36" id="evsat">
         <!-- test /!-->
-        <div class="country-heading" id="arctic-header" style="display: none">
-          <h1 class="country-heading-2">Услуги ГП КС<br>в Арктике</h1>
-          <a href="#" class="geo_target w-inline-block" id="arctic-reset">
-            <div class="geo_icon w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30">
-              <defs>
-                <style>
-                  .cls-1 {
-                    fill: currentColor;
-                  }
-
-                </style>
-              </defs>
-              <path class="cls-1" d="M28.08,1.73a.47.47,0,0,0-.63-.12L1.84,12.84c-.27.12-.42.25-.33.51,0,.88,0,.88.86,1.11l10,2.76a.57.57,0,0,1,.44.45q1.41,5,2.84,10c.2.73.21.7,1,.82.37.06.52-.06.67-.39q5.5-12.54,11-25.07C28.66,2.33,28.66,2.34,28.08,1.73ZM16.65,26.36c-.42-1.48-.81-2.84-1.19-4.2-.5-1.76-1-3.52-1.49-5.28a1.13,1.13,0,0,0-.84-.81l-9-2.51-.35-.11,23-10.11Z"></path>
-            </svg></div>
-          </a>
-        </div>
-        <div class="rscc-services" id="arctic-logo" style="display: none">
-          <div class="service-div">
-            <a href="#" class="service_heading" id="arctic-CMP" style="opacity: 0.3">Связь на СМП</a>
-            <a href="#" class="play_button w-inline-block" id="arctic-animation-play" style="opacity: 0.3">
-              <div class="play_icon w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 71.38 72.95">
+        <div class="country-heading _2" id="arctic-header">
+          <div class="heading_container">
+            <div class="country-name-and-icon" style="width: 100%">
+              <h1 class="country-heading-2">Услуги ГП КС<br>в Арктике</h1>
+              <div class="play_button">
+                <div id="arctic-reset" class="nav_icon w-embed"><svg xmlns="http://www.w3.org/2000/svg" height="48" viewbox="0 0 48 48" width="15">
+                  <path d="M0 0h48v48h-48z" fill="none"></path>
+                  <path d="M24 4l-15 36.59 1.41 1.41 13.59-6 13.59 6 1.41-1.41z" fill="CurrentColor"></path>
+                </svg></div>
+              </div>
+            </div>
+          </div>
+          <div class="divider_heading"></div>
+          <div class="div-block-52" id="arctic-logo">
+            <p id="arctic-CMP" class="service_heading" style="cursor: pointer; opacity: 0.3;">Связь на СМП</p>
+            <div class="play_button" >
+              <div  style="opacity: 0.3" id="arctic-animation-play" class="play_icon w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 71.38 72.95">
                 <defs>
                   <style>
                     .cls-1 {
                       fill: currentColor;
                     }
-
                   </style>
                 </defs>
                 <polygon class="cls-1" points="71.38 36.47 13.76 7.03 13.76 65.91 71.38 36.47">
                 </polygon>
               </svg></div>
-            </a>
+            </div>
           </div>
-          <div class="service-div">
-            <a href="#" class="service_heading" id="arctic-meteo" style="opacity: 0.3">Метеостанции</a>
+          <div class="divider_heading"></div>
+          <div class="div-block-52">
+            <p class="service_heading" id="arctic-meteo" style="cursor: pointer; opacity: 0.3;">Метеостанции</p>
           </div>
         </div>
         <div class="country-heading" id="country-heading" style="flex-direction: column;">
-          <h1 class="country-heading-2" id="ctrname">Название выбранной страны</h1>
-          <div class="country-subheading">Входит в зоны обслуживания космических аппаратов</div>
+          <div class="country-name-and-icon">
+            <h1 class="country-heading-2" id="ctrname">Название выбранной страны</h1>
+            <div class="play_button">
+              <div id="con-reset" class="nav_icon w-embed"><svg xmlns="http://www.w3.org/2000/svg" height="48" viewbox="0 0 48 48" width="15">
+                <path d="M0 0h48v48h-48z" fill="none"></path>
+                <path d="M24 4l-15 36.59 1.41 1.41 13.59-6 13.59 6 1.41-1.41z" fill="CurrentColor"></path>
+              </svg></div>
+            </div>
+          </div>
+          <div class="country-subheading">Входит в зоны обслуживания<br>космических аппаратов</div>
         </div>
         <div class="div-block-35">
           <a href="#" id="ev8" class="satellite-name-box w-inline-block">
@@ -314,6 +320,23 @@
               <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ku-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M1.25,63.5V5.58H11.43V34.7L39,5.58H51.45L27.38,30.49l25.16,33H40.22L20.43,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M59.53,47.62V19.83h10V44.72c0,3.4.82,6,2.46,7.9a8.71,8.71,0,0,0,6.91,2.8A9.21,9.21,0,0,0,86,52.5a11.19,11.19,0,0,0,2.71-8V19.83h10V63.5h-10V56.81q-5.3,7.62-13.65,7.61c-4.88,0-8.68-1.51-11.43-4.54S59.53,52.77,59.53,47.62Z"></path></g></g></svg></div>
             </a>
             <a href="#" id="am44ka" class="ka-range-2 w-inline-block">
+              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ka-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M2.22,63.5V5.58H12.4V34.7L39.94,5.58H52.42L28.35,30.49l25.16,33H41.2L21.41,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M58,50.77q0-7,4.88-10.69t12.87-3.65a39.12,39.12,0,0,1,12,1.82v-.82q0-4.59-2.76-7c-1.83-1.61-4.49-2.42-8-2.42a32.17,32.17,0,0,0-12.48,2.77l-2.77-8A44.51,44.51,0,0,1,69.73,20a38.81,38.81,0,0,1,8.81-.89q9.55,0,14.4,4.78T97.78,37.6V63.5h-10V58.12a17.46,17.46,0,0,1-14.1,6.3,19.27,19.27,0,0,1-7.75-1.51,13.22,13.22,0,0,1-5.68-4.66A12.79,12.79,0,0,1,58,50.77Zm10-.36a5.52,5.52,0,0,0,2.39,4.73,10,10,0,0,0,6,1.73,12.89,12.89,0,0,0,8.26-2.57A8,8,0,0,0,88,47.7V45.2a26.74,26.74,0,0,0-10-1.74,12.73,12.73,0,0,0-7.33,1.82A5.88,5.88,0,0,0,68.05,50.41Z"></path></g></g></svg></div>
+            </a>
+          </div>
+        </div>
+         <div class="div-block-35">
+          <a href="#" id="ev4" class="satellite-name-box w-inline-block">
+            <h1 class="satellite-name-chosen-2">АМ33</h1>
+            <h1 class="satellite-point-2">11°З.Д.</h1>
+          </a>
+          <div class="div-block-46">
+            <a href="#" id="am33c" class="c-range-2 w-inline-block">
+              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="C-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M23.53,35a30.56,30.56,0,0,1,2.22-11.64,29.59,29.59,0,0,1,6.1-9.54,27.73,27.73,0,0,1,9.49-6.4,30.59,30.59,0,0,1,12-2.37A32,32,0,0,1,66.16,7.36,33.83,33.83,0,0,1,76,14l-6.5,7.53a31.78,31.78,0,0,0-7.68-5.34,19.39,19.39,0,0,0-8.56-1.87,18.15,18.15,0,0,0-9.81,2.75,18.87,18.87,0,0,0-6.85,7.48A22.33,22.33,0,0,0,34.19,35a21,21,0,0,0,5.45,14.64,17.64,17.64,0,0,0,13.65,6,19.54,19.54,0,0,0,8.79-1.87,33,33,0,0,0,7.85-5.67l6.54,6.65a40.4,40.4,0,0,1-6.4,5.45,27.53,27.53,0,0,1-7.51,3.43A33.6,33.6,0,0,1,53,65a29.27,29.27,0,0,1-15-4A28.17,28.17,0,0,1,27.34,50.18,30.77,30.77,0,0,1,23.53,35Z"></path></g></g></svg></div>
+            </a>
+            <a href="#" id="am33ku" class="ku-range-2 w-inline-block">
+              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ku-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M1.25,63.5V5.58H11.43V34.7L39,5.58H51.45L27.38,30.49l25.16,33H40.22L20.43,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M59.53,47.62V19.83h10V44.72c0,3.4.82,6,2.46,7.9a8.71,8.71,0,0,0,6.91,2.8A9.21,9.21,0,0,0,86,52.5a11.19,11.19,0,0,0,2.71-8V19.83h10V63.5h-10V56.81q-5.3,7.62-13.65,7.61c-4.88,0-8.68-1.51-11.43-4.54S59.53,52.77,59.53,47.62Z"></path></g></g></svg></div>
+            </a>
+            <a href="#" id="am33ka" class="ka-range-2 w-inline-block">
               <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ka-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M2.22,63.5V5.58H12.4V34.7L39.94,5.58H52.42L28.35,30.49l25.16,33H41.2L21.41,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M58,50.77q0-7,4.88-10.69t12.87-3.65a39.12,39.12,0,0,1,12,1.82v-.82q0-4.59-2.76-7c-1.83-1.61-4.49-2.42-8-2.42a32.17,32.17,0,0,0-12.48,2.77l-2.77-8A44.51,44.51,0,0,1,69.73,20a38.81,38.81,0,0,1,8.81-.89q9.55,0,14.4,4.78T97.78,37.6V63.5h-10V58.12a17.46,17.46,0,0,1-14.1,6.3,19.27,19.27,0,0,1-7.75-1.51,13.22,13.22,0,0,1-5.68-4.66A12.79,12.79,0,0,1,58,50.77Zm10-.36a5.52,5.52,0,0,0,2.39,4.73,10,10,0,0,0,6,1.73,12.89,12.89,0,0,0,8.26-2.57A8,8,0,0,0,88,47.7V45.2a26.74,26.74,0,0,0-10-1.74,12.73,12.73,0,0,0-7.33,1.82A5.88,5.88,0,0,0,68.05,50.41Z"></path></g></g></svg></div>
             </a>
           </div>
@@ -403,23 +426,7 @@
             </a>
           </div>
         </div>
-        <div class="div-block-35">
-          <a href="#" id="ev4" class="satellite-name-box w-inline-block">
-            <h1 class="satellite-name-chosen-2">АМ33</h1>
-            <h1 class="satellite-point-2">96,5°В.Д.</h1>
-          </a>
-          <div class="div-block-46">
-            <a href="#" id="am33c" class="c-range-2 w-inline-block">
-              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="C-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M23.53,35a30.56,30.56,0,0,1,2.22-11.64,29.59,29.59,0,0,1,6.1-9.54,27.73,27.73,0,0,1,9.49-6.4,30.59,30.59,0,0,1,12-2.37A32,32,0,0,1,66.16,7.36,33.83,33.83,0,0,1,76,14l-6.5,7.53a31.78,31.78,0,0,0-7.68-5.34,19.39,19.39,0,0,0-8.56-1.87,18.15,18.15,0,0,0-9.81,2.75,18.87,18.87,0,0,0-6.85,7.48A22.33,22.33,0,0,0,34.19,35a21,21,0,0,0,5.45,14.64,17.64,17.64,0,0,0,13.65,6,19.54,19.54,0,0,0,8.79-1.87,33,33,0,0,0,7.85-5.67l6.54,6.65a40.4,40.4,0,0,1-6.4,5.45,27.53,27.53,0,0,1-7.51,3.43A33.6,33.6,0,0,1,53,65a29.27,29.27,0,0,1-15-4A28.17,28.17,0,0,1,27.34,50.18,30.77,30.77,0,0,1,23.53,35Z"></path></g></g></svg></div>
-            </a>
-            <a href="#" id="am33ku" class="ku-range-2 w-inline-block">
-              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ku-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M1.25,63.5V5.58H11.43V34.7L39,5.58H51.45L27.38,30.49l25.16,33H40.22L20.43,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M59.53,47.62V19.83h10V44.72c0,3.4.82,6,2.46,7.9a8.71,8.71,0,0,0,6.91,2.8A9.21,9.21,0,0,0,86,52.5a11.19,11.19,0,0,0,2.71-8V19.83h10V63.5h-10V56.81q-5.3,7.62-13.65,7.61c-4.88,0-8.68-1.51-11.43-4.54S59.53,52.77,59.53,47.62Z"></path></g></g></svg></div>
-            </a>
-            <a href="#" id="am33ka" class="ka-range-2 w-inline-block">
-              <div class="range-type-letter w-embed"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 70"><defs><style>.cls-1{isolation:isolate;}.cls-2{fill:#201c5f;}</style></defs><g id="Ka-2" class="cls-1"><g class="cls-1"><path class="cls-2" d="M2.22,63.5V5.58H12.4V34.7L39.94,5.58H52.42L28.35,30.49l25.16,33H41.2L21.41,37.44l-9,9.25V63.5Z"></path><path class="cls-2" d="M58,50.77q0-7,4.88-10.69t12.87-3.65a39.12,39.12,0,0,1,12,1.82v-.82q0-4.59-2.76-7c-1.83-1.61-4.49-2.42-8-2.42a32.17,32.17,0,0,0-12.48,2.77l-2.77-8A44.51,44.51,0,0,1,69.73,20a38.81,38.81,0,0,1,8.81-.89q9.55,0,14.4,4.78T97.78,37.6V63.5h-10V58.12a17.46,17.46,0,0,1-14.1,6.3,19.27,19.27,0,0,1-7.75-1.51,13.22,13.22,0,0,1-5.68-4.66A12.79,12.79,0,0,1,58,50.77Zm10-.36a5.52,5.52,0,0,0,2.39,4.73,10,10,0,0,0,6,1.73,12.89,12.89,0,0,0,8.26-2.57A8,8,0,0,0,88,47.7V45.2a26.74,26.74,0,0,0-10-1.74,12.73,12.73,0,0,0-7.33,1.82A5.88,5.88,0,0,0,68.05,50.41Z"></path></g></g></svg></div>
-            </a>
-          </div>
-        </div>
+
         <div class="div-block-35">
           <a href="#" id="ev11" class="satellite-name-box w-inline-block">
             <h1 class="satellite-name-chosen-2">Э-103</h1>
@@ -501,8 +508,7 @@
       </div>
       <div class="div-block-36" id="newsat">
         <div class="country-heading" id="country-heading">
-          <h1 class="country-heading-2" id="ctrname">Заголовок для новых спутников</h1>
-          <div class="country-subheading">Входит в зоны обслуживания космических аппаратов</div>
+          <h1 class="country-heading-2" id="ctrname">Перспективные<br>спутники ГП КС</h1>
         </div>
         <div class="div-block-35">
           <a href="#" id="ns1" class="satellite-name-box w-inline-block">
@@ -866,7 +872,7 @@
     <div class="xrw-info-container" id="rvinfocon">
       <div class="satellites-ranges-info">
         <div class="satellite-heading">
-          <h1 class="heading-8"><strong>Система </strong>Экспресс-РВ</h1>
+          <h1 class="heading-8"><strong>Система<br></strong>Экспресс-РВ</h1>
           <div class="satellite-orbit-type">4 КА на высокоэллиптических орбитах</div>
         </div>
         <div class="div-block-47">
@@ -920,7 +926,7 @@
     <div class="xrw-ranges-info" id="ranges">
       <div class="satellites-ranges-info" style="display: flex;" id="xrw-fucken-shit">
         <div class="satellite-heading">
-          <h1 class="heading-8"><strong>Система </strong>Экспресс-РВ</h1>
+          <h1 class="heading-8"><strong>Система<br></strong>Экспресс-РВ</h1>
           <div class="satellite-orbit-type">4 КА на высокоэллиптических орбитах</div>
           <div class="satellite-point-big">100° (90°)</div>
           <div class="satellite-orbit-type">долгота апогея в восточной полусфере</div>
